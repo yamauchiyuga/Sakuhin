@@ -11,7 +11,9 @@ enum {
 //オクトー
 enum {
     Octree_Koutei,                  //校庭
-    Octree_KouteiCollider           //校庭衝突判定
+    Octree_KouteiCollider,           //校庭衝突判定
+    Octree_Stage,
+    Octree_Collider
 };
 
 //テクスチャデータ
@@ -27,8 +29,9 @@ enum {
     Texture_Result2,        // リザルト用テキスト2
     Texture_Radar,          // レーダー画像
     Texture_RadarPoint,      // レーダーの点
-    Texturre_GaugeRed,      //HP表示の赤部分
-    Texturre_GaugeGreen     //HP表示の緑部分
+    Texture_HP,             //HP表示の赤部分
+    Texture_Frame,          //
+    Texture_ST,
 
 };
 

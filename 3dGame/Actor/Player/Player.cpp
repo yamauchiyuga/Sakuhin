@@ -184,14 +184,14 @@ void Player::collide_field() {
 		velocity_.y = 0.0f;
 	}
 
-	//
-	GSvector3 pos = transform_.position();
-	//
-	pos.x = CLAMP(pos.x, Field::MinX, Field::MaxX);
-	//
-	pos.z = CLAMP(pos.z, Field::MinZ, Field::MaxZ);
-	//
-	transform_.position(pos);
+	////
+	//GSvector3 pos = transform_.position();
+	////
+	//pos.x = CLAMP(pos.x, Field::MinX, Field::MaxX);
+	////
+	//pos.z = CLAMP(pos.z, Field::MinZ, Field::MaxZ);
+	////
+	//transform_.position(pos);
 
 }
 

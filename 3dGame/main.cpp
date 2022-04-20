@@ -1,33 +1,41 @@
 #include<GSgame.h>
+#include "Scene/SceneManager.h"
+#include "Scene/GamePlayScene.h"
+#include<crtdbg.h>
+#include<memory>
+class MyGmae :public gslib::Game {
+public:
+    //
+    MyGmae() :gslib::Game{ 1024,768 }{
+    }
 
-class MyGame :public gslib::Game {
     // 開始
     void start() override {
-        // スカイドーム用のメッシュを読み込む
-        gsLoadMesh(0, "Assets/Skybox/skydome.msh");
-        // オクトリーを読み込む
-        gsLoadOctree(0, "Assets/Octree/stage.oct");
+
+        scene_manager_.add("GamePlayScene", new GamePlayScene());
+        scene_manager_.change("GamePlayScene");
     }
     // 更新
-    void update(float delta_time) override {
+    void update(float delta_time) {
+        scene_manager_.update(delta_time);
     }
     // 描画
     void draw() override {
-        // スカイドームの描画
-        gsDrawSkybox(0);
-        // オクトリーの描画
-        gsDrawOctree(0);
+        scene_manager_.draw();
     }
     // 終了
-    void end() override {
-        // スカイドームの削除
-        gsDeleteMesh(0);
-        // オクトリーの削除
-        gsDeleteOctree(0);
+    void end() {
+        scene_manager_.end();
     }
+
+private:
+    // シーンマネージャー
+    SceneManager scene_manager_;
+
 
 };
 
 int main() {
-	return MyGame().run();
+    return MyGmae().run();
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 }
