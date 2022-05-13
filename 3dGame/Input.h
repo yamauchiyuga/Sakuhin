@@ -8,7 +8,7 @@ class Input
 public:
 
 	//更新
-	void update(float delta_time);
+	static void update();
 	//攻撃ボタンを押したか？
 	static bool is_attack();
 	//回避ボタンを押したか？
@@ -19,10 +19,14 @@ public:
 	static bool is_lock_on();
 	//決定ボタンを押したか？
 	static bool is_determination();
-	//左スティックの入力値を受け取る
-	static GSvector2 get_input_left();
-	//右スティックの入力値を受け取る
-	static GSvector2 get_input_right();
+	//左スティックの縦の入力量
+	static float get_left_vertical();
+	//左スティックの横の入力量
+	static float get_left_horizontal();
+	//右スティックの縦の入力量
+	static float get_right_vertical();
+	//右スティックの横の入力量
+	static float get_right_horizontal();
 private:
 	//左スティックの入力値
 	static GSvector2 input_left_;

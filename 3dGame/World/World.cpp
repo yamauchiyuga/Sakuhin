@@ -1,7 +1,7 @@
 #include"World.h"
 #include"../Collision/Field.h"
 #include"../Actor/Actor.h"
-
+#include"../Asset.h"
 //デストラクタ
 World::~World() {
 	clear();
@@ -22,6 +22,9 @@ void World::update(float delta_time) {
 	camera_->update(delta_time);
 	//ライト更新
 	light_->update(delta_time);
+	// シャドウマップの描画
+	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
+
 }
 // 描画
 void World::draw() const {
@@ -29,6 +32,21 @@ void World::draw() const {
 	camera_->draw();
 	// ライトの描画
 	light_->draw();
+
+	// シャドウマップ用シェーダーをバインドする
+	gsBindDefaultMeshShader(Shader_ShadowMapMesh);
+	gsBindDefaultSkinMeshShader(Shader_ShadowMapSkinnedMesh);
+	gsBindDefaultOctreeShader(Shader_ShadowMapMesh);
+
+	// シャドウマップの描画
+	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
+
+	// 通常描画用のシェーダーをバンドする
+	gsBindDefaultMeshShader(Shader_StandardMesh);
+	gsBindDefaultSkinMeshShader(Shader_StandardSkinnedMesh);
+	gsBindDefaultOctreeShader(Shader_StandardOctree);
+
+
 	// フィールドの描画
 	field_->draw();
 	// アクターの描画
@@ -71,6 +89,14 @@ void World::add_field(Field* field) {
 	field_ = field;
 }
 
+// シャドウマップの描画用の関数
+void World::shadow_map_callback(void* param, const GSmatrix4* view, const GSmatrix4* projection) {
+	World* self = (World*)param;
+	// シャドウマップにはアクターのみ描画
+	self->actors_.draw();
+}
+
+
 // アクターの追加
 void World::add_actor(Actor* actor) {
 	actors_.add(actor);
@@ -101,6 +127,14 @@ void World::send_message(const std::string& message, void* param) {
 	actors_.send_message(message, param);
 }
 
+void World::game_over(){
+
+}
+
+void World::game_cler(){
+
+}
+
 // カメラの取得
 Actor* World::camera() {
 	return camera_;
@@ -114,4 +148,8 @@ Actor* World::light() {
 // フィールドの取得
 Field* World::field() {
 	return field_;
+}
+
+bool World::is_game_over()const {
+	return is_game_over_;
 }

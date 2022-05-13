@@ -8,8 +8,6 @@
 
 class IWorld;   // ワールド抽象インターフェースの前方宣言
 
-
-
 // アクタークラス
 class Actor {
 public:

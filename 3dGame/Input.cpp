@@ -5,7 +5,7 @@ GSvector2 Input::input_left_{ 0.0f,0.0f };
 GSvector2 Input::input_right_{ 0.0f,0.0f };
 
 //更新
-void Input::update(float delta_time)
+void Input::update()
 {
 	//入力値の更新
 	gsXBoxPadGetLeftAxis(0, &input_left_);
@@ -36,13 +36,19 @@ bool Input::is_determination()
 {
 	return  gsXBoxPadButtonTrigger(0, GS_XBOX_PAD_A);
 }
-//左スティックの入力値を受け取る
-GSvector2 Input::get_input_left()
-{
-	return input_left_;
+//左スティックの縦の入力量
+float Input::get_left_vertical() {
+	return input_left_.y;
 }
-//右スティックの入力値を受け取る
-GSvector2 Input::get_input_right()
-{
-	return input_right_;
+//左スティックの横の入力量
+float Input::get_left_horizontal() {
+	return input_left_.x;
+}
+//右スティックの縦の入力量
+float Input::get_right_vertical() {
+	return input_right_.y;
+}
+//右スティックの横の入力量
+float Input::get_right_horizontal() {
+	return input_right_.x;
 }

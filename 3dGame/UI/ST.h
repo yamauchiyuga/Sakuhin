@@ -3,6 +3,7 @@
 
 class ST
 {
+public:
 	//
 	ST(float max_stamina);
 	//
@@ -10,7 +11,7 @@ class ST
 	//
 	void draw()const;
 	//
-	bool dodge_stamina(int dodge_stamina);
+	bool consumption_stamina(int  consumption_stamina);
 	//
 	int get_stamina()const;
 private:
@@ -19,7 +20,7 @@ private:
 	//
 	const float max_stamina_;
 	//
-	int dodge_stamina_;
+	int consumption_stamina_;
 
 };
 

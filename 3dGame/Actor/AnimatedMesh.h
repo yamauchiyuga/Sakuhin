@@ -62,6 +62,8 @@ private:
 	public:
 		// コンストラクタ
 		Animation(GSuint animation = 0, GSuint motion = 0, bool loop = true);
+		//デストラクタ
+		~Animation();
 		// 更新
 		void update(float delta_time);
 		// モーションの変更
@@ -98,7 +100,7 @@ private:
 		// 補間アニメーションタイマ
 		GSfloat     lerp_timer_{ 0.0f };
 		//アニメーションイベント格納用vector
-		std::vector<std::unique_ptr<AnimationEvent>> animation_events_;
+		std::vector<AnimationEvent*> animation_events_;
 	};
 	// メッシュ
 	GSuint                  mesh_;

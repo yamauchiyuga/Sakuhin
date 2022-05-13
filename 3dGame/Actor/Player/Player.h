@@ -3,6 +3,8 @@
 
 #include"../Actor.h"
 #include"../AnimatedMesh.h"
+#include"../../UI/HP.h"
+#include"../../UI/ST.h"
 
 //プレーヤークラス
 class Player :public Actor {
@@ -12,7 +14,9 @@ public:
 	enum class State {
 		Move,			//移動中
 		Attack,			//攻撃中
-		Damage			//ダメージ中
+		Dodge,			//回避中
+		Damage,			//ダメージ中
+		End				//死亡中
 	};
 
 	//コンストラクタ
@@ -21,6 +25,8 @@ public:
 	virtual void update(float delta_time)override;
 	//描画
 	virtual void draw()const override;
+	//
+	virtual void draw_gui()const override;
 	//衝突リアクション
 	virtual void react(Actor& other)override;
 
@@ -31,16 +37,27 @@ private:
 	void change_state(State state, GSuint motion, bool loop = true);
 	//移動処理
 	void move(float delta_time);
+
 	//攻撃中
 	void attack(float delta_time);
+	//
+	void dodge(float delta_time);
 	//ダメージ中
 	void damage(float delta_time);
-
+	//
+	void end(float delta_time);
+	//
+	void turn();
+	//
+	bool can_attackable()const;
+	//
+	void collide_actor(Actor& other);
 	//
 	void collide_field();
 	//
 	void generate_attac_collider();
 
+private:
 	//アニメーションメッシュ
 	AnimatedMesh	mesh_;
 	//モーション番号
@@ -51,5 +68,11 @@ private:
 	State state_;
 	//状態タイマ
 	float state_timer_;
+	//
+	int combo_;
+	//
+	HP HP_;
+	//
+	ST ST_;
 };
 #endif

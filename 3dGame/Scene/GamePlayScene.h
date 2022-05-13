@@ -5,7 +5,7 @@
 #include "../World/World.h"
 #include<gslib.h>
 
-class GamePlayScene:public IScene {
+class GamePlayScene :public IScene {
 public:
 	//
 	virtual void start()override;

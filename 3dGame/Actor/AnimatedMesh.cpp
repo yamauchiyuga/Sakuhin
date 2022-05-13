@@ -119,6 +119,11 @@ AnimatedMesh::Animation::Animation(GSuint animation, GSuint motion, bool loop) :
 	lerp_timer_{ 0.0f } {
 }
 
+//デストラクタ
+AnimatedMesh::Animation::~Animation() {
+	std::for_each(animation_events_.begin(), animation_events_.end(), [](AnimationEvent* animation_event) {delete animation_event; });
+	animation_events_.clear();
+}
 // 更新
 void AnimatedMesh::Animation::update(float delta_time) {
 	//更新前のタイマー値を取っておく
@@ -224,5 +229,5 @@ GSuint AnimatedMesh::Animation::bone_count() const {
 //アニメーションイベント登録
 void AnimatedMesh::Animation::add_animation_event(GSuint motion, float time, std::function<void()> callback) {
 	//アニメーションイベントを登録
-	animation_events_.push_back(std::make_unique<AnimationEvent>(motion, time, callback));
+	animation_events_.push_back(new AnimationEvent(motion, time, callback));
 }

@@ -4,7 +4,7 @@
 //メッシュデータ
 enum {
     Mesh_Player,					//自機
-    Mesh_Enemy,                     // 敵
+    Mesh_Dragon,                     // 敵
     Mesh_Skybox                     // スカイボックス
 };
 
@@ -47,5 +47,14 @@ enum {
     Se_PlayerDamage,        // 剣道部長 やられ効果音
     Se_EnemeyDamage,        // 空手部部長 やられ効果音
     Se_Timeout              // タイムアウトの効果音   
+};
+
+// シェーダー
+enum {
+    Shader_StandardMesh,            // メッシュ用シェーダー
+    Shader_StandardSkinnedMesh,     // スキニングメッシュ用シェーダー
+    Shader_StandardOctree,          // オクツリー用シェーダー
+    Shader_ShadowMapMesh,           // メッシュ用シャドウマップシェーダー
+    Shader_ShadowMapSkinnedMesh     // スキニングメッシュ用シャドウマップシェーダー
 };
 #endif // !ASSETS_H_

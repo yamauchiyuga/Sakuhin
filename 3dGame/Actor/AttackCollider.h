@@ -9,7 +9,7 @@ public:
 	//コンストラクタ
 	AttackCollider(IWorld* world, const BoundingSphere& collider,
 		const std::string& tag, const std::string& name,
-		const std::string& ownwr_tag = "",
+		const std::string& owner_tag = "",
 		float lifespan = 1.0f, float delay = 0.0f);
 
 	//更新

@@ -1,12 +1,13 @@
 #include<GSgame.h>
 #include "Scene/SceneManager.h"
 #include "Scene/GamePlayScene.h"
+#include"Input.h"
 #include<crtdbg.h>
 #include<memory>
 class MyGmae :public gslib::Game {
 public:
     //
-    MyGmae() :gslib::Game{ 1024,768 }{
+    MyGmae() :gslib::Game{ 1280,720 }{
     }
 
     // 開始
@@ -18,6 +19,7 @@ public:
     // 更新
     void update(float delta_time) {
         scene_manager_.update(delta_time);
+        Input::update();
     }
     // 描画
     void draw() override {
@@ -31,11 +33,8 @@ public:
 private:
     // シーンマネージャー
     SceneManager scene_manager_;
-
-
 };
 
 int main() {
     return MyGmae().run();
-    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 }

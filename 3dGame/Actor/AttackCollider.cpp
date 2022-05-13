@@ -3,7 +3,7 @@
 //コンストラクタ
 AttackCollider::AttackCollider(IWorld* world, const BoundingSphere& collider,
 	const std::string& tag, const std::string& name,
-	const std::string& ownwr_tag,
+	const std::string& owner_tag,
 	float lifespan, float delay) :
 	lifespan_timer_{ lifespan }, delay_timer_{ delay }{
 	//ワールド設定
@@ -11,7 +11,7 @@ AttackCollider::AttackCollider(IWorld* world, const BoundingSphere& collider,
 	//タグ名の設定
 	tag_ = tag;
 	//生存者のタグ名
-	owner_tag_ = ownwr_tag;
+	owner_tag_ = owner_tag;
 	//名前の設定
 	name_ = name;
 
@@ -41,7 +41,7 @@ void AttackCollider::update(float delta_time) {
 	delay_timer_ -= delta_time;
 }
 
-void AttackCollider::draw()const{
+void AttackCollider::draw()const {
 	//衝突判定用のデバッグ表示
 	collider().draw();
 }

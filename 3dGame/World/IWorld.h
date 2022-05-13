@@ -26,6 +26,11 @@ public:
 	//メッセージ送信
 	virtual void send_message(const std::string& message, void* param = nullptr) = 0;
 
+	//
+	virtual void game_over() = 0;
+	//
+	virtual void game_cler() = 0;
+
 	// フィールドの取得
 	virtual Field* field() = 0;
 	// カメラの取得
