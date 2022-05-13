@@ -209,7 +209,7 @@ void Dragon::fly_end(float delta_time) {
 }
 
 void Dragon::dead(float delta_time) {
-
+	//
 }
 
 void Dragon::attack_selection() {

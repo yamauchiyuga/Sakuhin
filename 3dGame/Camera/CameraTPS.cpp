@@ -89,8 +89,10 @@ void CameraTPS::enemy_lock_on(float delta_time) {
 	//
 	Actor* Enemy = world_->find_actor("Enemy");
 
-	//回転スピード
-	const float RotateSpeed{ 2.0f };
+	if (Enemy == nullptr)return;
+
+		//回転スピード
+		const float RotateSpeed{ 2.0f };
 	const float Distance{ 6.0f };
 	const float CamerHeightPos{ 2.0f };
 
