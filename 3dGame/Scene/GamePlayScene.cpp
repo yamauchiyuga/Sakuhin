@@ -7,6 +7,8 @@
 #include"../Asset.h"
 #include"../Actor/Enemy/Dragon.h"
 
+#include <GSstandard_shader.h>
+
 void GamePlayScene::start() {
 
 	
@@ -15,34 +17,32 @@ void GamePlayScene::start() {
 	is_end_ = false;
 	// 視錐台カリングを有効にする
 	gsEnable(GS_FRUSTUM_CULLING);
-	//
+	// デフォルトシェーダーを有効にする
 	gsEnable(GS_DEFAULT_SHADER_MODE);
-	// メッシュ用のシェーダー
-	gsLoadShader(Shader_StandardMesh,
-		"Assets/shader/StandardMeshBump.vert",
-		"Assets/shader/StandardMeshBump.frag");
-	// スキニングメッシュ用のシェーダー
-	gsLoadShader(Shader_StandardSkinnedMesh,
-		"Assets/shader/StandardSkinnedMeshBump.vert",
-		"Assets/shader/StandardMeshBump.frag");
-	// オクツリー用のシェーダー
-	gsLoadShader(Shader_StandardOctree,
-		"Assets/shader/StandardOctreeLightmap.vert",
-		"Assets/shader/StandardOctreeLightmap.frag");
-	// 通常描画用のシェーダーをバインドする
-	gsBindDefaultMeshShader(Shader_StandardMesh);
-	gsBindDefaultSkinMeshShader(Shader_StandardSkinnedMesh);
-	gsBindDefaultOctreeShader(Shader_StandardOctree);
 
-	// シャドウマップの作成
-	static const GSuint shadow_map_size[] = { 2048, 1024 };
-	gsCreateShadowMap(2, shadow_map_size, GS_TRUE);
-	// シャドウマップを適用する距離(視点からの距離）
-	gsSetShadowMapDistance(80.0f);
-	// シャドウマップバイアス(シャドウアクネが発生した場合は調整が必要）
-	gsSetShadowMapBias(0.0f);
-	// リフレクションプローブの読み込み
+	// メッシュ用のシェーダー
+	gsLoadShader(Shader_StandardMesh, "Assets/shader/StandardMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
+	// スキニングメッシュ用のシェーダー
+	gsLoadShader(Shader_StandardSkinnedMesh, "Assets/shader/StandardSkinnedMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
+	// オクツリー用のシェーダー
+	gsLoadShader(Shader_StandardOctree, "Assets/shader/StandardOctreeLightmap.vert", "Assets/shader/StandardOctreeLightmap.frag");
+	// シャドウマップ用のメッシュシェーダー
+	gsLoadShader(Shader_ShadowMapMesh, "Assets/shader/ShadowMap.vert", "Assets/shader/ShadowMap.frag");
+	// シャドウマップ用のスキニングメッシュシェーダー
+	gsLoadShader(Shader_ShadowMapSkinnedMesh, "Assets/shader/ShadowMapSkinned.vert", "Assets/shader/ShadowMap.frag");
+
+	// リフレクションプローブの読み込み(0番に読み込めば自動的に適用される）
 	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
+	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
+	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
+
+	// シャドウマップの作成（２枚のカスケードシャドウマップ）
+	static const GSuint shadow_map_size[] = { 2024, 1024 };
+	gsCreateShadowMap(2, shadow_map_size, GS_TRUE);
+	// シャドウマップを適用する距離
+	gsSetShadowMapDistance(80.0f);
+	// シャドウマップバイアス
+	gsSetShadowMapBias(0.0f);
 
 
 
@@ -77,7 +77,7 @@ void GamePlayScene::start() {
 	// プレーヤーの追加
 	world_.add_actor(new Player{ &world_, GSvector3{ 0.0f, 0.125f, 0.0f } });
 	//
-	world_.add_actor(new Dragon{ &world_,GSvector3{50.0f,0.125,0.0f} });
+	world_.add_actor(new Dragon{ &world_,GSvector3{0.0f,0.125,30.0f} });
 }
 
 // 更新
@@ -108,9 +108,14 @@ void GamePlayScene::end() {
 	world_.clear();
 	// メッシュの削除
 	gsDeleteMesh(Mesh_Player);
-	gsDeleteSkeleton(Mesh_Player);
-	gsDeleteAnimation(Mesh_Player);
+	gsDeleteMesh(Mesh_Dragon);
 	gsDeleteMesh(Mesh_Skybox);
+	// スケルトンの削除
+	gsDeleteSkeleton(Mesh_Player);
+	gsDeleteSkeleton(Mesh_Dragon);
+	// アニメーションの削除
+	gsDeleteAnimation(Mesh_Player);
+	gsDeleteAnimation(Mesh_Dragon);
 	// オクトリーの削除
 	gsDeleteOctree(Octree_Stage);
 	gsDeleteOctree(Octree_Collider);

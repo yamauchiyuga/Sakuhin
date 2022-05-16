@@ -4,10 +4,8 @@
 #include"../Collision/Line.h"
 #include"../Input.h"
 
-//プレーヤーからの相対座標
-const GSvector3 PlayerOffset{ 0.0f,1.0f,-7.0f };
 //カメラの注視点の補完
-const GSvector3 ReferencePointOffset{ 0.0f, 1.0f, 0.0f };
+const GSvector3 ReferencePointOffset{ 0.0f, 2.0f, 0.0f };
 
 //コンストラクタ
 CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& at) :
@@ -43,22 +41,25 @@ void CameraTPS::player_lock_on(float delta_time) {
 	if (Player == nullptr) return;
 
 	//回転スピード
-	const float RotateSpeed{ 2.0f };
+	const float RotateSpeed{ 3.0f };
 	///y軸回りに回転させる
 	yaw_ += Input::get_right_horizontal() * -RotateSpeed * delta_time;
 	//x軸回りに回転させる
 	pitch_ += Input::get_right_vertical() * -RotateSpeed * delta_time;
 
 	//x軸の最低角度
-	const float MinAngle{ -5.0f };
+	const float MinAngle{ -30.0f };
 	//x軸の最大角度
-	const float MaxAngle{ 15.0f };
+	const float MaxAngle{ -10.0f };
 	//x軸回りの回転を制限する
 	pitch_ = CLAMP(pitch_, MinAngle, MaxAngle);
+	//プレイヤーからの相対座標
+	const GSvector3 PlayerOffset{ 0.0f, 2.0f, -7.0f };
+
 	//注視点の位置を求める(プレーヤーの頭部の少し上あたりの座標)
 	GSvector3 at = Player->transform().position() + ReferencePointOffset;
 	//視点位置を求める(プレーヤーの背後の座標)
-	GSvector3 position = at + GSquaternion::euler(pitch_, yaw_, 0.0f) * PlayerOffset;
+	GSvector3 position = at + GSquaternion::euler(pitch_, yaw_, 3.0f) * PlayerOffset;
 
 	const float SmoothTime{ 13.0f };    // 補間フレーム数
 	const float MaxSpeed{ 2.0f };       // 移動スピードの最大値

@@ -15,7 +15,7 @@ public:
 		FlyMove,
 		FlyIdel,
 		FlyAttack,
-		Flyend,
+		FlyEnd,
 		Dead,
 		Attack
 	};

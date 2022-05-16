@@ -22,9 +22,6 @@ void World::update(float delta_time) {
 	camera_->update(delta_time);
 	//ライト更新
 	light_->update(delta_time);
-	// シャドウマップの描画
-	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
-
 }
 // 描画
 void World::draw() const {
@@ -38,7 +35,7 @@ void World::draw() const {
 	gsBindDefaultSkinMeshShader(Shader_ShadowMapSkinnedMesh);
 	gsBindDefaultOctreeShader(Shader_ShadowMapMesh);
 
-	// シャドウマップの描画
+	 //シャドウマップの描画
 	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
 
 	// 通常描画用のシェーダーをバンドする

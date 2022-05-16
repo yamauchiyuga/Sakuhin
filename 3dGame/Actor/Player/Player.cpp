@@ -6,7 +6,7 @@
 #include "../../Asset.h"
 #include"../../Input.h"
 
-enum{
+enum {
 	MotionAttack,
 	MotionAttack2,
 	MotionAttack3,
@@ -17,7 +17,10 @@ enum{
 	MotionRun
 };
 //
-
+const GSvector2 HP_pos{ 80.0f, 70.0f };
+const GSvector2 frame_pos{ 78.0f, 68.0f };
+const float gauge_length{ 250.0f };
+const GScolor color{ 0,1,0,1 };
 //
 const float RotateSpeed{ 1.0f };
 //
@@ -51,7 +54,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	state_{ State::Move },
 	state_timer_{ 0.0f },
 	combo_{ 0 },
-	HP_{ MaxHP ,GSvector2{80.0f, 70.0f} ,GSvector2{78.0f, 68.0f},250.0f },
+	HP_{ MaxHP ,HP_pos ,frame_pos,gauge_length,color },
 	ST_{ MaxST }{
 	// ƒ[ƒ‹ƒh‚ðÝ’è
 	world_ = world;
@@ -168,7 +171,7 @@ void Player::move(float delta_time) {
 		return;
 	}
 
-	if (Input::is_attack()&&ST_.get_stamina()>AttackStamina) {
+	if (Input::is_attack() && ST_.get_stamina() > AttackStamina) {
 		ST_.consumption_stamina(AttackStamina);
 		change_state(State::Attack, MotionAttack, false);
 		return;
@@ -262,7 +265,7 @@ void Player::dodge(float delta_time) {
 
 void Player::damage(float delta_time) {
 	if (state_timer_ >= mesh_.motion_end_time()) {
-		change_state(State::Move, MotionIdle,false);
+		change_state(State::Move, MotionIdle, false);
 		enable_collider_ = true;
 	}
 }

@@ -2,12 +2,13 @@
 #include"../Asset.h"
 
 
-HP::HP(const float max_health, const GSvector2 HP_pos, const GSvector2 frame_pos,const float gauge_length):
+HP::HP(const float max_health, const GSvector2 HP_pos, const GSvector2 frame_pos,const float gauge_length,const GScolor color):
 	HP_pos_{HP_pos},
 	frame_pos_{frame_pos},
 	max_health_{max_health},
 	cullent_health_{max_health},
-	gauge_length_{ gauge_length }{
+	gauge_length_{ gauge_length },
+	color_{color}{
 };
 
 //
@@ -20,8 +21,6 @@ void HP::draw()const {
 	const GSrect rect{ 0, 0, (cullent_health_ / max_health_) * gauge_length_, 13.0f };
 	//îwåiÇÃãÈå`
 	const GSrect back_rect{ 0,0,gauge_length_, 13.0f };
-	//HPÉQÅ[ÉWÇÃêF
-	const GScolor barColor{ 0,1,0,1 };
 	//îwåiÇÃêF
 	const GScolor backColor{ 0,0,0,1 };
 	//ÉtÉåÅ[ÉÄÇÃï`âÊ
@@ -29,7 +28,7 @@ void HP::draw()const {
 	//îwåiÇÃï`âÊ
 	gsDrawSprite2D(Texture_HP, &HP_pos_, &back_rect, NULL, &backColor, NULL, 0.0f);
 	//HPÉQÅ[ÉWÇÃï`âÊ
-	gsDrawSprite2D(Texture_HP, &HP_pos_, &rect, NULL, &barColor, NULL, 0.0f);
+	gsDrawSprite2D(Texture_HP, &HP_pos_, &rect, NULL, &color_, NULL, 0.0f);
 
 }
 

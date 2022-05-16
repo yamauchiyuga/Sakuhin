@@ -9,7 +9,7 @@ class HP
 public:
 	HP() = default;
 	//
-	HP(const float max_health, const GSvector2 HP_pos, const GSvector2 frame_pos,const float gauge_length);
+	HP(const float max_health, const GSvector2 HP_pos, const GSvector2 frame_pos,const float gauge_length,const GScolor color);
 	//
 	void draw()const;
 	//
@@ -30,6 +30,8 @@ private:
 	float max_health_;
 	//
 	float gauge_length_;
+	//
+	GScolor color_;
 
 
 
