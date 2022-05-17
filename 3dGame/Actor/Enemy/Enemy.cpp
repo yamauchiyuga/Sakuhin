@@ -27,6 +27,10 @@ float Enemy::target_distance() const {
 	return (player_->transform().position() - transform_.position()).magnitude();
 }
 
+bool Enemy::dead()const {
+	return is_dead_;
+}
+
 void Enemy::collide_actor(Actor& other) {
 	// ‚™À•W‚ğœ‚­À•W‚ğ‹‚ß‚é
 	GSvector3 position = transform_.position();

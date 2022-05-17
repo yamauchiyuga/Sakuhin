@@ -29,6 +29,8 @@ private:
 	float yaw_{ 0.0f };
 	//
 	float pitch_{ 0.0f };
+
+
 };
 
 #endif // !CAMERA_TPS_H_

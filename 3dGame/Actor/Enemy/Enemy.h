@@ -26,6 +26,9 @@ protected:
 
 public:
 
+	//
+	bool dead()const;
+
 	//コピー禁止
 	Enemy(const Enemy& other) = delete;
 	Enemy& operator = (const Enemy& other) = delete;
@@ -36,6 +39,8 @@ protected:
 	bool motion_loop_{true};
 	// 状態タイマ
 	float state_timer_{0.0f};
+	//
+	bool is_dead_{ false };
 	//プレイヤー
 	Actor* player_{nullptr};
 };

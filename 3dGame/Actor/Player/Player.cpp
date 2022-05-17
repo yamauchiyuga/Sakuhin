@@ -26,7 +26,7 @@ const float RotateSpeed{ 1.0f };
 //
 const float PlayerHeight{ 0.5f };
 //
-const float PlayerRadius{ 0.85f };
+const float PlayerRadius{ 2.4f };
 //
 const float FootOffset{ 0.1f };
 //

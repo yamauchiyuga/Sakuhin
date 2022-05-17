@@ -2,6 +2,7 @@
 #include"../World/IWorld.h"
 #include"../Collision/Field.h"
 #include"../Collision/Line.h"
+#include"../Actor/Enemy/Enemy.h"
 #include"../Input.h"
 
 //カメラの注視点の補完
@@ -36,12 +37,13 @@ void CameraTPS::update(float delta_time) {
 
 void CameraTPS::player_lock_on(float delta_time) {
 	//プレーヤー検索
-	Actor* Player = world_->find_actor("Player");
+	Actor* player = world_->find_actor("Player");
+	Actor* enemy = world_->find_actor("Enemy");
 	//プレーヤーが見つからなかったらそのまま返す
-	if (Player == nullptr) return;
+	if (player == nullptr) return;
 
 	//回転スピード
-	const float RotateSpeed{ 3.0f };
+	const float RotateSpeed{ 3.5f };
 	///y軸回りに回転させる
 	yaw_ += Input::get_right_horizontal() * -RotateSpeed * delta_time;
 	//x軸回りに回転させる
@@ -54,15 +56,15 @@ void CameraTPS::player_lock_on(float delta_time) {
 	//x軸回りの回転を制限する
 	pitch_ = CLAMP(pitch_, MinAngle, MaxAngle);
 	//プレイヤーからの相対座標
-	const GSvector3 PlayerOffset{ 0.0f, 2.0f, -7.0f };
+	const GSvector3 PlayerOffset{ 0.0f, 2.0f, -7.5f };
 
 	//注視点の位置を求める(プレーヤーの頭部の少し上あたりの座標)
-	GSvector3 at = Player->transform().position() + ReferencePointOffset;
+	GSvector3 at = player->transform().position() + ReferencePointOffset;
 	//視点位置を求める(プレーヤーの背後の座標)
-	GSvector3 position = at + GSquaternion::euler(pitch_, yaw_, 3.0f) * PlayerOffset;
+	GSvector3 position = at + GSquaternion::euler(pitch_, yaw_, 0.0f) * PlayerOffset;
 
 	const float SmoothTime{ 13.0f };    // 補間フレーム数
-	const float MaxSpeed{ 2.0f };       // 移動スピードの最大値
+	const float MaxSpeed{ 1.0f };       // 移動スピードの最大値
 	position = GSvector3::smoothDamp(transform_.position(), position, velocity_,
 		SmoothTime, MaxSpeed, delta_time);
 
@@ -86,29 +88,32 @@ void CameraTPS::player_lock_on(float delta_time) {
 
 void CameraTPS::enemy_lock_on(float delta_time) {
 	//
-	Actor* Player = world_->find_actor("Player");
+	Actor* player = world_->find_actor("Player");
 	//
-	Actor* Enemy = world_->find_actor("Enemy");
+	Actor* enemy = world_->find_actor("Enemy");
 
-	if (Enemy == nullptr)return;
+	if (enemy == nullptr)return;
 
-		//回転スピード
-		const float RotateSpeed{ 2.0f };
-	const float Distance{ 6.0f };
-	const float CamerHeightPos{ 2.0f };
+	//回転スピード
+	const float RotateSpeed{ 3.0f };
+	const float Distance{ 7.5f };
+	const float CamerHeightPos{ 2.5f };
 
-	GSvector3 enemy_to_player = Player->transform().position() - Enemy->transform().position();
+	GSvector3 enemy_to_player = player->transform().position() - enemy->transform().position();
 	enemy_to_player.normalize();
 	enemy_to_player = enemy_to_player * Distance;
 	enemy_to_player.y = CamerHeightPos;
 
-	//注視点の位置を求める(プレーヤーの頭部の少し上あたりの座標)
-	GSvector3 at = Enemy->transform().position() + ReferencePointOffset;
+	GSvector3 at = GSvector3::zero();
+	GSvector3 position = GSvector3::zero();
+
+	//注視点の位置を求める
+	at = enemy->transform().position() + ReferencePointOffset;
 	//視点位置を求める(プレーヤーの背後の座標)
-	GSvector3 position = Player->transform().position() + enemy_to_player;
+	position = player->transform().position() + enemy_to_player;
 
 	//フィールドとの衝突判定
-	Line line{ at,position };
+	Line line{ player->transform().position() + ReferencePointOffset,position };
 	GSvector3 intersect;
 	if (world_->field()->collide(line, &intersect)) {
 		position = intersect;
@@ -119,10 +124,11 @@ void CameraTPS::enemy_lock_on(float delta_time) {
 	//注視点を設定(注視点の方向に向きを変える)
 	transform_.lookAt(at);
 
-	if (Input::is_lock_on()) {
+	if (Input::is_lock_on() || dynamic_cast<Enemy*>(enemy)->dead()) {
 		yaw_ = transform_.eulerAngles().y;
 		state_ = State::PlayerLockOn;
 	}
+
 
 
 }

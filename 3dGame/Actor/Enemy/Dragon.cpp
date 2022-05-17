@@ -28,7 +28,7 @@ enum {
 const GSvector2 HP_pos{ 250.0f, 650.0f };
 const GSvector2 frame_pos{ 249.0f, 649.0f };
 const float gauge_length{ 750.0f };
-const GScolor color{ 1,0,0,1};
+const GScolor color{ 1,0,0,1 };
 
 //
 const float MaxHP{ 400 };
@@ -47,7 +47,7 @@ Dragon::Dragon(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Dragon,Mesh_Dragon, Mesh_Dragon, MotionIdle },
 	state_{ State::Idle },
 	motion_{ MotionIdle },
-	HP_{ MaxHP, HP_pos,frame_pos,gauge_length,color}{
+	HP_{ MaxHP, HP_pos,frame_pos,gauge_length,color }{
 	world_ = world;
 	tag_ = "EnemyTag";
 	name_ = "Enemy";
@@ -97,11 +97,12 @@ void Dragon::draw_gui() const {
 
 void Dragon::react(Actor& other) {
 	if (other.tag() == "PlayerAttackTag") {
-		HP_.hit_damage(400);
+		HP_.hit_damage(20);
 	}
 
 	if (HP_.is_end()) {
 		enable_collider_ = false;
+		is_dead_ = true;
 		change_state(Dragon::State::Dead, MotionDead, false);
 	}
 }
@@ -130,25 +131,22 @@ void Dragon::change_state(State state, int motion, bool loop) {
 }
 
 void Dragon::idle(float delta_time) {
-	if (state_timer_ >= mesh_.motion_end_time()) {
-
-		//
-		if (is_trun()) {
-			GSint motion = (target_signed_angle() >= 0.0f) ? MotionTurnLeft : MotionTurnRight;
-			// U‚èŒü‚«ó‘Ô‚É‘JˆÚ
-			change_state(State::Turn, motion, true);
-			return;
-		}
-		//
-		if (is_run()) {
-			change_state(State::Run, MotionRun);
-			return;
-		}
-		//
-		if (is_attack()) {
-			attack_selection();
-			return;
-		}
+	//
+	if (is_trun()) {
+		GSint motion = (target_signed_angle() >= 0.0f) ? MotionTurnLeft : MotionTurnRight;
+		// U‚èŒü‚«ó‘Ô‚É‘JˆÚ
+		change_state(State::Turn, motion, true);
+		return;
+	}
+	//
+	if (is_run()) {
+		change_state(State::Run, MotionRun);
+		return;
+	}
+	//
+	if (is_attack()) {
+		attack_selection();
+		return;
 	}
 }
 
@@ -171,9 +169,12 @@ void Dragon::turn(float delta_time) {
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		if (is_run()) {
 			//
-			int next = 0; gsRand(0, 1);
+			int next = gsRand(0, 4);
 			if (next == 0) {
-				change_state(State::FlyStart, MotionGoInAir, true);
+				change_state(State::FlyStart, MotionGoInAir, false);
+			}
+			else if (next == 1) {
+				change_state(State::Run, MotionRun, true);
 			}
 			else {
 				change_state(State::Attack, MotionSpitFireball, false);
@@ -204,7 +205,7 @@ void Dragon::attack(float delta_time) {
 void Dragon::fly_start(float delta_time) {
 	const int a{ 50 };
 	if (state_timer_ >= a) {
-		const float Height{ 3.0f };
+		const float Height{ 2.7f };
 		const float a{ 0.08f };
 		GSvector3 fly_pos{ transform_.position().x,Height,transform_.position().z };
 		transform_.position(GSvector3::lerp(transform_.position(), fly_pos, a * delta_time));
@@ -217,16 +218,11 @@ void Dragon::fly_start(float delta_time) {
 
 void Dragon::fly_idle(float delta_time) {
 	if (state_timer_ >= mesh_.motion_end_time()) {
-		float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
-		transform_.rotate(0.0f, angle * delta_time, 0.0f);
-
-		int next = 1; gsRand(0, 1);
-
+		int next = gsRand(0, 1);
 		if (next == 0) {
 			change_state(State::FlyMove, MotionFly, true);
 		}
-		else
-		{
+		else {
 			change_state(State::FlyAttack, MotionFlySpitFireball, false);
 		}
 	}
@@ -235,10 +231,18 @@ void Dragon::fly_idle(float delta_time) {
 void Dragon::fly_move(float delta_time) {
 	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
-	transform_.translate(0.0f, 0.0f, 0.09f * delta_time);
+	
+	transform_.translate(0.0f, 0.0f, 0.12f * delta_time);
 
 	if (is_attack()) {
-		change_state(State::FlyAttack, MotionFlySpitFireball, false);
+		int next = gsRand(0, 1);
+		if (next == 0) {
+			change_state(State::FlyAttack, MotionFlySpitFireball, false);
+		}
+		else {
+			change_state(State::FlyEnd, MotionLanding, false);
+		}
+
 	}
 
 	if (state_timer_ >= mesh_.motion_end_time()) {
@@ -247,6 +251,8 @@ void Dragon::fly_move(float delta_time) {
 }
 
 void Dragon::fly_attack(float delta_time) {
+	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
+	transform_.rotate(0.0f, angle * delta_time, 0.0f);
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::FlyIdel, MotionFly, true);
 	}
@@ -294,7 +300,7 @@ void Dragon::bite() {
 	// UŒ‚”»’è‚Ì”¼Œa
 	const float AttackColliderRadius{ 1.5f };
 	// UŒ‚”»’è‚ğoŒ»‚³‚¹‚éêŠ‚Ì‹——£
-	const float AttackColliderDistance{ 4.5f };
+	const float AttackColliderDistance{ 4.0f };
 	// UŒ‚”»’è‚ğo‚·êŠ‚Ì‚‚³
 	const float AttackColliderHeight{ 1.0f };
 	//
@@ -313,7 +319,7 @@ void Dragon::tail_attack() {
 	// UŒ‚”»’è‚Ì”¼Œa
 	const float AttackColliderRadius{ 2.0f };
 	// UŒ‚”»’è‚ğoŒ»‚³‚¹‚éêŠ‚Ì‹——£
-	const float AttackColliderDistance{ 4.5f };
+	const float AttackColliderDistance{ 4.0f };
 	// UŒ‚”»’è‚ğo‚·êŠ‚Ì‚‚³
 	const float AttackColliderHeight{ 1.5f };
 	//
@@ -333,7 +339,7 @@ void Dragon::spit_fire() {
 	// ¶¬‚·‚éˆÊ’u‚Ì‚‚³‚Ì•â³’l
 	const float GenerateHeight{ 2.0f };
 	// ’e‚ÌˆÚ“®ƒXƒs[ƒh
-	const float Speed{ 1.0f };
+	const float Speed{ 0.6f };
 	// ¶¬ˆÊ’u‚ÌŒvZ
 	GSvector3 position = transform_.position() + transform_.forward() * GenerateDistance;
 	// ¶¬ˆÊ’u‚Ì‚‚³‚ğ•â³‚·‚é
