@@ -56,7 +56,6 @@ void GamePlayScene::start() {
 	gsLoadSkeleton(Mesh_Dragon, "Assets/model/Enemy/Dragon.sklb");
 	gsLoadAnimation(Mesh_Dragon, "Assets/model/Enemy/Dragon.anmb");
 
-	gsLoadTexture(Texture_HP, "Assets/Texture/HPGauge.png");
 	gsLoadTexture(Texture_Frame, "Assets/Texture/GaugeFrame.png");
 
 	// スカイボックスメッシュの読み込み
