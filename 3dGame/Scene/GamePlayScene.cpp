@@ -94,7 +94,7 @@ void GamePlayScene::draw() const {
 
 // 終了しているか？
 bool GamePlayScene::is_end() const {
-	return is_end_;         // 終了フラグを返す
+	return world_.is_game_over();         // 終了フラグを返す
 }
 
 // 次のシーンを返す

@@ -42,6 +42,8 @@ const float RunSpeed{ 0.1f };
 const float TurnAngle{ 3.0f };
 //
 const float TurnAroundAngle{ 20.0f };
+//
+const int HitDamage{ 400 };
 
 Dragon::Dragon(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Dragon,Mesh_Dragon, Mesh_Dragon, MotionIdle },
@@ -64,6 +66,7 @@ Dragon::Dragon(IWorld* world, const GSvector3& position) :
 }
 
 void Dragon::update(float delta_time) {
+	//
 	player_ = world_->find_actor("Player");
 	//
 	update_state(delta_time);
@@ -97,13 +100,14 @@ void Dragon::draw_gui() const {
 
 void Dragon::react(Actor& other) {
 	if (other.tag() == "PlayerAttackTag") {
-		HP_.hit_damage(20);
+		HP_.hit_damage(HitDamage);
 	}
 
 	if (HP_.is_end()) {
 		enable_collider_ = false;
 		is_dead_ = true;
 		change_state(Dragon::State::Dead, MotionDead, false);
+		world_->game_cler();
 	}
 }
 
@@ -231,7 +235,7 @@ void Dragon::fly_idle(float delta_time) {
 void Dragon::fly_move(float delta_time) {
 	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
-	
+
 	transform_.translate(0.0f, 0.0f, 0.12f * delta_time);
 
 	if (is_attack()) {
@@ -317,9 +321,9 @@ void Dragon::bite() {
 
 void Dragon::tail_attack() {
 	// UŒ‚”»’è‚Ì”¼Œa
-	const float AttackColliderRadius{ 2.0f };
+	const float AttackColliderRadius{ 3.0f };
 	// UŒ‚”»’è‚ğoŒ»‚³‚¹‚éêŠ‚Ì‹——£
-	const float AttackColliderDistance{ 4.0f };
+	const float AttackColliderDistance{ 5.0f };
 	// UŒ‚”»’è‚ğo‚·êŠ‚Ì‚‚³
 	const float AttackColliderHeight{ 1.5f };
 	//

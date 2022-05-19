@@ -67,6 +67,8 @@ void World::clear() {
 	// フィールドを消去
 	delete field_;
 	field_ = nullptr;
+
+	is_game_over_ = false;
 }
 // カメラの追加
 void World::add_camera(Actor* camera) {
@@ -126,10 +128,12 @@ void World::send_message(const std::string& message, void* param) {
 
 void World::game_over(){
 
+	is_game_over_ = true;
 }
 
 void World::game_cler(){
 
+	is_game_over_ = true;
 }
 
 // カメラの取得

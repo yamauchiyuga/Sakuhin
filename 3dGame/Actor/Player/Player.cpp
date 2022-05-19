@@ -26,7 +26,7 @@ const float RotateSpeed{ 1.0f };
 //
 const float PlayerHeight{ 0.5f };
 //
-const float PlayerRadius{ 2.4f };
+const float PlayerRadius{ 1.0f };
 //
 const float FootOffset{ 0.1f };
 //
@@ -131,12 +131,14 @@ void Player::react(Actor& other) {
 	if (other.tag() == "EnemyAttackTag") {
 
 		enable_collider_ = false;
+		combo_ = 0;
 		change_state(State::Damage, MotionDamage, false);
 		//
 		HP_.hit_damage(10);
 
 		if (HP_.is_end()) {
 			change_state(State::End, MotionEnd, false);
+			world_->game_over();
 		}
 	}
 }
