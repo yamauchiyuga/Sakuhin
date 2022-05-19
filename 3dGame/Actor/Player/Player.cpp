@@ -181,7 +181,7 @@ void Player::move(float delta_time) {
 
 	int motion = MotionIdle;
 
-	const float WalkSpeed{ 0.15f };
+	const float WalkSpeed{ 0.09f };
 	//
 	GSvector3 forwad = world_->camera()->transform().forward();
 	forwad.y = 0.0f;

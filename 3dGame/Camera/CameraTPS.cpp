@@ -50,9 +50,9 @@ void CameraTPS::player_lock_on(float delta_time) {
 	pitch_ += Input::get_right_vertical() * -RotateSpeed * delta_time;
 
 	//x軸の最低角度
-	const float MinAngle{ -30.0f };
+	const float MinAngle{ -10.0f };
 	//x軸の最大角度
-	const float MaxAngle{ -10.0f };
+	const float MaxAngle{ 25.0f };
 	//x軸回りの回転を制限する
 	pitch_ = CLAMP(pitch_, MinAngle, MaxAngle);
 	//プレイヤーからの相対座標

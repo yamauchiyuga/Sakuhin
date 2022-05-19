@@ -39,6 +39,8 @@ const float RunDistance{ 6.0f };
 //
 const float RunSpeed{ 0.1f };
 //
+const float FlySpeed{ 0.12 };
+//
 const float TurnAngle{ 3.0f };
 //
 const float TurnAroundAngle{ 20.0f };
@@ -207,12 +209,12 @@ void Dragon::attack(float delta_time) {
 }
 
 void Dragon::fly_start(float delta_time) {
-	const int a{ 50 };
-	if (state_timer_ >= a) {
-		const float Height{ 2.7f };
-		const float a{ 0.08f };
+	const int FlyStart{ 50 };
+	if (state_timer_ >= FlyStart) {
+		const float Height{ 3.2f };
+		const float LerpTime{ 0.08f };
 		GSvector3 fly_pos{ transform_.position().x,Height,transform_.position().z };
-		transform_.position(GSvector3::lerp(transform_.position(), fly_pos, a * delta_time));
+		transform_.position(GSvector3::lerp(transform_.position(), fly_pos, LerpTime * delta_time));
 	}
 
 	if (state_timer_ >= mesh_.motion_end_time()) {
@@ -235,8 +237,7 @@ void Dragon::fly_idle(float delta_time) {
 void Dragon::fly_move(float delta_time) {
 	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
-
-	transform_.translate(0.0f, 0.0f, 0.12f * delta_time);
+	transform_.translate(0.0f, 0.0f, FlySpeed * delta_time);
 
 	if (is_attack()) {
 		int next = gsRand(0, 1);
@@ -257,6 +258,7 @@ void Dragon::fly_move(float delta_time) {
 void Dragon::fly_attack(float delta_time) {
 	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
+	transform_.translate(0.0f, 0.0f, -FlySpeed * delta_time);
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::FlyIdel, MotionFly, true);
 	}
