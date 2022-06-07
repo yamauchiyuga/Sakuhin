@@ -5,14 +5,12 @@
 #include"../../Collision/Field.h"
 #include"../../Collision/Line.h"
 #include"../AttackCollider.h"
-#include"../../Asset.h"
+#include"../../Assets.h"
 
 enum {
 	MotionBite,
 	MotionDead,
 	MotionFly,
-	MotionFlyLeft,
-	MotionFlyRight,
 	MotionFlySpitFireball,
 	MotionGoInAir,
 	MotionIdle,
@@ -25,11 +23,6 @@ enum {
 	MotionRunAttack
 };
 
-const GSvector2 HP_pos{ 250.0f, 650.0f };
-const GSvector2 frame_pos{ 249.0f, 649.0f };
-const float gauge_length{ 750.0f };
-const GScolor color{ 1,0,0,1 };
-
 //
 const float MaxHP{ 400 };
 //
@@ -37,26 +30,26 @@ const float TurnDistance{ 1.5f };
 //
 const float RunDistance{ 6.0f };
 //
-const float RunSpeed{ 0.1f };
+const float RunSpeed{ 0.11f };
 //
-const float FlySpeed{ 0.12 };
+const float FlySpeed{ 0.12f };
 //
 const float TurnAngle{ 3.0f };
 //
 const float TurnAroundAngle{ 20.0f };
 //
-const int HitDamage{ 400 };
+const int HitDamage{ 50 };
 
 Dragon::Dragon(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Dragon,Mesh_Dragon, Mesh_Dragon, MotionIdle },
 	state_{ State::Idle },
-	motion_{ MotionIdle },
-	HP_{ MaxHP, HP_pos,frame_pos,gauge_length,color }{
+	motion_{ MotionIdle }{
 	world_ = world;
-	tag_ = "EnemyTag";
-	name_ = "Enemy";
+	tag_ = "BossEnemyTag";
+	name_ = "Dragon";
 	player_ = nullptr;
 	collider_ = BoundingSphere{ 2.0f, GSvector3{0.0f, 2.0f, 0.0f} };
+	HP_ = { MaxHP };
 	//À•W‚Ì‰Šú‰»
 	transform_.position(position);
 	mesh_.transform(transform_.localToWorldMatrix());
@@ -97,7 +90,8 @@ void Dragon::draw() const {
 }
 
 void Dragon::draw_gui() const {
-	HP_.draw();
+	//
+	HP_.draw_boss();
 }
 
 void Dragon::react(Actor& other) {
@@ -224,12 +218,12 @@ void Dragon::fly_start(float delta_time) {
 
 void Dragon::fly_idle(float delta_time) {
 	if (state_timer_ >= mesh_.motion_end_time()) {
-		int next = gsRand(0, 1);
+		int next = gsRand(0, 2);
 		if (next == 0) {
-			change_state(State::FlyMove, MotionFly, true);
+			change_state(State::FlyAttack, MotionFlySpitFireball, false);
 		}
 		else {
-			change_state(State::FlyAttack, MotionFlySpitFireball, false);
+			change_state(State::FlyMove, MotionFly, true);
 		}
 	}
 }

@@ -3,8 +3,10 @@
 
 //メッシュデータ
 enum {
-    Mesh_Player,					//自機
-    Mesh_Dragon,                     // 敵
+    Mesh_Player,					//プレイヤー
+    Mesh_Dragon,                    // ドラゴン
+    Mesh_Skeleton,                  //スケルトン
+    Mesh_Witch,                     //
     Mesh_Skybox                     // スカイボックス
 };
 
@@ -18,17 +20,6 @@ enum {
 
 //テクスチャデータ
 enum {
-    Texture_Title,          // タイトル
-    Texture_Kendo,          // 剣道部長
-    Texture_Karate,         // 空手部長
-    Texture_Start,          // 開始メッセージ
-    Texture_Number,         // 数字フォント
-    Texture_Text,           // テキスト画像
-    Texture_BlueBack,       // リザルト用背景
-    Texture_Result1,        // リザルト用テキスト1
-    Texture_Result2,        // リザルト用テキスト2
-    Texture_Radar,          // レーダー画像
-    Texture_RadarPoint,      // レーダーの点
     Texture_HP,             //HP表示の赤部分
     Texture_Frame,          //
     Texture_ST,

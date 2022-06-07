@@ -8,7 +8,9 @@ class Input
 public:
 
 	//更新
-	static void update();
+	static void update(float delta_time);
+	//Aボタンを押したか？
+	static bool is_a_push();
 	//攻撃ボタンを押したか？
 	static bool is_attack();
 	//回避ボタンを押したか？

@@ -51,7 +51,7 @@ void FireSphere::draw() const {
 }
 
 void FireSphere::react(Actor& other) {
-	if (other.tag() == "PLayerTag") {
+	if (other.tag() == "PlayerTag") {
 		// Õ“Ë‚µ‚½‚ç€–S
 		die();
 	}

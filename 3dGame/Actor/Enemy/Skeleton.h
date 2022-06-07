@@ -1,40 +1,35 @@
-#ifndef DRAGON_H_
-#define DRAGON_H_
+#ifndef SKELETON_H_
+#define SKELETON_H
 
 #include"Enemy.h"
 #include"../AnimatedMesh.h"
 
-
-class Dragon : public Enemy {
+class Skeketon :public Enemy {
 public:
-	enum class State {
+	enum  class State
+	{
+		Generation,
 		Idle,
 		Run,
 		Turn,
-		FlyStart,
-		FlyMove,
-		FlyIdel,
-		FlyAttack,
-		FlyEnd,
 		Dead,
 		Attack
 	};
 	//
-	Dragon(IWorld* world, const GSvector3& position);
+	Skeketon(IWorld* world, const GSvector3& position);
 	//
 	virtual void update(float delta_time)override;
 	//
 	virtual void draw()const override;
 	//
-	virtual void draw_gui()const override;
-	//
 	virtual void react(Actor& other)override;
-
 private:
 	//
 	void update_state(float delta_time);
 	//
 	void change_state(State state, int motion, bool loop = true);
+	//
+	void generation(float delta_time);
 	//
 	void idle(float delta_time);
 	//
@@ -42,56 +37,29 @@ private:
 	//
 	void turn(float delta_time);
 	//
+	void dead(float delta_time);
+	//
 	void attack(float delta_time);
 	//
-	void fly_start(float delta_time);
-	//
-	void fly_idle(float delta_time);
-	//
-	void fly_move(float delta_time);
-	//
-	void fly_attack(float delta_time);
-	//
-	void fly_end(float delta_time);
-	//
-	void dead(float delta_time);
-
-	//
-	void attack_selection();
-	//
-	void bite();
-	//
-	void tail_attack();
-	//
-	void spit_fire();
-
-	//
-	bool is_trun()const;
+	void slash();
 	//
 	bool is_run()const;
 	//
+	bool is_trun()const;
+	//
 	bool is_attack()const;
-private:
+
 	//アニメーションメッシュ
 	AnimatedMesh	mesh_;
 	//モーション番号
 	GSuint motion_;
 	//
 	State state_;
+	//
+	float attack_time_;
+
+
 };
 
-#endif // !DRAGON_H_
-
-
-
-
-
-
-
-
-
-
-
-
-
+#endif // !SKELETON_H_
 

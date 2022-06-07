@@ -1,5 +1,5 @@
 #include "TitleScene.h"
-
+#include"../Input.h"
 // 開始
 void TitleScene::start() {
     // 終了フラグの初期化
@@ -9,7 +9,7 @@ void TitleScene::start() {
 // 更新
 void TitleScene::update(float delta_time) {
     // エンターキーを押したらシーン終了
-    if (gsGetKeyTrigger(GKEY_RETURN)) {
+    if (Input::is_a_push()) {
         is_end_ = true;     // シーン終了
     }
 }

@@ -9,9 +9,13 @@ class HP
 public:
 	HP() = default;
 	//
-	HP(const float max_health, const GSvector2 HP_pos, const GSvector2 frame_pos,const float gauge_length,const GScolor color);
+	HP(const float max_health);
 	//
-	void draw()const;
+	void draw(const GSvector2 HP_pos, const GSvector2 frame_pos, const float gauge_length, const GScolor color)const;
+	//
+	void draw_player()const;
+	//
+	void draw_boss()const;
 	//
 	void hit_damage(int power);
 	//
@@ -20,20 +24,10 @@ public:
 	bool is_end()const;
 
 private:
-	//
-	GSvector2 HP_pos_;
-	//
-	GSvector2 frame_pos_;
 	//åªç›ÇÃHP
 	float cullent_health_;
 	//
 	float max_health_;
-	//
-	float gauge_length_;
-	//
-	GScolor color_;
-
-
 
 };
 

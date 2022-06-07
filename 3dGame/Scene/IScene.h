@@ -17,7 +17,7 @@ public:
 	virtual void draw()const = 0;
 
 	//終了しているか
-	virtual bool is_end()const = 0;
+	virtual bool is_end() const = 0;
 	//次のシーンを返す
 	virtual std::string next() const = 0;
 	//終了

@@ -11,7 +11,7 @@ public:
 	//
 	void draw()const;
 	//
-	bool consumption_stamina(int  consumption_stamina);
+	bool consumption_stamina(const int  consumption_stamina);
 	//
 	int get_stamina()const;
 private:

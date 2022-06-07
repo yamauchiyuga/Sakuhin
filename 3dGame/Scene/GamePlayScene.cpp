@@ -4,8 +4,10 @@
 #include "../Camera/CameraTPS.h"
 #include "../Actor/Light.h"
 #include"../Actor/Player/Player.h"
-#include"../Asset.h"
+#include"../Assets.h"
 #include"../Actor/Enemy/Dragon.h"
+#include"../Actor/Enemy/Skeleton.h"
+#include"../Actor/Enemy/Witch.h"
 
 #include <GSstandard_shader.h>
 
@@ -52,9 +54,18 @@ void GamePlayScene::start() {
 	gsLoadSkeleton(Mesh_Player, "Assets/model/Player/Player.sklb");
 	gsLoadAnimation(Mesh_Player, "Assets/model/Player/Player.anmb");
 
+	//ドラゴン読み込み
 	gsLoadMesh(Mesh_Dragon, "Assets/model/Enemy/Dragon.mshb");
 	gsLoadSkeleton(Mesh_Dragon, "Assets/model/Enemy/Dragon.sklb");
 	gsLoadAnimation(Mesh_Dragon, "Assets/model/Enemy/Dragon.anmb");
+
+	gsLoadMesh(Mesh_Skeleton, "Assets/model/Enemy/Skeleton.mshb");
+	gsLoadSkeleton(Mesh_Skeleton, "Assets/model/Enemy/Skeleton.sklb");
+	gsLoadAnimation(Mesh_Skeleton, "Assets/model/Enemy/Skeleton.anmb");
+
+	gsLoadMesh(Mesh_Witch, "Assets/model/Enemy/Witch.mshb");
+	gsLoadSkeleton(Mesh_Witch, "Assets/model/Enemy/Witch.sklb");
+	gsLoadAnimation(Mesh_Witch, "Assets/model/Enemy/Witch.anmb");
 
 	gsLoadTexture(Texture_Frame, "Assets/Texture/GaugeFrame.png");
 
@@ -76,7 +87,11 @@ void GamePlayScene::start() {
 	// プレーヤーの追加
 	world_.add_actor(new Player{ &world_, GSvector3{ 0.0f, 0.125f, 0.0f } });
 	//
-	world_.add_actor(new Dragon{ &world_,GSvector3{0.0f,0.125,30.0f} });
+	world_.add_actor(new Skeketon{ &world_,GSvector3{0.0f,0.125,30.0f} });
+	//
+	world_.add_actor(new Witch{ &world_,GSvector3{0.0f,0.125,8.0f} });
+	//
+	//world_.add_actor(new Dragon{ &world_,GSvector3{0.0f,0.125,8.0f} });
 }
 
 // 更新

@@ -23,59 +23,67 @@ void Actor::handle_message(const std::string& message, void* param) {}
 
 // 衝突判定
 void Actor::collide(Actor& other) {
-    // どちらのアクターも衝突判定が有効か？
-    if (enable_collider_ && other.enable_collider_) {
-        // 衝突判定をする
-        if (is_collide(other)) {
-            // 衝突した場合は、お互いに衝突リアクションをする
-            react(other);
-            other.react(*this);
-        }
-    }
+	// どちらのアクターも衝突判定が有効か？
+	if (enable_collider_ && other.enable_collider_) {
+		// 衝突判定をする
+		if (is_collide(other)) {
+			// 衝突した場合は、お互いに衝突リアクションをする
+			react(other);
+			other.react(*this);
+		}
+	}
 }
 
 // 死亡する
 void Actor::die() {
-    dead_ = true;
+	dead_ = true;
 }
 
 // 衝突しているか？
 bool Actor::is_collide(const Actor& other) const {
-    return collider().intersects(other.collider());
+	return collider().intersects(other.collider());
 }
 
 // 死亡しているか？
 bool Actor::is_dead() const {
-    return dead_;
+	return dead_;
 }
 
 // 名前を取得
 const std::string& Actor::name() const {
-    return name_;
+	return name_;
 }
 
 // タグ名を取得
 const std::string& Actor::tag() const {
-    return tag_;
+	return tag_;
 }
 
 // トランスフォームを取得(const版)
 const GStransform& Actor::transform() const {
-    return transform_;
+	return transform_;
 }
 
 // トランスフォームを取得
 GStransform& Actor::transform() {
-    return transform_;
+	return transform_;
 }
 
 // 移動量を取得
 GSvector3 Actor::velocity() const {
-    return velocity_;
+	return velocity_;
 }
 
 // 衝突判定データを取得
 BoundingSphere Actor::collider() const {
-    return collider_.transform(transform_.localToWorldMatrix());
+	return collider_.transform(transform_.localToWorldMatrix());
+}
+
+TweenUnit& Actor::move_to(const GSvector3& to, float duration)
+{
+	// 現在の場所から指定された場所まで、Tweenで移動する
+	return Tween::vector3(transform_.position(), to, duration,
+		[=](GSvector3 pos) {transform_.position(pos); });
+
 }
 

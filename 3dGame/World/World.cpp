@@ -1,7 +1,7 @@
 #include"World.h"
 #include"../Collision/Field.h"
 #include"../Actor/Actor.h"
-#include"../Asset.h"
+#include"../Assets.h"
 //デストラクタ
 World::~World() {
 	clear();

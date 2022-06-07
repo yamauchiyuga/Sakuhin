@@ -3,7 +3,7 @@
 #include "../../World/IWorld.h"
 #include "../../Collision/Field.h"
 #include "../../Collision/Line.h"
-#include "../../Asset.h"
+#include "../../Assets.h"
 #include"../../Input.h"
 
 enum {
@@ -16,11 +16,6 @@ enum {
 	MotionIdle,
 	MotionRun
 };
-//
-const GSvector2 HP_pos{ 80.0f, 70.0f };
-const GSvector2 frame_pos{ 78.0f, 68.0f };
-const float gauge_length{ 250.0f };
-const GScolor color{ 0,1,0,1 };
 //
 const float RotateSpeed{ 1.0f };
 //
@@ -54,7 +49,7 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	state_{ State::Move },
 	state_timer_{ 0.0f },
 	combo_{ 0 },
-	HP_{ MaxHP ,HP_pos ,frame_pos,gauge_length,color },
+	HP_{ MaxHP },
 	ST_{ MaxST }{
 	// ÉèÅ[ÉãÉhÇê›íË
 	world_ = world;
@@ -109,7 +104,7 @@ void Player::draw()const {
 
 void Player::draw_gui()const {
 	//
-	HP_.draw();
+	HP_.draw_player();
 	//
 	ST_.draw();
 }

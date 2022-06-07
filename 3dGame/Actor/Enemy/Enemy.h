@@ -1,6 +1,7 @@
 #ifndef ENEMY_H_
 #define ENEMY_H_
 #include"../Actor.h"
+#include"../../UI/HP.h"
 
 
 //
@@ -43,6 +44,8 @@ protected:
 	bool is_dead_{ false };
 	//ÉvÉåÉCÉÑÅ[
 	Actor* player_{nullptr};
+	//
+	HP HP_;
 };
 
 #endif // !ENEMY_H_

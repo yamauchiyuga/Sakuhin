@@ -5,12 +5,18 @@ GSvector2 Input::input_left_{ 0.0f,0.0f };
 GSvector2 Input::input_right_{ 0.0f,0.0f };
 
 //更新
-void Input::update()
+void Input::update(float delta_time)
 {
 	//入力値の更新
 	gsXBoxPadGetLeftAxis(0, &input_left_);
 	gsXBoxPadGetRightAxis(0, &input_right_);
 }
+//Aボタンを押したか？
+bool Input::is_a_push() {
+	return gsXBoxPadButtonTrigger(0, GS_XBOX_PAD_A);
+}
+
+
 //攻撃ボタンを押されているか？
 bool Input::is_attack()
 {

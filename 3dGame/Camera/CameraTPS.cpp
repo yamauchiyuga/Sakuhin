@@ -20,10 +20,10 @@ CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& 
 	transform_.position(position);
 	// 注視点を設定（注視点の方向に向きを変える）
 	transform_.lookAt(at);
-	///x軸回りの回転角度の初期化
-	pitch_ = (at - position).getPitch();
-	///y軸回りの回転角度の初期化
-	yaw_ = (at - position).getYaw();
+	//x軸回りの回転角度の初期化
+	pitch_ = 0;
+	//y軸回りの回転角度の初期化
+	yaw_ = 0;
 }
 
 //更新
@@ -38,7 +38,7 @@ void CameraTPS::update(float delta_time) {
 void CameraTPS::player_lock_on(float delta_time) {
 	//プレーヤー検索
 	Actor* player = world_->find_actor("Player");
-	Actor* enemy = world_->find_actor("Enemy");
+
 	//プレーヤーが見つからなかったらそのまま返す
 	if (player == nullptr) return;
 
@@ -50,23 +50,22 @@ void CameraTPS::player_lock_on(float delta_time) {
 	pitch_ += Input::get_right_vertical() * -RotateSpeed * delta_time;
 
 	//x軸の最低角度
-	const float MinAngle{ -10.0f };
+	const float MinAngle{ -15.0f };
 	//x軸の最大角度
 	const float MaxAngle{ 25.0f };
 	//x軸回りの回転を制限する
 	pitch_ = CLAMP(pitch_, MinAngle, MaxAngle);
 	//プレイヤーからの相対座標
-	const GSvector3 PlayerOffset{ 0.0f, 2.0f, -7.5f };
+	const GSvector3 PlayerOffset{ 0.0f, 2.0f, -6.5f };
 
-	//注視点の位置を求める(プレーヤーの頭部の少し上あたりの座標)
+	//注視点の座標を求める
 	GSvector3 at = player->transform().position() + ReferencePointOffset;
-	//視点位置を求める(プレーヤーの背後の座標)
+	//カメラの座標を求める
 	GSvector3 position = at + GSquaternion::euler(pitch_, yaw_, 0.0f) * PlayerOffset;
 
 	const float SmoothTime{ 13.0f };    // 補間フレーム数
 	const float MaxSpeed{ 1.0f };       // 移動スピードの最大値
-	position = GSvector3::smoothDamp(transform_.position(), position, velocity_,
-		SmoothTime, MaxSpeed, delta_time);
+	position = GSvector3::smoothDamp(transform_.position(), position, velocity_, SmoothTime, MaxSpeed, delta_time);
 
 
 	//フィールドとの衝突判定
@@ -90,14 +89,16 @@ void CameraTPS::enemy_lock_on(float delta_time) {
 	//
 	Actor* player = world_->find_actor("Player");
 	//
-	Actor* enemy = world_->find_actor("Enemy");
+	Actor* enemy = world_->find_actor("Skeketon");
 
-	if (enemy == nullptr)return;
+	if (enemy == nullptr) {
+		state_ = State::PlayerLockOn;
+		return;
+	}
 
 	//回転スピード
-	const float RotateSpeed{ 3.0f };
-	const float Distance{ 7.5f };
-	const float CamerHeightPos{ 2.5f };
+	const float Distance{ 6.5f };
+	const float CamerHeightPos{ 2.0f };
 
 	GSvector3 enemy_to_player = player->transform().position() - enemy->transform().position();
 	enemy_to_player.normalize();
@@ -126,6 +127,7 @@ void CameraTPS::enemy_lock_on(float delta_time) {
 
 	if (Input::is_lock_on() || dynamic_cast<Enemy*>(enemy)->dead()) {
 		yaw_ = transform_.eulerAngles().y;
+		pitch_ = transform_.eulerAngles().x;
 		state_ = State::PlayerLockOn;
 	}
 

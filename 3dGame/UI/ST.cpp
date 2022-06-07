@@ -1,5 +1,5 @@
 #include "ST.h"
-#include"../Asset.h"
+#include"../Assets.h"
 
 #include<GSvector2.h>
 #include<GSgraphics.h>
@@ -20,7 +20,7 @@ void ST::update(float delta_time) {
 	count += delta_time;
 }
 
-bool ST::consumption_stamina(int consumption_stamina) {
+bool ST::consumption_stamina(const int consumption_stamina) {
 	//
 	bool a = cullent_stamina_ >= consumption_stamina;
 	//

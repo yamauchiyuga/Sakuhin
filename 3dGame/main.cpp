@@ -3,24 +3,27 @@
 #include"Scene//TitleScene.h"
 #include "Scene/GamePlayScene.h"
 #include"Input.h"
+
 #include<crtdbg.h>
 #include<memory>
-class MyGmae :public gslib::Game {
+class MyGame :public gslib::Game {
 public:
 	//
-	MyGmae() :gslib::Game{ 1280,720 }{
+	//コンストラクタ
+	MyGame() : gslib::Game{ 1280, 720 }{
+
 	}
 
 	// 開始
 	void start() override {
 		scene_manager_.add("TitleScene", new TitleScene());
 		scene_manager_.add("GamePlayScene", new GamePlayScene());
-		scene_manager_.change("TitleScene");
+		scene_manager_.change("GamePlayScene");
 	}
 	// 更新
 	void update(float delta_time) {
 		scene_manager_.update(delta_time);
-		Input::update();
+		Input::update(delta_time);
 	}
 	// 描画
 	void draw() override {
@@ -44,5 +47,5 @@ private:
 };
 
 int main() {
-	return MyGmae().run();
+	return MyGame().run();
 }
