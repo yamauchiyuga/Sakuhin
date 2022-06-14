@@ -34,7 +34,7 @@ const float RunSpeed{ 0.11f };
 //
 const float FlySpeed{ 0.12f };
 //
-const float TurnAngle{ 3.0f };
+const float TurnAngle{ 2.7f };
 //
 const float TurnAroundAngle{ 20.0f };
 //

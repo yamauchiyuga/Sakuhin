@@ -30,19 +30,8 @@ void World::draw() const {
 	// ライトの描画
 	light_->draw();
 
-	// シャドウマップ用シェーダーをバインドする
-	gsBindDefaultMeshShader(Shader_ShadowMapMesh);
-	gsBindDefaultSkinMeshShader(Shader_ShadowMapSkinnedMesh);
-	gsBindDefaultOctreeShader(Shader_ShadowMapMesh);
-
 	 //シャドウマップの描画
 	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
-
-	// 通常描画用のシェーダーをバンドする
-	gsBindDefaultMeshShader(Shader_StandardMesh);
-	gsBindDefaultSkinMeshShader(Shader_StandardSkinnedMesh);
-	gsBindDefaultOctreeShader(Shader_StandardOctree);
-
 
 	// フィールドの描画
 	field_->draw();

@@ -160,6 +160,7 @@
     <ClCompile Include="Actor\Enemy\Enemy.cpp" />
     <ClCompile Include="Actor\Enemy\Dragon.cpp" />
     <ClCompile Include="Actor\Effect\Explosion.cpp" />
+    <ClCompile Include="Scene\LoadingScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Actor\Enemy\Skeleton.cpp" />
     <ClCompile Include="UI\HP.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Actor\Enemy\Enemy.h" />
     <ClInclude Include="Actor\Enemy\Dragon.h" />
     <ClInclude Include="Actor\Effect\Explosion.h" />
+    <ClInclude Include="Scene\LoadingScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Actor\Enemy\Skeleton.h" />
     <ClInclude Include="UI\HP.h" />

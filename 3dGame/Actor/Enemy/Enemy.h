@@ -17,7 +17,6 @@ protected:
 	float target_angle() const;
 	// ターゲットの距離を求める
 	float target_distance() const;
-
 	//アクターとの衝突リアクション
 	void collide_actor(Actor& other);
 	//フィールドとの衝突リアクション

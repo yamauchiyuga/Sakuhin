@@ -35,3 +35,4 @@ std::string TitleScene::next() const {
 // I—¹
 void TitleScene::end() {
 }
+

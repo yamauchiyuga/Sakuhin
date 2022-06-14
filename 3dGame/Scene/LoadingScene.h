@@ -1,11 +1,9 @@
-#ifndef TITLE_SCENE_H_
-#define TITLE_SCENE_H_
+#ifndef LOADING_SCENE_H_
+#define LOADING_SCENE_H_
 
 #include "IScene.h"
-#include <gslib.h>
-
-// タイトルシーン
-class TitleScene : public IScene {
+class LoadingScene : public IScene
+{
 public:
     // 開始
     virtual void start() override;
@@ -20,9 +18,14 @@ public:
     // 終了
     virtual void end() override;
 private:
-    // 終了フラグ
+    //ロード用スレッド
+    static void load_assets(void* self);
+
     bool is_end_;
 };
 
-#endif
+
+
+#endif // !LoadingScene
+
 

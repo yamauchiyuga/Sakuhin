@@ -19,20 +19,9 @@ void GamePlayScene::start() {
 	is_end_ = false;
 	// 視錐台カリングを有効にする
 	gsEnable(GS_FRUSTUM_CULLING);
-	// デフォルトシェーダーを有効にする
-	gsEnable(GS_DEFAULT_SHADER_MODE);
 
-	// メッシュ用のシェーダー
-	gsLoadShader(Shader_StandardMesh, "Assets/shader/StandardMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
-	// スキニングメッシュ用のシェーダー
-	gsLoadShader(Shader_StandardSkinnedMesh, "Assets/shader/StandardSkinnedMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
-	// オクツリー用のシェーダー
-	gsLoadShader(Shader_StandardOctree, "Assets/shader/StandardOctreeLightmap.vert", "Assets/shader/StandardOctreeLightmap.frag");
-	// シャドウマップ用のメッシュシェーダー
-	gsLoadShader(Shader_ShadowMapMesh, "Assets/shader/ShadowMap.vert", "Assets/shader/ShadowMap.frag");
-	// シャドウマップ用のスキニングメッシュシェーダー
-	gsLoadShader(Shader_ShadowMapSkinnedMesh, "Assets/shader/ShadowMapSkinned.vert", "Assets/shader/ShadowMap.frag");
-
+	
+	
 	// リフレクションプローブの読み込み(0番に読み込めば自動的に適用される）
 	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
@@ -49,32 +38,7 @@ void GamePlayScene::start() {
 
 
 
-	//プレイヤーの読み込み
-	gsLoadMesh(Mesh_Player, "Assets/model/Player/Player.mshb");
-	gsLoadSkeleton(Mesh_Player, "Assets/model/Player/Player.sklb");
-	gsLoadAnimation(Mesh_Player, "Assets/model/Player/Player.anmb");
-
-	//ドラゴン読み込み
-	gsLoadMesh(Mesh_Dragon, "Assets/model/Enemy/Dragon.mshb");
-	gsLoadSkeleton(Mesh_Dragon, "Assets/model/Enemy/Dragon.sklb");
-	gsLoadAnimation(Mesh_Dragon, "Assets/model/Enemy/Dragon.anmb");
-
-	gsLoadMesh(Mesh_Skeleton, "Assets/model/Enemy/Skeleton.mshb");
-	gsLoadSkeleton(Mesh_Skeleton, "Assets/model/Enemy/Skeleton.sklb");
-	gsLoadAnimation(Mesh_Skeleton, "Assets/model/Enemy/Skeleton.anmb");
-
-	gsLoadMesh(Mesh_Witch, "Assets/model/Enemy/Witch.mshb");
-	gsLoadSkeleton(Mesh_Witch, "Assets/model/Enemy/Witch.sklb");
-	gsLoadAnimation(Mesh_Witch, "Assets/model/Enemy/Witch.anmb");
-
-	gsLoadTexture(Texture_Frame, "Assets/Texture/GaugeFrame.png");
-
-	// スカイボックスメッシュの読み込み
-	gsLoadMesh(Mesh_Skybox, "Assets/Skybox/skydome.msh");
-	// 描画用オクツリーの読み込み
-	gsLoadOctree(Octree_Stage, "Assets/TtestFiled/Field.oct");
-	// 衝突判定用オクツリーの読み込み
-	gsLoadOctree(Octree_Collider, "Assets/TtestFiled/Field_collider.oct");
+	
 
 	// フィールドクラスの追加
 	world_.add_field(new Field{ Octree_Stage, Octree_Collider, Mesh_Skybox });
@@ -85,13 +49,13 @@ void GamePlayScene::start() {
 	world_.add_light(new Light{ &world_ });
 
 	// プレーヤーの追加
-	world_.add_actor(new Player{ &world_, GSvector3{ 0.0f, 0.125f, 0.0f } });
+	world_.add_actor(new Player{ &world_, GSvector3{ 0.0f, 0.125f, 5.0f } });
 	//
-	world_.add_actor(new Skeketon{ &world_,GSvector3{0.0f,0.125,30.0f} });
+	//world_.add_actor(new Skeketon{ &world_,GSvector3{0.0f,0.125,30.0f} });
 	//
-	world_.add_actor(new Witch{ &world_,GSvector3{0.0f,0.125,8.0f} });
+	world_.add_actor(new Witch{ &world_,GSvector3{0.0f,0.125,12.0f} });
 	//
-	//world_.add_actor(new Dragon{ &world_,GSvector3{0.0f,0.125,8.0f} });
+	//world_.add_actor(new Dragon{ &world_,GSvector3{0.0f,0.125,-8.0f} });
 }
 
 // 更新
@@ -120,17 +84,4 @@ std::string GamePlayScene::next() const {
 void GamePlayScene::end() {
 	// ワールドを消去
 	world_.clear();
-	// メッシュの削除
-	gsDeleteMesh(Mesh_Player);
-	gsDeleteMesh(Mesh_Dragon);
-	gsDeleteMesh(Mesh_Skybox);
-	// スケルトンの削除
-	gsDeleteSkeleton(Mesh_Player);
-	gsDeleteSkeleton(Mesh_Dragon);
-	// アニメーションの削除
-	gsDeleteAnimation(Mesh_Player);
-	gsDeleteAnimation(Mesh_Dragon);
-	// オクトリーの削除
-	gsDeleteOctree(Octree_Stage);
-	gsDeleteOctree(Octree_Collider);
 }

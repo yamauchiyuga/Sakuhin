@@ -15,6 +15,9 @@ public:
 		Move,			//移動中
 		Attack,			//攻撃中
 		Dodge,			//回避中
+		GuardStart,		//ガード始まり
+		Guarding,		//ガード中
+		GuardEnd,		//ガード終わり
 		Damage,			//ダメージ中
 		End				//死亡中
 	};
@@ -42,6 +45,13 @@ private:
 	void attack(float delta_time);
 	//
 	void dodge(float delta_time);
+	//
+	void guard_start(float delta_time);
+	//
+	void guarding(float delta_time);
+	//
+	void guard_end(float delta_time);
+
 	//ダメージ中
 	void damage(float delta_time);
 	//
@@ -50,6 +60,10 @@ private:
 	void turn();
 	//
 	bool can_attackable()const;
+	//
+	bool can_guard()const;
+	//
+	void knock_back(Actor& other, float power);
 	//
 	void collide_actor(Actor& other);
 	//

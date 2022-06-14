@@ -14,6 +14,9 @@ enum {
 	MotionEnd,
 	MotionDodge,
 	MotionIdle,
+	MotionGuardEnd,
+	MotionGuardLoop,
+	MotionGuardStart,
 	MotionRun
 };
 //
@@ -118,23 +121,28 @@ void Player::react(Actor& other) {
 	}
 	//回避中なら何もしない
 	if (state_ == State::Dodge)return;
-	//
+	//ダメージ中なら何もしない
 	if (state_ == State::Damage)return;
 	//死亡中なら何もしない
 	if (state_ == State::End)return;
 
 	if (other.tag() == "EnemyAttackTag") {
 
+		if (state_ == State::Guarding) {
+
+			return;
+		}
+
 		enable_collider_ = false;
 		combo_ = 0;
 		change_state(State::Damage, MotionDamage, false);
 		//
 		HP_.hit_damage(10);
+	}
 
-		if (HP_.is_end()) {
-			change_state(State::End, MotionEnd, false);
-			world_->game_over();
-		}
+	if (HP_.is_end()) {
+		change_state(State::End, MotionEnd, false);
+		world_->game_over();
 	}
 }
 
@@ -144,6 +152,9 @@ void Player::update_state(float delta_time) {
 	case Player::State::Move: move(delta_time);    break;
 	case Player::State::Attack:attack(delta_time); break;
 	case Player::State::Dodge: dodge(delta_time); break;
+	case Player::State::GuardStart: guard_start(delta_time); break;
+	case Player::State::Guarding: guarding(delta_time); break;
+	case Player::State::GuardEnd: guard_end(delta_time); break;
 	case Player::State::Damage:damage(delta_time); break;
 	case Player::State::End: end(delta_time); break;
 	}
@@ -171,6 +182,11 @@ void Player::move(float delta_time) {
 	if (Input::is_attack() && ST_.get_stamina() > AttackStamina) {
 		ST_.consumption_stamina(AttackStamina);
 		change_state(State::Attack, MotionAttack, false);
+		return;
+	}
+
+	if (Input::is_guard()) {
+		change_state(State::GuardStart, MotionGuardStart, false);
 		return;
 	}
 
@@ -260,6 +276,23 @@ void Player::dodge(float delta_time) {
 	}
 }
 
+void Player::guard_start(float delta_time) {
+	if (!Input::is_guard()) {
+		change_state(State::Move, MotionIdle, true);
+	}
+}
+
+
+void Player::guarding(float delta_time) {
+
+}
+
+void Player::guard_end(float delta_time) {
+	if (state_timer_ >= mesh_.motion_end_time()) {
+		change_state(State::Move, MotionIdle, true);
+	}
+}
+
 void Player::damage(float delta_time) {
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::Move, MotionIdle, false);
@@ -305,6 +338,28 @@ bool Player::can_attackable() const
 	return true;
 }
 
+bool Player::can_guard() const
+{
+	//
+	if (ST_.get_stamina() <= 20)return false;
+	//
+	if (state_ != State::Guarding)return false;
+
+	return true;
+}
+
+void Player::knock_back(Actor& other, float power) {
+	GSvector3 at = other.transform().position();
+	at.y = transform_.position().y;
+	//ターゲット方向のベクトルを求める
+	GSvector3 to_target = other.transform().position() - transform().position();
+	//y成分は無効にする
+	to_target.y = 0.0f;
+	//ターゲット方向と逆方向にノックバックする移動量を求める
+	velocity_ = -to_target.getNormalized() * power;
+	//敵の方を向く
+	transform_.lookAt(at);
+}
 
 void Player::collide_field() {
 	//

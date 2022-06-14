@@ -17,7 +17,7 @@ CameraTPS::CameraTPS(IWorld* world, const GSvector3& position, const GSvector3& 
 	// 名前の設定
 	name_ = "Camera";
 	// 視点の位置を設定
-	transform_.position(position);
+	transform_.position(-position);
 	// 注視点を設定（注視点の方向に向きを変える）
 	transform_.lookAt(at);
 	//x軸回りの回転角度の初期化
@@ -89,7 +89,7 @@ void CameraTPS::enemy_lock_on(float delta_time) {
 	//
 	Actor* player = world_->find_actor("Player");
 	//
-	Actor* enemy = world_->find_actor("Skeketon");
+	Actor* enemy = world_->find_actor("Dragon");
 
 	if (enemy == nullptr) {
 		state_ = State::PlayerLockOn;
