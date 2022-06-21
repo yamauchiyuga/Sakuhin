@@ -26,17 +26,21 @@ enum {
 //
 const float MaxHP{ 400 };
 //
+const float Gravity{ -0.003f };
+//
 const float TurnDistance{ 1.5f };
 //
-const float RunDistance{ 6.0f };
+const float RunDistance{ 3.0f };
 //
-const float RunSpeed{ 0.11f };
+const float RunSpeed{ 0.1f };
 //
 const float FlySpeed{ 0.12f };
 //
-const float TurnAngle{ 2.7f };
+const float TurnAngle{ 1.5f };
 //
-const float TurnAroundAngle{ 20.0f };
+const float FlyTurnAngle{ 1.0f };
+//
+const float TurnAroundAngle{ 10.0f };
 //
 const int HitDamage{ 50 };
 
@@ -45,7 +49,7 @@ Dragon::Dragon(IWorld* world, const GSvector3& position) :
 	state_{ State::Idle },
 	motion_{ MotionIdle }{
 	world_ = world;
-	tag_ = "BossEnemyTag";
+	tag_ = "EnemyTag";
 	name_ = "Dragon";
 	player_ = nullptr;
 	collider_ = BoundingSphere{ 2.0f, GSvector3{0.0f, 2.0f, 0.0f} };
@@ -74,7 +78,12 @@ void Dragon::update(float delta_time) {
 	//
 	mesh_.transform(transform_.localToWorldMatrix());
 
-
+	if (is_gravity()) {
+		//
+		velocity_.y += Gravity * delta_time;
+		//
+		transform_.translate(0.0f, velocity_.y, 0.0f);
+	}
 
 }
 
@@ -98,7 +107,6 @@ void Dragon::react(Actor& other) {
 	if (other.tag() == "PlayerAttackTag") {
 		HP_.hit_damage(HitDamage);
 	}
-
 	if (HP_.is_end()) {
 		enable_collider_ = false;
 		is_dead_ = true;
@@ -153,7 +161,7 @@ void Dragon::idle(float delta_time) {
 
 void Dragon::run(float delta_time) {
 	// ターゲット方向の角度を求める
-	float angle = target_signed_angle();
+	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
 	// 向きを変える
 	transform_.rotate(0.0f, angle, 0.0f);
 	// 前進する（ローカル座標基準）
@@ -169,7 +177,7 @@ void Dragon::turn(float delta_time) {
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		if (is_run()) {
 			//
-			int next = gsRand(0, 4);
+			int next = gsRand(0, 3);
 			if (next == 0) {
 				change_state(State::FlyStart, MotionGoInAir, false);
 			}
@@ -186,6 +194,7 @@ void Dragon::turn(float delta_time) {
 			attack_selection();
 		}
 	}
+
 	// 振り向きモーションをしながらターゲット方向を向く
 	float angle = (target_signed_angle() >= 0.0f) ? TurnAngle : -TurnAngle;
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
@@ -205,7 +214,7 @@ void Dragon::attack(float delta_time) {
 void Dragon::fly_start(float delta_time) {
 	const int FlyStart{ 50 };
 	if (state_timer_ >= FlyStart) {
-		const float Height{ 3.2f };
+		const float Height{ 6.0f };
 		const float LerpTime{ 0.08f };
 		GSvector3 fly_pos{ transform_.position().x,Height,transform_.position().z };
 		transform_.position(GSvector3::lerp(transform_.position(), fly_pos, LerpTime * delta_time));
@@ -229,7 +238,7 @@ void Dragon::fly_idle(float delta_time) {
 }
 
 void Dragon::fly_move(float delta_time) {
-	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
+	float angle = CLAMP(target_signed_angle(), -FlyTurnAngle, FlyTurnAngle);
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
 	transform_.translate(0.0f, 0.0f, FlySpeed * delta_time);
 
@@ -260,12 +269,9 @@ void Dragon::fly_attack(float delta_time) {
 
 void Dragon::fly_end(float delta_time) {
 	//
-	const float Gravity{ -0.003f };
-	//
 	velocity_.y += Gravity * delta_time;
 	//
 	transform_.translate(0.0f, velocity_.y, 0.0f);
-
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::Idle, MotionIdle, false);
 	}
@@ -364,10 +370,20 @@ bool Dragon::is_trun() const {
 
 
 bool Dragon::is_run() const {
-	return target_distance() > RunDistance;
+	return target_distance() > 4.0f;
 
 }
 
 bool Dragon::is_attack()const {
 	return target_distance() <= RunDistance && target_angle() <= 10.0f;
+}
+
+bool Dragon::is_gravity() const
+{
+	if (state_ == State::FlyStart)return false;
+	if (state_ == State::FlyIdel)return false;
+	if (state_ == State::FlyMove)return false;
+	if (state_ == State::FlyAttack)return false;
+	if (state_ == State::FlyEnd)return false;
+	return true;
 }

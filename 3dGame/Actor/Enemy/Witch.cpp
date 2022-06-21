@@ -43,7 +43,7 @@ Witch::Witch(IWorld* world, const GSvector3& position) :
 	mesh_.transform(transform_.localToWorldMatrix());
 
 	mesh_.add_animation_event(MotionSpitFire, 23.0f, [=] {spit_fire(); });
-	mesh_.add_animation_event(MotionExplosion, 100.0f, [=] {explosion(); });
+	//mesh_.add_animation_event(MotionExplosion, 100.0f, [=] {explosion(); });
 }
 
 void Witch::update(float delta_time) {
@@ -125,7 +125,6 @@ void Witch::run(float delta_time) {
 	
 	// 前進する（ローカル座標基準）
 	transform_.translate(0.0f, 0.0f, RunSpeed * delta_time);
-
 	if (is_attack()) {
 		attack_selection();
 	}
@@ -151,24 +150,14 @@ void Witch::attack_selection() {
 	float angle = target_signed_angle();
 	// 向きを変える
 	transform_.rotate(0.0f, angle, 0.0f);
-	//
-	GSuint motion = NULL;
-	//
-	int attack = gsRand(0, 1);
-	if (attack == 0) {
-		motion = MotionSpitFire;
-	}
-	else if (attack == 1) {
-		motion = MotionExplosion;
-	}
-	change_state(State::Attack, motion, false);
+	change_state(State::Attack, MotionSpitFire, false);
 }
 
-void Witch::explosion() {
-
-	// 爆発の生成
-	world_->add_actor(new Explosion{ world_, player_->transform().position(),10.0f });
-}
+//void Witch::explosion() {
+//
+//	// 爆発の生成
+//	world_->add_actor(new Explosion{ world_, player_->transform().position() });
+//}
 
 void Witch::spit_fire() {
 	// 弾を生成する場所の距離
@@ -192,11 +181,6 @@ void Witch::spit_fire() {
 bool Witch::is_run() const
 {
 	return target_distance() < RunDistance;
-}
-
-bool Witch::is_stop() const
-{
-	return target_distance() > 15.0f;
 }
 
 bool Witch::is_attack() const

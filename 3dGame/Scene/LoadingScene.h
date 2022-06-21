@@ -20,7 +20,13 @@ public:
 private:
     //ロード用スレッド
     static void load_assets(void* self);
-
+    //
+    std::string now_loading_;
+    //
+    float timer_;
+    //
+    int dot_count_;
+    //
     bool is_end_;
 };
 

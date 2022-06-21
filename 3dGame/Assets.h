@@ -3,41 +3,50 @@
 
 //メッシュデータ
 enum {
-    Mesh_Player,					//プレイヤー
-    Mesh_Dragon,                    // ドラゴン
-    Mesh_Skeleton,                  //スケルトン
-    Mesh_Witch,                     //
-    Mesh_Skybox                     // スカイボックス
+    Mesh_Player,
+    Mesh_Dragon,
+    Mesh_Skeleton,
+    Mesh_Witch,
+    Mesh_Skybox
 };
 
 //オクトー
-enum {
-    Octree_Koutei,                  //校庭
-    Octree_KouteiCollider,           //校庭衝突判定
+enum {       
     Octree_Stage,
     Octree_Collider
 };
 
 //テクスチャデータ
 enum {
-    Texture_HP,             //HP表示の赤部分
-    Texture_Frame,          //
+    Texture_HP,   
+    Texture_Frame,
     Texture_ST,
 
 };
 
 enum {
-    Sound_TitleBGM,         // タイトルシーン用ＢＧＭ 
-    Sound_PlayingBGM,       // ゲームシーン用のＢＧＭ 
-    Sound_ResultBGM         // リザルト用ＢＧＭ 
+    Sound_TitleBGM,
+    Sound_PlayingBGM,
+    Sound_ResultBGM
 };
 
+//SE
 enum {
-    Se_GameStart,           // ゲーム開始時の効果音
-    Se_PlayerAttack,        // 剣道部長 攻撃時効果音
-    Se_PlayerDamage,        // 剣道部長 やられ効果音
-    Se_EnemeyDamage,        // 空手部部長 やられ効果音
-    Se_Timeout              // タイムアウトの効果音   
+    Se_GameStart,
+    Se_GameCler,
+    Se_GameOver,
+    Se_PlayerAttack,        
+    Se_PlayerDamage, 
+    Se_PlayerRun,
+    Se_PlayerBlock,
+    Se_DragonAttack1,
+    Se_DragonAttack2,
+    Se_DragonDeath,
+    Se_DragonFire,
+    Se_DragonFoot,
+    Se_DragonSpitFire,
+    Se_Skeleton_Attack,
+    Se_WitchAttack
 };
 
 // シェーダー

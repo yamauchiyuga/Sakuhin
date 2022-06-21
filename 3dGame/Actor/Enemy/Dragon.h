@@ -71,6 +71,8 @@ private:
 	bool is_run()const;
 	//
 	bool is_attack()const;
+	//
+	bool is_gravity()const;
 private:
 	//アニメーションメッシュ
 	AnimatedMesh	mesh_;

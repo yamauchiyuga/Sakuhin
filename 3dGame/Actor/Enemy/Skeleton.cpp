@@ -26,22 +26,22 @@ const float RunDistance{ 1.5f };
 //
 const float RunSpeed{ 0.06f };
 //
-const float TurnAngle{ 3.5f };
+const float TurnAngle{ 2.5f };
 //
-const float TurnAroundAngle{ 3.0f };
+const float TurnAroundAngle{ 4.0f };
 //
 const int HitDamage{ 5 };
 
 Skeketon::Skeketon(IWorld* world, const GSvector3& position) :
 	mesh_{ Mesh_Skeleton,Mesh_Skeleton, Mesh_Skeleton, MotionGeneration,false },
 	state_{ State::Generation },
-	attack_time_{0.0f},
+	attack_time_{ 0.0f },
 	motion_{ MotionGeneration }{
 	world_ = world;
 	tag_ = "EnemyTag";
 	name_ = "Skeketon";
 	player_ = nullptr;
-	collider_ = BoundingSphere{ 0.6f, GSvector3{0.0f, 1.0f, 0.0f} };
+	collider_ = BoundingSphere{ 0.4f, GSvector3{0.0f, 1.0f, 0.0f} };
 	HP_ = { MaxHP };
 	//座標の初期化
 	transform_.position(position);
@@ -84,6 +84,9 @@ void Skeketon::react(Actor& other) {
 
 	if (state_ == State::Generation)return;
 
+	if (other.tag() == "EnemyTag") {
+		collide_actor(other);
+	}
 	if (other.tag() == "PlayerAttackTag") {
 		HP_.hit_damage(HitDamage);
 	}
@@ -113,7 +116,6 @@ void Skeketon::change_state(State state, int motion, bool loop) {
 	motion_loop_ = loop;
 	state_ = state;
 	state_timer_ = 0.0f;
-	attack_time_ = 0.0f;
 }
 
 void Skeketon::generation(float delta_time) {
@@ -123,7 +125,7 @@ void Skeketon::generation(float delta_time) {
 }
 
 void Skeketon::idle(float delta_time) {
-	if (state_timer_ >= mesh_.motion_end_time()) {
+	if (state_timer_ >= mesh_.motion_end_time()+60.0f) {
 		//
 		if (is_trun()) {
 			GSint motion = (target_signed_angle() >= 0.0f) ? MotionTurnLeft : MotionTurnRight;
@@ -136,12 +138,17 @@ void Skeketon::idle(float delta_time) {
 			change_state(State::Run, MotionRun, true);
 			return;
 		}
+
+		if (is_attack()) {
+			change_state(State::Attack, MotionAttack, false);
+			return;
+		}
 	}
 }
 
 void Skeketon::run(float delta_time) {
 	// ターゲット方向の角度を求める
-	float angle = target_signed_angle();
+	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
 	// 向きを変える
 	transform_.rotate(0.0f, angle, 0.0f);
 	// 前進する（ローカル座標基準）
@@ -157,12 +164,11 @@ void Skeketon::turn(float delta_time) {
 			change_state(State::Run, MotionRun, true);
 			return;
 		}
-		attack_time_++;
-		if (is_attack()&&attack_time_==30.0f) {
+
+		if (is_attack()) {
 			change_state(State::Attack, MotionAttack, false);
 			return;
 		}
-
 	}
 	// 振り向きモーションをしながらターゲット方向を向く
 	float angle = (target_signed_angle() >= 0.0f) ? TurnAngle : -TurnAngle;
@@ -170,7 +176,7 @@ void Skeketon::turn(float delta_time) {
 }
 
 void Skeketon::dead(float delta_time) {
-	if(state_timer_ >= mesh_.motion_end_time()) {
+	if (state_timer_ >= mesh_.motion_end_time()) {
 		dead_ = true;
 	}
 }
@@ -178,6 +184,11 @@ void Skeketon::dead(float delta_time) {
 void Skeketon::attack(float delta_time) {
 
 	if (state_timer_ >= mesh_.motion_end_time()) {
+		if (is_trun()) {
+			GSint motion = (target_signed_angle() >= 0.0f) ? MotionTurnLeft : MotionTurnRight;
+			// 振り向き状態に遷移
+			change_state(State::Turn, motion);
+		}
 		change_state(State::Idle, MotionIdle, true);
 	}
 }
@@ -201,14 +212,14 @@ void Skeketon::slash() {
 }
 
 bool Skeketon::is_run() const {
-	return target_distance() > RunDistance;
+	return target_distance() > 2.0f;
 }
 
 bool Skeketon::is_trun() const
 {
-	return target_angle() >= TurnAroundAngle;
+	return target_angle() >= 10.0f;
 }
 
 bool Skeketon::is_attack() const {
-	return target_distance() <= RunDistance && target_angle() <= 7.0f;
+	return target_distance() <= 2.0f && target_angle() <= 10.0f;
 }

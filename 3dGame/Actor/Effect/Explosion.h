@@ -6,7 +6,7 @@
 class Explosion:public Actor {
 public:
 	//
-	Explosion(IWorld* world, const GSvector3& position,const float delay_timer);
+	Explosion(IWorld* world, const GSvector3& position,const float delay_timer=0.0f);
 	//
 	virtual void update(float delta_time)override;
 	//

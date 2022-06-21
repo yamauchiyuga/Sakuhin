@@ -3,7 +3,9 @@
 
 #include "IScene.h"
 #include "../World/World.h"
+#include"../EnemyGenerator.h"
 #include<gslib.h>
+#include<memory>
 
 class GamePlayScene :public IScene {
 public:
@@ -22,6 +24,8 @@ public:
 private:
 	//
 	World world_;
+	//
+	std::shared_ptr<EnemyGenerator> enemy_generator_;
 	//
 	bool is_end_{ false };
 };

@@ -32,21 +32,19 @@ bool Enemy::dead()const {
 }
 
 void Enemy::collide_actor(Actor& other) {
-	// ｙ座標を除く座標を求める
-	GSvector3 position = transform_.position();
-	position.y = 0.0f;
-	GSvector3 target = other.transform().position();
-	target.y = 0.0f;
-	// 相手との距離
+	//y座標を除く座標を求める
+	GSvector3 position = collider().center;
+	GSvector3 target = other.collider().center;
+	//相手との距離
 	float distance = GSvector3::distance(position, target);
-	// 衝突判定球の半径同士を加えた長さを求める
+	//衝突判定球の半径同士を加えた長さを求める
 	float length = collider_.radius + other.collider().radius;
-	// 衝突判定球の重なっている長さを求める
+	//衝突判定球の重なっている長さを求める
 	float overlap = length - distance;
-	// 重なっている部分の半分の距離だけ離れる
-	GSvector3 v = (position - target).getNormalized() * overlap * 0.5f;
+	//重なっている部分の半分の距離だけ離れる移動量を求める
+	GSvector3 v = (position - target).getNormalized() * overlap;
 	transform_.translate(v, GStransform::Space::World);
-	// フィールドとの衝突判定
+	//フィールドとの衝突判定
 	collide_field();
 }
 

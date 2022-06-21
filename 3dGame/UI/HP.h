@@ -11,8 +11,6 @@ public:
 	//
 	HP(const float max_health);
 	//
-	void draw(const GSvector2 HP_pos, const GSvector2 frame_pos, const float gauge_length, const GScolor color)const;
-	//
 	void draw_player()const;
 	//
 	void draw_boss()const;

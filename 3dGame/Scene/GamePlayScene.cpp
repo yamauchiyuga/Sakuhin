@@ -5,27 +5,22 @@
 #include "../Actor/Light.h"
 #include"../Actor/Player/Player.h"
 #include"../Assets.h"
-#include"../Actor/Enemy/Dragon.h"
 #include"../Actor/Enemy/Skeleton.h"
-#include"../Actor/Enemy/Witch.h"
-
+#include"../Actor/Enemy/Dragon.h"
 #include <GSstandard_shader.h>
 
 void GamePlayScene::start() {
-
-	
-
 	// 終了フラグを初期化
 	is_end_ = false;
 	// 視錐台カリングを有効にする
 	gsEnable(GS_FRUSTUM_CULLING);
 
-	
-	
 	// リフレクションプローブの読み込み(0番に読み込めば自動的に適用される）
 	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
 	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
+	// 補助ライトの読み込み
+	gsLoadAuxLight(0, "Assets/AuxLight/AuxLight.txt");
 
 	// シャドウマップの作成（２枚のカスケードシャドウマップ）
 	static const GSuint shadow_map_size[] = { 2024, 1024 };
@@ -35,11 +30,8 @@ void GamePlayScene::start() {
 	// シャドウマップバイアス
 	gsSetShadowMapBias(0.0f);
 
-
-
-
-	
-
+	// プレーヤーの追加
+	world_.add_actor(new Player{ &world_, GSvector3{ -7.0f, 4.0f, -100.0f } });
 	// フィールドクラスの追加
 	world_.add_field(new Field{ Octree_Stage, Octree_Collider, Mesh_Skybox });
 	// カメラクラスの追加
@@ -47,27 +39,28 @@ void GamePlayScene::start() {
 			  &world_, GSvector3{0.0f, 3.2f, -4.8f}, GSvector3{0.0f, 1.0, 0.0f} });
 	// ライトクラスの追加
 	world_.add_light(new Light{ &world_ });
+	//
+	//enemy_generator_= std::make_shared<EnemyGenerator>(&world_,"Assets/StageData/StatgeData.csv","Assets/StageData/FasePos.csv" );
 
-	// プレーヤーの追加
-	world_.add_actor(new Player{ &world_, GSvector3{ 0.0f, 0.125f, 5.0f } });
-	//
-	//world_.add_actor(new Skeketon{ &world_,GSvector3{0.0f,0.125,30.0f} });
-	//
-	world_.add_actor(new Witch{ &world_,GSvector3{0.0f,0.125,12.0f} });
-	//
-	//world_.add_actor(new Dragon{ &world_,GSvector3{0.0f,0.125,-8.0f} });
+	//world_.add_actor(new Dragon{ &world_,GSvector3{-7.0f,4.0f,-116.0f} });
+	world_.add_actor(new Skeketon{ &world_,GSvector3{-7.0f,4.0f,-120.0f} });
+	//world_.add_actor(new Skeketon{ &world_,GSvector3{-7.0f,4.0f,-110.0f} });
+
+
 }
 
 // 更新
 void GamePlayScene::update(float delta_time) {
 	// ワールドの更新
 	world_.update(delta_time);
+	//enemy_generator_->update(delta_time);
 }
 
 // 描画
 void GamePlayScene::draw() const {
 	// ワールドの描画
 	world_.draw();
+	gsDrawText(std::to_string(world_.count_actor()).c_str());
 }
 
 // 終了しているか？

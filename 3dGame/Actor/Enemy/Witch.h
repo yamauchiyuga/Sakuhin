@@ -37,13 +37,11 @@ private:
 	//
 	void attack_selection();
 	//
-	void explosion();
+//	void explosion();
 	//
 	void spit_fire();
 	//
 	bool is_run()const;
-	//
-	bool is_stop()const;
 	//
 	bool is_attack()const;
 

@@ -17,7 +17,6 @@ public:
 		Dodge,			//回避中
 		GuardStart,		//ガード始まり
 		Guarding,		//ガード中
-		GuardEnd,		//ガード終わり
 		Damage,			//ダメージ中
 		End				//死亡中
 	};
@@ -49,8 +48,6 @@ private:
 	void guard_start(float delta_time);
 	//
 	void guarding(float delta_time);
-	//
-	void guard_end(float delta_time);
 
 	//ダメージ中
 	void damage(float delta_time);

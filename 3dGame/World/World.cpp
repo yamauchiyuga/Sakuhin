@@ -29,10 +29,8 @@ void World::draw() const {
 	camera_->draw();
 	// ライトの描画
 	light_->draw();
-
 	 //シャドウマップの描画
 	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
-
 	// フィールドの描画
 	field_->draw();
 	// アクターの描画

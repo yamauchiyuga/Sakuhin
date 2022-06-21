@@ -5,6 +5,7 @@
 #include "../../Collision/Line.h"
 #include "../../Assets.h"
 #include"../../Input.h"
+#include<iostream>
 
 enum {
 	MotionAttack,
@@ -14,7 +15,7 @@ enum {
 	MotionEnd,
 	MotionDodge,
 	MotionIdle,
-	MotionGuardEnd,
+	MotionGuardAccept,
 	MotionGuardLoop,
 	MotionGuardStart,
 	MotionRun
@@ -30,7 +31,9 @@ const float FootOffset{ 0.1f };
 //
 const float Gravity{ -0.016f };
 //
-const int DodgeStamina{ 20 };
+const int DodgeStamina{ 10 };
+//
+const int GuradStamin{ 20 };
 //
 const float DodgeDistance{ 1.0f };
 //
@@ -42,7 +45,7 @@ const float MaxHP{ 100.0f };
 //
 const float MaxST{ 100.0f };
 //
-const float Input{ 0.2f };
+const float Input{ 0.3f };
 
 //
 Player::Player(IWorld* world, const GSvector3& position) :
@@ -70,6 +73,12 @@ Player::Player(IWorld* world, const GSvector3& position) :
 	mesh_.add_animation_event(MotionAttack, 15.0f, [=] {generate_attac_collider(); });
 	mesh_.add_animation_event(MotionAttack2, 15.0f, [=] {generate_attac_collider(); });
 	mesh_.add_animation_event(MotionAttack3, 22.0f, [=] {generate_attac_collider(); });
+	mesh_.add_animation_event(MotionRun, 13.0f, [] {gsPlaySE(Se_PlayerRun); });
+	mesh_.add_animation_event(MotionRun, 30.0f, [] {gsPlaySE(Se_PlayerRun); });
+
+	mesh_.add_animation_event(MotionAttack, 3.0f, [] {gsPlaySE(Se_PlayerAttack); });
+	mesh_.add_animation_event(MotionAttack2, 3.0f, [] {gsPlaySE(Se_PlayerAttack); });
+	mesh_.add_animation_event(MotionAttack3, 3.0f, [] {gsPlaySE(Se_PlayerAttack); });
 
 }
 
@@ -91,6 +100,8 @@ void Player::update(float delta_time) {
 	mesh_.transform(transform_.localToWorldMatrix());
 
 	ST_.update(delta_time);
+
+
 }
 
 //
@@ -98,7 +109,15 @@ void Player::draw()const {
 	//
 	mesh_.draw();
 
-	//
+	/*float a = transform_.position().x;
+	float b = transform_.position().y;
+	float c = transform_.position().z;
+	std::string Pos_x(std::to_string(a));
+	std::string Pos_y(std::to_string(b));
+	std::string Pos_z(std::to_string(c));
+	gsDrawText((Pos_x+" "+Pos_y+ " " + Pos_z).c_str());
+	std::cout << transform_.position() << std::endl;*/
+	
 	if (enable_collider_) {
 		//
 		collider().draw();
@@ -118,6 +137,7 @@ void Player::react(Actor& other) {
 	if (other.tag() == "EnemyTag") {
 		//
 		collide_actor(other);
+		return;
 	}
 	//回避中なら何もしない
 	if (state_ == State::Dodge)return;
@@ -127,17 +147,21 @@ void Player::react(Actor& other) {
 	if (state_ == State::End)return;
 
 	if (other.tag() == "EnemyAttackTag") {
-
-		if (state_ == State::Guarding) {
-
+		if (can_guard()) {
+			knock_back(other, 0.2f);
+			gsPlaySE(Se_PlayerBlock);
+			ST_.consumption_stamina(GuradStamin);
+			change_state(State::Guarding, MotionGuardAccept, false);
 			return;
 		}
 
+		knock_back(other, 0.3f);
+		gsPlaySE(Se_PlayerDamage);
 		enable_collider_ = false;
 		combo_ = 0;
 		change_state(State::Damage, MotionDamage, false);
 		//
-		HP_.hit_damage(10);
+		HP_.hit_damage(1);
 	}
 
 	if (HP_.is_end()) {
@@ -154,7 +178,6 @@ void Player::update_state(float delta_time) {
 	case Player::State::Dodge: dodge(delta_time); break;
 	case Player::State::GuardStart: guard_start(delta_time); break;
 	case Player::State::Guarding: guarding(delta_time); break;
-	case Player::State::GuardEnd: guard_end(delta_time); break;
 	case Player::State::Damage:damage(delta_time); break;
 	case Player::State::End: end(delta_time); break;
 	}
@@ -192,7 +215,7 @@ void Player::move(float delta_time) {
 
 	int motion = MotionIdle;
 
-	const float WalkSpeed{ 0.09f };
+	const float WalkSpeed{ 0.1f };
 	//
 	GSvector3 forwad = world_->camera()->transform().forward();
 	forwad.y = 0.0f;
@@ -245,7 +268,6 @@ void Player::attack(float delta_time) {
 		ST_.consumption_stamina(AttackStamina);
 		int  motion = NULL;
 		++combo_;
-
 		switch (combo_) {
 		case 1:
 			motion = MotionAttack2;
@@ -258,8 +280,8 @@ void Player::attack(float delta_time) {
 	}
 	//
 	if (state_timer_ >= mesh_.motion_end_time()) {
-		combo_ = 0;
-		move(delta_time);
+		combo_ = 0.0f;
+		change_state(State::Move, MotionIdle, true);
 	}
 
 }
@@ -272,28 +294,36 @@ void Player::dodge(float delta_time) {
 	//
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		combo_ = 0;
-		move(delta_time);
+		/*move(delta_time);*/
+		change_state(State::Move, MotionIdle, true);
 	}
 }
 
 void Player::guard_start(float delta_time) {
-	if (!Input::is_guard()) {
-		change_state(State::Move, MotionIdle, true);
-	}
+		//ガードボタンが離されたら
+		if (!gsXBoxPadButtonState(0, GS_XBOX_PAD_LEFT_SHOULDER)) {
+			//移動中に遷移
+			change_state(State::Move, MotionIdle);
+		}
 }
 
 
 void Player::guarding(float delta_time) {
-
-}
-
-void Player::guard_end(float delta_time) {
+	velocity_ -= GSvector3{ velocity_.x, 0.0f, velocity_.z } *0.2f * delta_time;
+	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+	//
 	if (state_timer_ >= mesh_.motion_end_time()) {
-		change_state(State::Move, MotionIdle, true);
+		change_state(State::GuardStart, MotionGuardLoop, true);
 	}
 }
 
 void Player::damage(float delta_time) {
+	//ノックバックする
+	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
+	//減速させる
+	constexpr float damp{ 0.4f };
+	velocity_ -= GSvector3{ velocity_.x, 0.0f, velocity_.z } *damp * delta_time;
+	//ダメージモーションの終了を待つ
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::Move, MotionIdle, false);
 		enable_collider_ = true;
@@ -333,7 +363,7 @@ bool Player::can_attackable() const
 {
 	if (ST_.get_stamina() < AttackStamina)return false;
 	if (combo_ >= MaxCombo) return false;
-	const float NextAttackTime{ 50.0f };
+	const float NextAttackTime{ 40.0f };
 	if (state_timer_ <= mesh_.motion_end_time() - NextAttackTime)return false;
 	return true;
 }
@@ -343,8 +373,8 @@ bool Player::can_guard() const
 	//
 	if (ST_.get_stamina() <= 20)return false;
 	//
-	if (state_ != State::Guarding)return false;
-
+	if (state_ != State::GuardStart)return false;
+	//
 	return true;
 }
 
@@ -356,7 +386,7 @@ void Player::knock_back(Actor& other, float power) {
 	//y成分は無効にする
 	to_target.y = 0.0f;
 	//ターゲット方向と逆方向にノックバックする移動量を求める
-	velocity_ = -to_target.getNormalized() * power;
+	velocity_ = to_target.getNormalized() * power;
 	//敵の方を向く
 	transform_.lookAt(at);
 }
@@ -388,21 +418,19 @@ void Player::collide_field() {
 }
 
 void Player::collide_actor(Actor& other) {
-	// ｙ座標を除く座標を求める
-	GSvector3 position = transform_.position();
-	position.y = 0.0f;
-	GSvector3 target = other.transform().position();
-	target.y = 0.0f;
-	// 相手との距離
+	//y座標を除く座標を求める
+	GSvector3 position = collider().center;
+	GSvector3 target = other.collider().center;
+	//相手との距離
 	float distance = GSvector3::distance(position, target);
-	// 衝突判定球の半径同士を加えた長さを求める
+	//衝突判定球の半径同士を加えた長さを求める
 	float length = collider_.radius + other.collider().radius;
-	// 衝突判定球の重なっている長さを求める
+	//衝突判定球の重なっている長さを求める
 	float overlap = length - distance;
-	// 重なっている部分の半分の距離だけ離れる
-	GSvector3 v = (position - target).getNormalized() * overlap * 0.5f;
+	//重なっている部分の半分の距離だけ離れる移動量を求める
+	GSvector3 v = (position - target).getNormalized() * overlap;
 	transform_.translate(v, GStransform::Space::World);
-	// フィールドとの衝突判定
+	//フィールドとの衝突判定
 	collide_field();
 }
 
