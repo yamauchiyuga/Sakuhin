@@ -4,6 +4,7 @@
 
 #include "Enemy.h"
 #include"../AnimatedMesh.h"
+#include<memory>
 class Witch : public Enemy{
 public :
 	enum class State{
@@ -14,7 +15,7 @@ public :
 	};
 
 	//
-	Witch(IWorld* world, const GSvector3& position);
+	Witch(std::shared_ptr<IWorld> world, const GSvector3& position);
 	//
 	virtual void update(float delta_time)override;
 	//
@@ -45,7 +46,7 @@ private:
 	//
 	bool is_attack()const;
 
-
+	bool hit_wall;
 	//アニメーションメッシュ
 	AnimatedMesh	mesh_;
 	//モーション番号

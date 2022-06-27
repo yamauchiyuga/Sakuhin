@@ -102,11 +102,12 @@ void AnimatedMesh::current_motion_time(float time, GSuint layer) {
 }
 
 //アニメーションイベント登録
-void AnimatedMesh::add_animation_event(GSuint motion, float time, std::function<void()> callback) {
+void AnimatedMesh::add_event(GSuint motion, GSfloat time, std::function<void()> callback){
 	for (auto& layer : animation_layers_) {
-		layer.add_animation_event(motion, time, callback);
+		layer.add_event(motion, time, callback);
 	}
 }
+
 
 // コンストラクタ
 AnimatedMesh::Animation::Animation(GSuint animation, GSuint motion, bool loop) :
@@ -119,48 +120,33 @@ AnimatedMesh::Animation::Animation(GSuint animation, GSuint motion, bool loop) :
 	lerp_timer_{ 0.0f } {
 }
 
-//デストラクタ
-AnimatedMesh::Animation::~Animation() {
-	std::for_each(animation_events_.begin(), animation_events_.end(), [](AnimationEvent* animation_event) {delete animation_event; });
-	animation_events_.clear();
-}
+
 // 更新
 void AnimatedMesh::Animation::update(float delta_time) {
-	//更新前のタイマー値を取っておく
+	//更新前のアニメーションタイマー
 	GSfloat prev_timer = motion_timer_;
-	// アニメーションタイマの更新
+	//アニメーションタイマの更新
 	motion_timer_ += delta_time;
+
+	//アニメーションイベントの実行
+	for (const auto& animation_event : events_) {
+		if (animation_event->motion_ == motion_ &&
+			prev_timer < animation_event->time_ &&
+			animation_event->time_ <= motion_timer_) {
+			animation_event->callback_();
+		}
+	}
+
 	if (motion_loop_) {
-		// モーションタイマをループさせる
+		//モーションタイマをループさせる
 		motion_timer_ = std::fmod(motion_timer_, motion_end_time());
 	}
 	else {
-		// モーションタイマをクランプする
+		//モーションタイマをクランプする
 		motion_timer_ = std::min(motion_timer_, motion_end_time() - 1.0f);
 	}
-	// 補間中タイマの更新
+	//補間タイマの更新
 	lerp_timer_ = std::min(lerp_timer_ + delta_time, LerpTime);
-
-	//モーションがループしたかどうか。
-    // 現在の時間が1フレーム前の時間より小さい場合は、ループしたと判断できる。
-	bool looped = motion_timer_ < prev_timer;
-
-	//全イベントをチェックし、必要であればイベントを発行する
-	for (const auto& event : animation_events_) {
-		// 現在のモーションがイベント対象のモーションでなければ、何もしない
-		if (event->motion_ != motion_) continue;
-
-		if (looped) {
-			if (prev_timer < event->time_ || event->time_ <= motion_timer_) {
-				event->callback_(); // コールバック処理を呼び出す
-			}
-		}
-		else {
-			if (prev_timer < event->time_ && event->time_ <= motion_timer_) {
-				event->callback_(); // コールバック処理を呼び出す
-			}
-		}
-	}
 
 }
 
@@ -226,8 +212,7 @@ GSuint AnimatedMesh::Animation::bone_count() const {
 	return gsGetAnimationNumBones(animation_, motion_);
 }
 
-//アニメーションイベント登録
-void AnimatedMesh::Animation::add_animation_event(GSuint motion, float time, std::function<void()> callback) {
+void AnimatedMesh::Animation::add_event(GSuint motion, GSfloat time, std::function<void()> callback){
 	//アニメーションイベントを登録
-	animation_events_.push_back(new AnimationEvent(motion, time, callback));
+	events_.push_back( std::make_shared<AnimationEvent>(motion, time, callback));
 }

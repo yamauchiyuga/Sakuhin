@@ -8,20 +8,19 @@
 #include <memory>
 
 // アニメーションイベント構造体
-// アニメーションイベント（アニメーションの指定されたタイミングで処理を実行）に関する情報を保持する。
 struct AnimationEvent {
-	//コンストラクタ
+	// コンストラクタ
 	AnimationEvent(GSuint motion, GSfloat time, std::function<void()> callback) :
 		motion_{ motion },
 		time_{ time },
-		callback_{ callback }{
+		callback_{ callback } {
 	}
-	//イベントを発生させるモーション番号
+	// イベントを発生させるモーション番号
 	GSuint motion_;
-	//イベントを発生させるタイミング
+	// イベントを発生させるタイミング
 	GSfloat time_;
-	//イベント発生時のコールバック
-	std::function<void()>callback_;
+	// イベント発生時のコールバック
+	std::function<void()> callback_;
 };
 
 // アニメーション付きメッシュクラス
@@ -53,8 +52,9 @@ public:
 	float current_motion_time(GSuint layer = 0) const;
 	// 現在のモーションの再生時間を設定
 	void current_motion_time(float time, GSuint layer = 0);
+
 	//アニメーションイベントを登録する
-	void add_animation_event(GSuint motion, GSfloat time, std::function<void()> callback);
+	void add_event(GSuint motion, GSfloat time, std::function<void()> callback);
 
 private:
 	// アニメーションクラス
@@ -62,8 +62,6 @@ private:
 	public:
 		// コンストラクタ
 		Animation(GSuint animation = 0, GSuint motion = 0, bool loop = true);
-		//デストラクタ
-		~Animation();
 		// 更新
 		void update(float delta_time);
 		// モーションの変更
@@ -80,9 +78,9 @@ private:
 		GSmatrix4 local_bone_matrix(GSuint bone_no) const;
 		// ボーン数を返す
 		GSuint bone_count() const;
+		//アニメーションイベント登録
+		void add_event(GSuint motion, GSfloat time, std::function<void()> callback);
 
-		////アニメーションイベント登録
-		void add_animation_event(GSuint motion, GSfloat time, std::function<void()> callback);
 
 	private:
 		// アニメーション
@@ -100,7 +98,7 @@ private:
 		// 補間アニメーションタイマ
 		GSfloat     lerp_timer_{ 0.0f };
 		//アニメーションイベント格納用vector
-		std::vector<AnimationEvent*> animation_events_;
+		std::vector<std::shared_ptr<AnimationEvent>> events_;
 	};
 	// メッシュ
 	GSuint                  mesh_;

@@ -33,12 +33,12 @@ bool Enemy::dead()const {
 
 void Enemy::collide_actor(Actor& other) {
 	//y座標を除く座標を求める
-	GSvector3 position = collider().center;
-	GSvector3 target = other.collider().center;
+	GSvector3 position = collider().center_;
+	GSvector3 target = other.collider().center_;
 	//相手との距離
 	float distance = GSvector3::distance(position, target);
 	//衝突判定球の半径同士を加えた長さを求める
-	float length = collider_.radius + other.collider().radius;
+	float length = collider_.radius_ + other.collider().radius_;
 	//衝突判定球の重なっている長さを求める
 	float overlap = length - distance;
 	//重なっている部分の半分の距離だけ離れる移動量を求める
@@ -58,12 +58,13 @@ void Enemy::collide_field() {
 		center.y = transform_.position().y;
 		// 補正後の座標に変更する
 		transform_.position(center);
+		hit_wall_ = true;
 	}
 
 	// 地面との衝突判定（線分との交差判定）
 	GSvector3 position = transform_.position();
 	Line line;
-	line.start = position + collider_.center;
+	line.start = position + collider_.center_;
 	line.end = position + GSvector3{ 0.0f, -FootOffset, 0.0f };
 	GSvector3 intersect;  // 地面との交点
 	if (world_->field()->collide(line, &intersect)) {
@@ -86,7 +87,12 @@ void Enemy::generate_attac_collider(const float radius, const float distance, co
 	// 衝突判定用の球を作成
 	BoundingSphere collider{ radius, position };
 	// 衝突判定を出現させる
-	world_->add_actor(new AttackCollider{ world_, collider,
-		"EnemyAttackTag", "EnemyAttack", tag_, life_span, delay });
+	world_->add_actor(std::make_shared<AttackCollider>( world_, collider,
+		"EnemyAttackTag", "EnemyAttack", tag_, life_span, delay ));
+}
+
+bool Enemy::is_hit_wall()const {
+	return hit_wall_;
+
 }
 

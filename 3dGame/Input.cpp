@@ -17,7 +17,7 @@ bool Input::is_a_push() {
 }
 
 
-//攻撃ボタンを押されているか？
+//攻撃ボタンを押したか？
 bool Input::is_attack()
 {
 	return gsXBoxPadButtonTrigger(0, GS_XBOX_PAD_X);
@@ -43,11 +43,13 @@ bool Input::is_determination()
 	return  gsXBoxPadButtonTrigger(0, GS_XBOX_PAD_A);
 }
 //左スティックの縦の入力量
-float Input::get_left_vertical() {
+float Input::get_left_vertical()
+{
 	return input_left_.y;
 }
 //左スティックの横の入力量
-float Input::get_left_horizontal() {
+float Input::get_left_horizontal() 
+{
 	return input_left_.x;
 }
 //右スティックの縦の入力量

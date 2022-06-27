@@ -1,19 +1,19 @@
 #include "HP.h"
 #include"../Assets.h"
 
-
+//コンストラクタ
 HP::HP(const float max_health):
 	max_health_{ max_health },
 	cullent_health_{ max_health }
 {
 }
 
-
-//
+//ダメージ処理
 void HP::hit_damage(int power) {
+	//0未満にならないにしている
 	cullent_health_ = MAX(cullent_health_ - power, 0);
 }
-
+//プレイヤー用
 void HP::draw_player() const{
 	//HPゲージの位置
 	const GSvector2 position{ 80.0f, 70.0f };
@@ -35,6 +35,7 @@ void HP::draw_player() const{
 	gsDrawSprite2D(Texture_HP, &position, &rect, NULL, &barColor, NULL, 0.0f);
 }
 
+//ボス用
 void HP::draw_boss() const{
 	//HPゲージの位置
 	const GSvector2 Position{ 250.0f, 650.0f };
@@ -60,11 +61,11 @@ void HP::draw_boss() const{
 	//HPゲージの描画
 	gsDrawSprite2D(Texture_HP, &Position, &Rect, NULL, &HealthColor, NULL, 0.0f);
 }
-
+//現在のHP を返す
 float HP::cullent_health()const {
 	return cullent_health_;
 }
-
+//死亡してるか返す
 bool HP::is_end()const {
 	if (cullent_health_ <= 0)return true;
 	return false;

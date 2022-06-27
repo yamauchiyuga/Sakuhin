@@ -32,7 +32,7 @@ const float TurnAroundAngle{ 4.0f };
 //
 const int HitDamage{ 5 };
 
-Skeketon::Skeketon(IWorld* world, const GSvector3& position) :
+Skeketon::Skeketon(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	mesh_{ Mesh_Skeleton,Mesh_Skeleton, Mesh_Skeleton, MotionGeneration,false },
 	state_{ State::Generation },
 	attack_time_{ 0.0f },
@@ -40,6 +40,7 @@ Skeketon::Skeketon(IWorld* world, const GSvector3& position) :
 	world_ = world;
 	tag_ = "EnemyTag";
 	name_ = "Skeketon";
+	is_dead_ = true;
 	player_ = nullptr;
 	collider_ = BoundingSphere{ 0.4f, GSvector3{0.0f, 1.0f, 0.0f} };
 	HP_ = { MaxHP };
@@ -47,7 +48,7 @@ Skeketon::Skeketon(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 	mesh_.transform(transform_.localToWorldMatrix());
 
-	mesh_.add_animation_event(MotionAttack, 12.0f, [=] {slash(); });
+	mesh_.add_event(MotionAttack, 12.0f, [=] {slash(); });
 }
 
 void Skeketon::update(float delta_time) {
@@ -88,11 +89,13 @@ void Skeketon::react(Actor& other) {
 		collide_actor(other);
 	}
 	if (other.tag() == "PlayerAttackTag") {
+		gsPlaySE(Se_EnemyDamage);
 		HP_.hit_damage(HitDamage);
 	}
 
 	if (HP_.is_end()) {
 		enable_collider_ = false;
+		is_dead_ = true;
 		change_state(Skeketon::State::Dead, MotionDead, false);
 	}
 

@@ -29,7 +29,7 @@ public:
 	// 衝突リアクション
 	virtual void react(Actor& other);
 	// メッセージ処理
-	virtual void handle_message(const std::string& message, void* param);
+	virtual void handle_message(const std::string& message, std::shared_ptr<void> param);
 	// 衝突判定
 	void collide(Actor& other);
 	// 死亡する
@@ -60,7 +60,7 @@ public:
 
 protected:
 	// ワールド
-	IWorld* world_{ nullptr };
+	std::shared_ptr<IWorld> world_;
 	// タグ名
 	std::string     tag_;
 	// 名前

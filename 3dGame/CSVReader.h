@@ -4,7 +4,6 @@
 #include <vector>
 #include <string>
 
-// CSVリーダークラス
 class CsvReader {
 public:
     // コンストラクタ

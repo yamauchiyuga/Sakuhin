@@ -28,7 +28,7 @@ const float RunSpeed{ 0.1f };
 //
 const int HitDamage{ 5 };
 
-Witch::Witch(IWorld* world, const GSvector3& position) :
+Witch::Witch(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	mesh_{ Mesh_Witch,Mesh_Witch, Mesh_Witch, MotionIdle },
 	state_{ State::Idle },
 	motion_{ MotionIdle }{
@@ -36,13 +36,15 @@ Witch::Witch(IWorld* world, const GSvector3& position) :
 	tag_ = "EnemyTag";
 	name_ = "Witch";
 	player_ = nullptr;
+	hit_wall = false;
+	is_dead_=false;
 	collider_ = BoundingSphere{ 0.5f, GSvector3{0.0f, 1.0f, 0.0f} };
 	HP_ = { MaxHP };
 	//座標の初期化
 	transform_.position(position);
 	mesh_.transform(transform_.localToWorldMatrix());
 
-	mesh_.add_animation_event(MotionSpitFire, 23.0f, [=] {spit_fire(); });
+	mesh_.add_event(MotionSpitFire, 23.0f, [=] {spit_fire(); });
 	//mesh_.add_animation_event(MotionExplosion, 100.0f, [=] {explosion(); });
 }
 
@@ -78,12 +80,17 @@ void Witch::draw() const {
 }
 
 void Witch::react(Actor& other) {
+	if (other.tag() == "EnemyTag") {
+		collide_actor(other);
+	}
+
 	if (other.tag() == "PlayerAttackTag") {
 		HP_.hit_damage(HitDamage);
 	}
 
 	if (HP_.is_end()) {
 		enable_collider_ = false;
+		is_dead_ = true;
 		change_state(Witch::State::Dead, MotionDead, false);
 	}
 }
@@ -104,6 +111,7 @@ void Witch::change_state(State state, int motion, bool loop) {
 	motion_loop_ = loop;
 	state_ = state;
 	state_timer_ = 0.0f;
+	hit_wall_ = false;
 }
 
 void Witch::idle(float delta_time) {
@@ -125,10 +133,9 @@ void Witch::run(float delta_time) {
 	
 	// 前進する（ローカル座標基準）
 	transform_.translate(0.0f, 0.0f, RunSpeed * delta_time);
-	if (is_attack()) {
+	if (is_attack()||is_hit_wall()) {
 		attack_selection();
 	}
-
 }
 
 void Witch::dead(float delta_time) {
@@ -175,7 +182,7 @@ void Witch::spit_fire() {
 	velocity = transform_.forward() * Speed;
 
 	// 弾の生成
-	world_->add_actor(new FireSphere{ world_, position, velocity });
+	world_->add_actor(std::make_unique< FireSphere>( world_, position, velocity ));
 }
 
 bool Witch::is_run() const

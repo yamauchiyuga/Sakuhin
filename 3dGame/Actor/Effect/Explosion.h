@@ -2,11 +2,11 @@
 #define EXPLOSION_H_
 
 #include"../Actor.h"
-
+#include<memory>
 class Explosion:public Actor {
 public:
 	//
-	Explosion(IWorld* world, const GSvector3& position,const float delay_timer=0.0f);
+	Explosion(std::shared_ptr<IWorld> world, const GSvector3& position,const float delay_timer=0.0f);
 	//
 	virtual void update(float delta_time)override;
 	//

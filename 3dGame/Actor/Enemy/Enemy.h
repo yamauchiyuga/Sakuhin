@@ -2,7 +2,7 @@
 #define ENEMY_H_
 #include"../Actor.h"
 #include"../../UI/HP.h"
-
+#include<memory>
 
 //
 class Enemy :public Actor {
@@ -23,6 +23,8 @@ protected:
 	void collide_field();
 	//UŒ‚”»’è‚ğ¶¬
 	void generate_attac_collider(const float radius, const float distance, const float height,const float width,const float delay,const float life_span);
+	//
+	bool is_hit_wall()const;
 
 public:
 
@@ -41,8 +43,10 @@ protected:
 	float state_timer_{0.0f};
 	//
 	bool is_dead_{ false };
+	//
+	bool hit_wall_{ false };
 	//ƒvƒŒƒCƒ„[
-	Actor* player_{nullptr};
+	std::shared_ptr<Actor> player_{nullptr};
 	//
 	HP HP_;
 };

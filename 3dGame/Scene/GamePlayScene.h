@@ -4,6 +4,7 @@
 #include "IScene.h"
 #include "../World/World.h"
 #include"../EnemyGenerator.h"
+#include"../Fog.h"
 #include<gslib.h>
 #include<memory>
 
@@ -21,9 +22,12 @@ public:
 	virtual std::string next() const override;
 	//
 	virtual void end()override;
+
 private:
 	//
-	World world_;
+	std::shared_ptr<World> world_;
+	//
+	Fog fog_;
 	//
 	std::shared_ptr<EnemyGenerator> enemy_generator_;
 	//

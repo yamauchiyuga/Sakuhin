@@ -5,7 +5,7 @@
 #include <gslib.h>
 #include <GSgame.h>
 #include <cmath>
-
+#include<GSeffect.h>
 
 void LoadingScene::start()
 {
@@ -19,9 +19,10 @@ void LoadingScene::start()
 
 void LoadingScene::update(float delta_time)
 {
-
-	static const float dot_generation_time = 60.0f;
+	//この秒数間で生成
+	static const float dot_generation_time = 10.0f;
 	if (timer_ >= dot_generation_time) {
+		//ドットが指定数より多くならないよう初期化
 		now_loading_ = "Now Loading";
 		dot_count_ = (dot_count_ + 1) % 4;
 		for (int i = 0; i < dot_count_ ; ++i) {
@@ -38,7 +39,6 @@ void LoadingScene::draw() const
 	gsFontParameter(0, 50, "ＭＳ ゴシック");
 	gsTextPos(TextPos.x, TextPos.y);
 	gsDrawText(now_loading_.c_str());
-	
 }
 
 bool LoadingScene::is_end() const
@@ -57,6 +57,7 @@ void LoadingScene::end() {
 void LoadingScene::load_assets(void* self) {
 
 	LoadingScene* load = (LoadingScene*)self;
+	//シェーダーの初期化
 	gsInitDefaultShader();
 	// メッシュ用のシェーダー
 	gsLoadShader(Shader_StandardMesh, "Assets/shader/StandardMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
@@ -68,7 +69,16 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadShader(Shader_ShadowMapMesh, "Assets/shader/ShadowMap.vert", "Assets/shader/ShadowMap.frag");
 	// シャドウマップ用のスキニングメッシュシェーダー
 	gsLoadShader(Shader_ShadowMapSkinnedMesh, "Assets/shader/ShadowMapSkinned.vert", "Assets/shader/ShadowMap.frag");
-
+	// ポストエフェクトシェーダーの読み込み
+	gsLoadShader(0, "Assets/Shader/RenderTexture.vert", "Assets/Shader/PostEffect.frag");
+	// リフレクションプローブの読み込み(0番に読み込めば自動的に適用される）
+	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
+	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
+	gsLoadLightmap(0, "Assets/Lightmap01/Lightmap.txt");
+	// 補助ライトの読み込み
+	gsLoadAuxLight(0, "Assets/AuxLight/AuxLight_Torch_.txt");
+	gsLoadAuxLight(1, "Assets/AuxLight/AuxLight.txt"); 
+	
 
 	//プレイヤーの読み込み
 	gsLoadMesh(Mesh_Player, "Assets/model/Player/Player.mshb");
@@ -86,13 +96,25 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadMesh(Mesh_Witch, "Assets/model/Enemy/Witch/Witch.mshb");
 	gsLoadSkeleton(Mesh_Witch, "Assets/model/Enemy/Witch/Witch.sklb");
 	gsLoadAnimation(Mesh_Witch, "Assets/model/Enemy/Witch/Witch.anmb");
-
+	//テクスチャ読み込み
+	gsLoadTexture(Texture_Titel, "Assets/Texture/Title.png");
 	gsLoadTexture(Texture_Frame, "Assets/Texture/GaugeFrame.png");
+	gsLoadTexture(Texture_Fade, "Assets/Texture/fade.png");
+	gsLoadTexture(Texture_GameOver, "Assets/Texture/GameOver.png");
+	gsLoadTexture(Texture_GameClear, "Assets/Texture/GameClear.png");
 	//SE読み込み
 	gsLoadSE(Se_PlayerAttack, "Assets/Sound/SE/Player/Player_Combo01_Swing.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerBlock, "Assets/Sound/SE/Player/Player_Block.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerDamage, "Assets/Sound/SE/Player/Player_Damage.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerRun, "Assets/Sound/SE/Player/Player_W.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_EnemyDamage, "Assets/Sound/SE/Player/Damage.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonAttack1, "Assets/Sound/SE/Dragon/Dragon_Attack1.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonAttack2, "Assets/Sound/SE/Dragon/Dragon_Attack2.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonDeath, "Assets/Sound/SE/Dragon/Dragon_Death.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonFire, "Assets/Sound/SE/Dragon/Dragon_Fire.wav", 2, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonFoot, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonLanding, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonSpitFire, "Assets/Sound/SE/Dragon/Dragon_SpitFire.wav", 1, GWAVE_DEFAULT);
 	
 
 	// スカイボックスメッシュの読み込み
@@ -101,8 +123,19 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadOctree(Octree_Stage, "Assets/TtestFiled/Field01.oct");
 	// 衝突判定用オクツリーの読み込み
 	gsLoadOctree(Octree_Collider, "Assets/TtestFiled/Field01_collider.oct");
-
-	gsSetVolumeSE(Se_PlayerRun, 0.3f);
+	//音量設定
+	gsSetVolumeSE(Se_PlayerRun, 0.4f);
+	gsSetVolumeSE(Se_PlayerAttack, 0.4f);
+	gsSetVolumeSE(Se_PlayerBlock, 0.4f);
+	gsSetVolumeSE(Se_PlayerDamage, 0.4f);
+	gsSetVolumeSE(Se_EnemyDamage, 0.4f);
+	gsSetVolumeSE(Se_DragonAttack1, 0.3f);
+	gsSetVolumeSE(Se_DragonAttack2, 0.3f);
+	gsSetVolumeSE(Se_DragonDeath, 0.3f);
+	gsSetVolumeSE(Se_DragonFire, 0.3f);
+	gsSetVolumeSE(Se_DragonFoot, 0.3f);
+	gsSetVolumeSE(Se_DragonLanding, 0.5f);
+	gsSetVolumeSE(Se_DragonSpitFire, 0.3f);
 
 	load->is_end_ = true;
 

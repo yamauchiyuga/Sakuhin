@@ -4,8 +4,8 @@
 #include "IScene.h"
 #include <gslib.h>
 
-// タイトルシーン
-class TitleScene : public IScene {
+class TitleScene : public IScene 
+{
 public:
     // 開始
     virtual void start() override;
@@ -20,8 +20,14 @@ public:
     // 終了
     virtual void end() override;
 private:
+    //フェード画像の描画
+    void draw_fade() const;
     // 終了フラグ
-    bool is_end_;
+    bool is_end_{false};
+    //フェード画像のアルファ値
+    float alpha_{0.0f};
+    //フェード中か
+    bool is_fade_{false};
 };
 
 #endif

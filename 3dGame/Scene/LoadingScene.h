@@ -22,11 +22,11 @@ private:
     static void load_assets(void* self);
     //
     std::string now_loading_;
-    //
+    //ドットを出現させるタイマー
     float timer_;
-    //
+    //ドットの数
     int dot_count_;
-    //
+    //終了しているか
     bool is_end_;
 };
 

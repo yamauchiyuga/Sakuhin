@@ -3,6 +3,7 @@
 
 #include"Enemy.h"
 #include"../AnimatedMesh.h"
+#include<memory>
 
 class Skeketon :public Enemy {
 public:
@@ -16,7 +17,7 @@ public:
 		Attack
 	};
 	//
-	Skeketon(IWorld* world, const GSvector3& position);
+	Skeketon(std::shared_ptr<IWorld> world, const GSvector3& position);
 	//
 	virtual void update(float delta_time)override;
 	//

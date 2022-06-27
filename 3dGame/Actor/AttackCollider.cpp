@@ -1,7 +1,7 @@
 #include"AttackCollider.h"
 
 //コンストラクタ
-AttackCollider::AttackCollider(IWorld* world, const BoundingSphere& collider,
+AttackCollider::AttackCollider(std::shared_ptr<IWorld>world, const BoundingSphere& collider,
 	const std::string& tag, const std::string& name,
 	const std::string& owner_tag,
 	float lifespan, float delay) :
@@ -16,9 +16,9 @@ AttackCollider::AttackCollider(IWorld* world, const BoundingSphere& collider,
 	name_ = name;
 
 	//衝突判定の初期化
-	collider_ = BoundingSphere{ collider.radius };
+	collider_ = BoundingSphere{ collider.radius_ };
 	//座標の初期化
-	transform_.position(collider.center);
+	transform_.position(collider.center_);
 	//衝突判定を初期化
 	enable_collider_ = false;
 }

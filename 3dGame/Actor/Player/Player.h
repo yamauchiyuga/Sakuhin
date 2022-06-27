@@ -5,6 +5,7 @@
 #include"../AnimatedMesh.h"
 #include"../../UI/HP.h"
 #include"../../UI/ST.h"
+#include<memory>
 
 //プレーヤークラス
 class Player :public Actor {
@@ -22,7 +23,7 @@ public:
 	};
 
 	//コンストラクタ
-	Player(IWorld* world, const GSvector3& position = GSvector3{ 0.0f, 0.0f, 0.0f });
+	Player(std::shared_ptr<IWorld> world, const GSvector3& position = GSvector3{ 0.0f, 0.0f, 0.0f });
 	//更新
 	virtual void update(float delta_time)override;
 	//描画
@@ -60,6 +61,8 @@ private:
 	//
 	bool can_guard()const;
 	//
+	bool end_line()const;
+	//
 	void knock_back(Actor& other, float power);
 	//
 	void collide_actor(Actor& other);
@@ -73,17 +76,19 @@ private:
 	AnimatedMesh	mesh_;
 	//モーション番号
 	GSuint motion_;
+	//
+	HP HP_;
+	//
+	ST ST_;
 	//モーションのループ設定
 	bool motion_loop_;
+	//
+	bool det_line_;
 	//状態
 	State state_;
 	//状態タイマ
 	float state_timer_;
 	//
 	int combo_;
-	//
-	HP HP_;
-	//
-	ST ST_;
 };
 #endif

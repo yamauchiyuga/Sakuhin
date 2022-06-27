@@ -3,7 +3,7 @@
 
 #include"Enemy.h"
 #include"../AnimatedMesh.h"
-
+#include<memory>
 
 class Dragon : public Enemy {
 public:
@@ -20,7 +20,7 @@ public:
 		Attack
 	};
 	//
-	Dragon(IWorld* world, const GSvector3& position);
+	Dragon(std::shared_ptr<IWorld> world, const GSvector3& position);
 	//
 	virtual void update(float delta_time)override;
 	//

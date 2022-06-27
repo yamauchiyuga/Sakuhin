@@ -2,8 +2,9 @@
 #include"../../World/IWorld.h"
 #include"../../Collision/Field.h"
 #include"../../Collision/Line.h"
+#include"../../Assets.h"
 
-FireSphere::FireSphere(IWorld* world, const GSvector3& position, const GSvector3& velocity) {
+FireSphere::FireSphere(std::shared_ptr<IWorld> world, const GSvector3& position, const GSvector3& velocity) {
 	// ワールドを設定
 	world_ = world;
 	// タグ名
@@ -18,7 +19,7 @@ FireSphere::FireSphere(IWorld* world, const GSvector3& position, const GSvector3
 	transform_.position(position);
 	// 寿命
 	lifespan_timer_ = 120.0f;
-
+	gsPlaySE(Se_DragonSpitFire);
 }
 
 void FireSphere::update(float delta_time) {

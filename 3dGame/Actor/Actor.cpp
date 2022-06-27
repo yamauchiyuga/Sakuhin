@@ -19,7 +19,7 @@ void Actor::draw_gui() const {}
 void Actor::react(Actor&) {}
 
 // メッセージ処理
-void Actor::handle_message(const std::string& message, void* param) {}
+void Actor::handle_message(const std::string& message, std::shared_ptr<void> param) {}
 
 // 衝突判定
 void Actor::collide(Actor& other) {

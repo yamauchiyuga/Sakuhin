@@ -3,9 +3,8 @@
 
 #include <string>
 
-
-//シーン抽象インターフェース
-class IScene {
+class IScene 
+{
 public:
 	//仮想デストラクタ
 	virtual ~IScene() = default;

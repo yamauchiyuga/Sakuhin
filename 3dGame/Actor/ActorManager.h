@@ -4,6 +4,7 @@
 #include <list>
 #include <vector>
 #include <string>
+#include<memory>
 
 class Actor;    // アクタークラスの前方宣言
 
@@ -15,7 +16,7 @@ public:
     // デストラクタ
     ~ActorManager();
     // アクターの追加
-    void add(Actor* actor);
+    void add(std::shared_ptr<Actor> actor);
     // アクターの更新
     void update(float delta_time);
     // アクターの遅延更新
@@ -31,15 +32,15 @@ public:
     // 死亡しているアクターの削除
     void remove();
     // アクターの検索
-    Actor* find(const std::string& name) const;
+    std::shared_ptr<Actor> find(const std::string& name) const;
     // 指定したタグ名を持つアクターの検索
-    std::vector<Actor*> find_with_tag(const std::string& tag) const;
+    std::vector<std::shared_ptr<Actor>> find_with_tag(const std::string& tag) const;
     // アクター数を返す
     int count() const;
     // 指定したタグ名を持つアクター数を返す
     int count_with_tag(const std::string& tag) const;
     // メッセージの送信
-    void send_message(const std::string& message, void* param);
+    void send_message(const std::string& message, std::shared_ptr<void> param);
     // 消去
     void clear();
     // コピー禁止
@@ -48,7 +49,7 @@ public:
 
 private:
     // アクターリスト
-    std::list<Actor*> actors_;
+    std::list<std::shared_ptr<Actor>> actors_;
 };
 
 #endif

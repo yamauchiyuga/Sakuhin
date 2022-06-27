@@ -9,3 +9,4 @@ ValueUnit::ValueUnit(float from, float to, float duration, std::function<void(fl
 void ValueUnit::on_update(float progress) {
     update_func_(LERP(progress, from_, to_));
 }
+

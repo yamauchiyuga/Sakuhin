@@ -34,17 +34,17 @@ const float RunDistance{ 3.0f };
 //
 const float RunSpeed{ 0.1f };
 //
-const float FlySpeed{ 0.12f };
+const float FlySpeed{ 0.2f };
 //
-const float TurnAngle{ 1.5f };
+const float TurnAngle{ 2.0f };
 //
-const float FlyTurnAngle{ 1.0f };
+const float FlyTurnAngle{ 2.0f };
 //
 const float TurnAroundAngle{ 10.0f };
 //
-const int HitDamage{ 50 };
+const int HitDamage{10 };
 
-Dragon::Dragon(IWorld* world, const GSvector3& position) :
+Dragon::Dragon(std::shared_ptr<IWorld>world, const GSvector3& position) :
 	mesh_{ Mesh_Dragon,Mesh_Dragon, Mesh_Dragon, MotionIdle },
 	state_{ State::Idle },
 	motion_{ MotionIdle }{
@@ -58,10 +58,22 @@ Dragon::Dragon(IWorld* world, const GSvector3& position) :
 	transform_.position(position);
 	mesh_.transform(transform_.localToWorldMatrix());
 
-	mesh_.add_animation_event(MotionBite, 36.0f, [=] {bite(); });
-	mesh_.add_animation_event(MotionTailAttack, 45.0f, [=] {tail_attack(); });
-	mesh_.add_animation_event(MotionSpitFireball, 23.0f, [=] {spit_fire(); });
-	mesh_.add_animation_event(MotionFlySpitFireball, 30.0f, [=] {spit_fire(); });
+	mesh_.add_event(MotionBite, 36.0f, [=] {bite(); });
+	mesh_.add_event(MotionTailAttack, 45.0f, [=] {tail_attack(); });
+	mesh_.add_event(MotionSpitFireball, 23.0f, [=] {spit_fire(); });
+	mesh_.add_event(MotionFlySpitFireball, 30.0f, [=] {spit_fire(); });
+
+	mesh_.add_event(MotionRun, 10, [] {gsPlaySE(Se_DragonFoot); });
+	mesh_.add_event(MotionRun, 40, [] {gsPlaySE(Se_DragonFoot); });
+	mesh_.add_event(MotionTurnRight, 15, [] {gsPlaySE(Se_DragonFoot); });
+	mesh_.add_event(MotionTurnRight, 45, [] {gsPlaySE(Se_DragonFoot); });
+	mesh_.add_event(MotionTurnLeft, 15, [] {gsPlaySE(Se_DragonFoot); });
+	mesh_.add_event(MotionTurnLeft, 45, [] {gsPlaySE(Se_DragonFoot); });
+	mesh_.add_event(MotionFly, 13, [] {gsPlaySE(Se_DragonFire); });
+	mesh_.add_event(MotionLanding, 20, [] {gsPlaySE(Se_DragonLanding); });
+	mesh_.add_event(MotionGoInAir, 30, [] {gsPlaySE(Se_DragonFire); });
+	mesh_.add_event(MotionGoInAir, 80, [] {gsPlaySE(Se_DragonFire); });
+	mesh_.add_event(MotionDead, 10, [] {gsPlaySE(Se_DragonDeath); });
 }
 
 void Dragon::update(float delta_time) {
@@ -105,6 +117,7 @@ void Dragon::draw_gui() const {
 
 void Dragon::react(Actor& other) {
 	if (other.tag() == "PlayerAttackTag") {
+		gsPlaySE(Se_EnemyDamage);
 		HP_.hit_damage(HitDamage);
 	}
 	if (HP_.is_end()) {
@@ -284,19 +297,24 @@ void Dragon::dead(float delta_time) {
 	velocity_.y += Gravity * delta_time;
 	//
 	transform_.translate(0.0f, velocity_.y, 0.0f);
+
 }
 
 void Dragon::attack_selection() {
 	//
 	GSuint motion = NULL;
 	//
-	int attack = gsRand(0, 1);
+	int attack = gsRand(0, 2);
 	//
 	if (attack == 0) {
 		motion = MotionBite;
 	}
 	else if (attack == 1) {
 		motion = MotionTailAttack;
+	}
+	else if(attack==2)
+	{
+		motion = MotionSpitFireball;
 	}
 	change_state(State::Attack, motion, false);
 }
@@ -318,6 +336,7 @@ void Dragon::bite() {
 	const float AttackCollideLifeSpan{ 10.0f };
 	//
 	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan);
+	gsPlaySE(Se_DragonAttack2);
 }
 
 
@@ -336,6 +355,7 @@ void Dragon::tail_attack() {
 	const float AttackCollideLifeSpan{ 10.0f };
 	//
 	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan);
+	gsPlaySE(Se_DragonAttack1);
 }
 
 
@@ -358,7 +378,7 @@ void Dragon::spit_fire() {
 		velocity = (player_->transform().position() - position).normalized() * Speed;
 	}
 	// ’e‚Ì¶¬
-	world_->add_actor(new FireSphere{ world_, position, velocity });
+	world_->add_actor(std::make_unique<FireSphere>( world_, position, velocity ));
 }
 
 
@@ -370,12 +390,12 @@ bool Dragon::is_trun() const {
 
 
 bool Dragon::is_run() const {
-	return target_distance() > 4.0f;
+	return target_distance() > 6.0f;
 
 }
 
 bool Dragon::is_attack()const {
-	return target_distance() <= RunDistance && target_angle() <= 10.0f;
+	return target_distance() <= 6.0f && target_angle() <= 20.0f;
 }
 
 bool Dragon::is_gravity() const

@@ -6,9 +6,9 @@
 
 const float delay_timer{ 20.0f };
 
-Explosion::Explosion(IWorld* world, const GSvector3& position, const float delay_timer) {
+Explosion::Explosion(std::shared_ptr<IWorld> world, const GSvector3& position, const float delay_timer) {
 	// ワールドを設定
-	world_ = world;
+	world_ =world;
 	// タグ名
 	tag_ = "EnemyAttackTag";
 	// アクター名
