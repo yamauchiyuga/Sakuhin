@@ -28,7 +28,6 @@ void World::update(float delta_time) {
 }
 // 描画
 void World::draw() const {
-	glClearColor(1.00f, 0.180f, 0.275, 1.000f);
 	// カメラの描画
 	camera_->draw();
 	//エフェクト用のカメラを設定
@@ -43,7 +42,7 @@ void World::draw() const {
 	actors_.draw();
 	// 半透明アクターの描画
 	actors_.draw_transparent();
-	//
+	//エフェク描画
 	gsDrawEffect();
 	
 }
@@ -51,11 +50,11 @@ void World::draw() const {
 void World::draw_gui() const {
 	// GUIの描画
 	actors_.draw_gui();
-	//
+	//ゲームクリアを描画
 	draw_game_cler_texture();
-	//
+	//ゲームオーバーを描画
 	draw_game_over_texture();
-	//
+	//フェイドアウト
 	draw_fade();
 
 
@@ -81,19 +80,16 @@ void World::clear() {
 }
 // カメラの追加
 void World::add_camera(std::shared_ptr<Actor> camera) {
-	//delete camera_;	// 現在のカメラを削除
 	camera_ =camera;
 }
 
 // ライトの追加
 void World::add_light(std::shared_ptr<Actor> light) {
-	//delete light_;	// 現在のライトを削除
 	light_ = light;
 }
 
 // フィールドの追加
 void World::add_field(std::shared_ptr<Field> field) {
-	//delete field_;	// 現在のフィールドを削除
 	field_ = field;
 }
 
@@ -139,6 +135,7 @@ void World::draw_fade()const {
 	gsDrawSprite2D(Texture_Fade, NULL, NULL, NULL, &color, NULL, 0.0f);
 }
 
+//ゲームオーバー
 void World::game_over(){
 	//120フレームかけて死亡画像をフェードイン
 	Tween::value(0.0f, 1.0f, 120.0f, [=](GSfloat val) {game_over_alpha_ = val; }).delay(120.0f);
@@ -147,6 +144,7 @@ void World::game_over(){
 		.on_complete([=] {is_game_over_ = true; });
 }
 
+//ゲームクリア
 void World::game_cler(){
 
 	//画像の大きさをセット
@@ -162,11 +160,13 @@ void World::game_cler(){
 		.delay(300.0f);
 }
 
+//ゲームオーバーテクスチャ
 void World::draw_game_over_texture() const{
 	const GScolor color{ 1.0f, 1.0f, 1.0f, game_over_alpha_ };
 	gsDrawSprite2D(Texture_GameOver, NULL, NULL, NULL, &color, NULL, 0.0f);
 }
 
+//ゲームクリアテクスチャ
 void World::draw_game_cler_texture() const{
 	const GSvector2 position{ 640.0f, 360.0f };
 	const GScolor color{ 1.0f, 1.0f, 1.0f, clear_alpha_ };
@@ -188,6 +188,7 @@ std::shared_ptr<Field> World::field() {
 	return field_;
 }
 
+//ゲームオーバーか？
 bool World::is_game_over()const {
 	return is_game_over_;
 }

@@ -18,6 +18,7 @@ enum {
 //テクスチャデータ
 enum {
     Texture_Titel,
+    Texture_TitelName,
     Texture_Fade,
     Texture_GameOver,
     Texture_GameClear,
@@ -40,6 +41,7 @@ enum {
     Se_PlayerDamage, 
     Se_PlayerRun,
     Se_PlayerBlock,
+    Se_PlayerDrop,
     Se_EnemyDamage,
     Se_DragonAttack1,
     Se_DragonAttack2,

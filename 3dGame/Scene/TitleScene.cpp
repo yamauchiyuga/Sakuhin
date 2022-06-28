@@ -17,6 +17,7 @@ void TitleScene::start()
     //40フレームかけてフェードイン
     Tween::value(1.0f, 0.0f, 60.0f, [=](GSfloat val) {alpha_ = val; })
         .on_complete([=] {is_fade_ = false; });
+
 }
 
 // 更新
@@ -35,10 +36,9 @@ void TitleScene::draw() const
 {
     GSvector2 TitlePos{ 0.0f,0.0f };
     gsDrawSprite2D(Texture_Titel, &TitlePos, NULL, NULL, NULL, NULL,NULL);
-    gsFontParameter(0, 50, "ＭＳ ゴシック");
-    gsTextPos(80, 215);
-    gsDrawText("タイトルシーン:Push_A");
-    gsFontParameter(0, 16, "ＭＳ ゴシック");
+   
+    static const GSvector2 Pos{ 100.0f,-50.0f };
+    gsDrawSprite2D(Texture_TitelName, &Pos, NULL, NULL, NULL, NULL, 0.0f);
     draw_fade();
 }
 

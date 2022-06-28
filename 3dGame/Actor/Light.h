@@ -9,8 +9,6 @@ class Light : public Actor
 public:
 	// コンストラクタ
 	Light(std::shared_ptr<IWorld> world);
-	//
-	virtual void update(float delta_time)override;
 	// 描画
 	virtual void draw() const override;
 private:

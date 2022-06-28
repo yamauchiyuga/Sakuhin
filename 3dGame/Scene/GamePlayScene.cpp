@@ -10,7 +10,6 @@
 #include<imgui/imgui.h>
 #include <GSstandard_shader.h>
 #include<GSeffect.h>
-#include<imgui/imgui.h>
 
 // 標準シェーダーの設定
 #define GS_ENABLE_AUX_LIGHT                 // 補助ライトを有効にする
@@ -19,10 +18,10 @@
 #define GS_ENABLE_RIM_LIGHT                 // リムライトを有効にする
 
 	// ポストエフェクトのパラメータ
-	static float   saturation_{ 1.0f };
 	static GScolor color_{ 1.0f, 1.0f, 1.0f, 1.0f };
-	static float   luminance_{ 1.0f };
-	static float   exposure_{ 1.0 };
+	static float   saturation_{ 1.0f };
+	static float   luminance_{ 1.4f };
+	static float   exposure_{ 0.8f };
 
 void GamePlayScene::start() {
 	// 終了フラグを初期化
@@ -51,6 +50,7 @@ void GamePlayScene::start() {
 	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
 	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
 	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
+	
 
 	// プレーヤーの追加
 	world_->add_actor( std::make_shared<Player>( world_, GSvector3{-5,4.0,10} ));
@@ -61,10 +61,9 @@ void GamePlayScene::start() {
 			  world_, GSvector3{0.0f, 3.2f, -4.8f}, GSvector3{0.0f, 1.0, 0.0f} ));
 	// ライトクラスの追加
 	world_->add_light(std::make_shared<Light>( world_ ));
-	//
+	//ステージデータ読み込み
 	enemy_generator_ = std::make_shared<EnemyGenerator>(world_, "Assets/StageData/StatgeData.csv", "Assets/StageData/FasePos.csv");
 	
-
 	// 炎のエフェクトを再生する(0～8が松明用ライト）
 	for (GSint i = 0; i < 17; ++i) {
 		// 補助ライトの位置を取得
@@ -81,21 +80,8 @@ void GamePlayScene::start() {
 void GamePlayScene::update(float delta_time) {
 	// ワールドの更新
 	world_->update(delta_time);
-	fog_.update(delta_time);
+	//ジェネレータの更新
 	enemy_generator_->update(delta_time);
-
-	// ポストエフェクトのパラメータ調整
-	ImGui::Begin("PostEffect");
-	// 色調整
-	ImGui::ColorEdit3("color", color_);
-	// 彩度調整
-	ImGui::DragFloat("saturation", &saturation_, 0.01f, 0.0f, 2.0f);
-	// 輝度調整
-	ImGui::DragFloat("luminance", &luminance_, 0.01f, 0.0f, 2.0f);
-	// 露出調整
-	ImGui::DragFloat("exposure", &exposure_, 0.01f);
-	ImGui::End();
-
 }
 
 // 描画
@@ -151,7 +137,8 @@ void GamePlayScene::end() {
 	world_->clear();
 	// 再生中の全エフェクトを停止（削除）する
 	gsStopAllEffects();
-	//
+	//BGM 削除
 	gsDeleteBGM(Sound_Wind);
+	//SE削除
 	gsDeleteSE(Se_GameStart);
 }

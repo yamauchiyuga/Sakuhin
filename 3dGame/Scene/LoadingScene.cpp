@@ -57,9 +57,10 @@ void LoadingScene::end() {
 void LoadingScene::load_assets(void* self) {
 
 	LoadingScene* load = (LoadingScene*)self;
+	// エフェクトの初期化
+	gsInitEffect();
 	//シェーダーの初期化
 	gsInitDefaultShader();
-
 	// メッシュ用のシェーダー
 	gsLoadShader(Shader_StandardMesh, "Assets/shader/StandardMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
 	// スキニングメッシュ用のシェーダー
@@ -103,6 +104,7 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadTexture(Texture_GameOver, "Assets/Texture/GameOver.png");
 	gsLoadTexture(Texture_GameClear, "Assets/Texture/GameClear.png");
 	gsLoadTexture(Texture_Lock, "Assets/Texture/LockOn.png");
+	gsLoadTexture(Texture_TitelName, "Assets/Texture/Name.png");
 	//SE読み込み
 	gsLoadSE(Se_GameStart, "Assets/Sound/SE/Titel.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(Se_GameClear, "Assets/Sound/SE/clear.wav",1, GWAVE_DEFAULT);
@@ -110,6 +112,7 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadSE(Se_PlayerBlock, "Assets/Sound/SE/Player/Player_Block.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerDamage, "Assets/Sound/SE/Player/Player_Damage.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerRun, "Assets/Sound/SE/Player/Player_W.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_PlayerDrop, "Assets/Sound/SE/Player/BodyDrop.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_EnemyDamage, "Assets/Sound/SE/Player/Damage.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonAttack1, "Assets/Sound/SE/Dragon/Dragon_Attack1.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonAttack2, "Assets/Sound/SE/Dragon/Dragon_Attack2.wav", 1, GWAVE_DEFAULT);
@@ -125,6 +128,14 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadBGM(Sound_Titel, "Assets/Sound/BGM/Result.ogg",GS_TRUE);
 	gsLoadBGM(Sound_Wind, "Assets/Sound/BGM/Wind.ogg",GS_TRUE);
 
+	// エフェクトの読み込み（松明の炎）
+	gsLoadEffect(Effect_TorchFlame, "Assets/Effect/Fire/Fire.efk");
+	gsLoadEffect(Effect_Blood, "Assets/Effect/Blood.efk");
+	gsLoadEffect(Effect_HitSpark, "Assets/Effect/HitSpark1.efk");
+	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
+	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
+	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
+
 	// 描画用オクツリーの読み込み
 	gsLoadOctree(Octree_Stage, "Assets/TtestFiled/Field01.oct");
 	// 衝突判定用オクツリーの読み込み
@@ -134,6 +145,7 @@ void LoadingScene::load_assets(void* self) {
 	gsSetVolumeSE(Se_PlayerAttack, 0.5f);
 	gsSetVolumeSE(Se_PlayerBlock, 0.5f);
 	gsSetVolumeSE(Se_PlayerDamage, 0.5f);
+	gsSetVolumeSE(Se_PlayerDrop, 0.5f);
 	gsSetVolumeSE(Se_EnemyDamage, 0.5f);
 	gsSetVolumeSE(Se_DragonAttack1, 0.5f);
 	gsSetVolumeSE(Se_DragonAttack2, 0.5f);

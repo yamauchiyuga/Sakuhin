@@ -5,8 +5,6 @@ class Fog
 {
 public:
 	Fog();
-	//XV
-	void update(float delta_time);
 	//•`‰æ
 	void draw()const;
 private:

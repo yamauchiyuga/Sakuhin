@@ -52,6 +52,7 @@ public:
 		gsDeleteTexture(Texture_GameClear);
 		gsDeleteTexture(Texture_GameOver);
 		gsDeleteTexture(Texture_Lock);
+		gsDeleteTexture(Texture_TitelName);
 
 		// メッシュの削除
 		gsDeleteMesh(Mesh_Player);
@@ -78,6 +79,7 @@ public:
 		gsDeleteSE(Se_PlayerBlock);
 		gsDeleteSE(Se_PlayerDamage);
 		gsDeleteSE(Se_PlayerRun);
+		gsDeleteSE(Se_PlayerDrop);
 		gsDeleteSE(Se_EnemyDamage);
 		gsDeleteSE(Se_DragonAttack1);
 		gsDeleteSE(Se_DragonAttack2);
@@ -95,7 +97,7 @@ public:
 		gsDeleteReflectionProbe(0);
 		// 補助ライトの削除
 		gsDeleteAuxLight(0);
-		//
+		//エフェク削除
 		gsDeleteEffect(Effect_Blood);
 		gsDeleteEffect(Effect_Explosion);
 		gsDeleteEffect(Effect_FireBall);

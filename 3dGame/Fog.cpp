@@ -9,19 +9,10 @@ Fog::Fog() :
 {
 }
 
-void Fog::update(float delta_time)
-{
-	// フォグのパラメータ調整
-	ImGui::Begin("Fog");
-	ImGui::ColorEdit3("color", fog_color_, ImGuiColorEditFlags_Float);
-	ImGui::DragFloat("start", &fog_start_);
-	ImGui::DragFloat("end", &fog_end_);
-	ImGui::End();
-	// フォグの設定
-}
-
 void Fog::draw() const
 {
+
+
 	glEnable(GL_FOG);
 	glFogi(GL_FOG_MODE, GL_LINEAR);
 	glFogi(GL_FOG_START, fog_start_);
