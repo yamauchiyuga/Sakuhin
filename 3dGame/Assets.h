@@ -7,7 +7,6 @@ enum {
     Mesh_Dragon,
     Mesh_Skeleton,
     Mesh_Witch,
-    Mesh_Skybox
 };
 
 //オクトー
@@ -25,20 +24,18 @@ enum {
     Texture_HP,   
     Texture_Frame,
     Texture_ST,
-
+    Texture_Lock
 };
-
+//BGM
 enum {
-    Sound_TitleBGM,
-    Sound_PlayingBGM,
-    Sound_ResultBGM
+    Sound_Titel,
+    Sound_Wind,
 };
 
 //SE
 enum {
     Se_GameStart,
     Se_GameClear,
-    Se_GameOver,
     Se_PlayerAttack,        
     Se_PlayerDamage, 
     Se_PlayerRun,
@@ -49,22 +46,28 @@ enum {
     Se_DragonDeath,
     Se_DragonFire,
     Se_DragonFoot,
-    Se_DragonLanding,	//ドラゴンの着地SE
+    Se_DragonLanding,	
     Se_DragonSpitFire,
-    Se_Skeleton_Attack,
-    Se_WitchAttack
+    Se_DragonExplosion,
+    Se_SkeletonDetate,
+    Se_WitchDetate
 };
 
 // シェーダー
 enum {
-    Shader_StandardMesh,            // メッシュ用シェーダー
-    Shader_StandardSkinnedMesh,     // スキニングメッシュ用シェーダー
-    Shader_StandardOctree,          // オクツリー用シェーダー
-    Shader_ShadowMapMesh,           // メッシュ用シャドウマップシェーダー
-    Shader_ShadowMapSkinnedMesh     // スキニングメッシュ用シャドウマップシェーダー
+    Shader_StandardMesh,           
+    Shader_StandardSkinnedMesh,     
+    Shader_StandardOctree,          
+    Shader_ShadowMapMesh,           
+    Shader_ShadowMapSkinnedMesh     
 };
 //エフェクト
 enum {
-    Effect_Fier
+    Effect_TorchFlame,
+    Effect_FireBall,
+    Effect_HitSpark,
+    Effect_Blood,
+    Effect_Explosion,
+    Effect_Smoke
 };
 #endif // !ASSETS_H_

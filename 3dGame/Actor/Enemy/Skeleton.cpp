@@ -5,7 +5,9 @@
 #include"../../Collision/Line.h"
 #include"../AttackCollider.h"
 #include"../../Assets.h"
+#include<GSeffect.h>
 
+//モーション番号
 enum
 {
 	MotionAttack,
@@ -17,38 +19,43 @@ enum
 	MotionIdle
 };
 
-const float Gravity{ -0.016f };
-
-//
+// 重力
+const float Gravity{ -0.016f }; 
+//最大体力
 const float MaxHP{ 10 };
-//
+//走り出す距離
 const float RunDistance{ 1.5f };
-//
+//走るスピード
 const float RunSpeed{ 0.06f };
-//
+//回転量
 const float TurnAngle{ 2.5f };
-//
+//回転する角度
 const float TurnAroundAngle{ 4.0f };
-//
+//ダメージ
 const int HitDamage{ 5 };
 
 Skeketon::Skeketon(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	mesh_{ Mesh_Skeleton,Mesh_Skeleton, Mesh_Skeleton, MotionGeneration,false },
 	state_{ State::Generation },
-	attack_time_{ 0.0f },
-	motion_{ MotionGeneration }{
+	motion_{ MotionGeneration }
+{
+	//ワールド設定
 	world_ = world;
+	//タグ
 	tag_ = "EnemyTag";
+	//名前
 	name_ = "Skeketon";
-	is_dead_ = true;
+	is_dead_ = false;
 	player_ = nullptr;
+	//判定用球
 	collider_ = BoundingSphere{ 0.4f, GSvector3{0.0f, 1.0f, 0.0f} };
 	HP_ = { MaxHP };
 	//座標の初期化
 	transform_.position(position);
 	mesh_.transform(transform_.localToWorldMatrix());
-
-	mesh_.add_event(MotionAttack, 12.0f, [=] {slash(); });
+	//イベント登録
+	mesh_.add_event(MotionAttack, 10.0f, [=] {slash(); });
+	mesh_.add_event(MotionAttack, 10.0f, [] {gsPlaySE(Se_PlayerAttack); });
 }
 
 void Skeketon::update(float delta_time) {
@@ -73,12 +80,6 @@ void Skeketon::update(float delta_time) {
 void Skeketon::draw() const {
 	//
 	mesh_.draw();
-
-	//
-	if (enable_collider_) {
-		//
-		collider().draw();
-	}
 }
 
 void Skeketon::react(Actor& other) {
@@ -90,12 +91,16 @@ void Skeketon::react(Actor& other) {
 	}
 	if (other.tag() == "PlayerAttackTag") {
 		gsPlaySE(Se_EnemyDamage);
+		GSvector3 Offset{ 0.0f,0.6f,0.0f };
+		GSvector3 Pos = transform_.position() + Offset;
+		gsPlayEffect(Effect_Blood, &Pos);
 		HP_.hit_damage(HitDamage);
 	}
 
 	if (HP_.is_end()) {
 		enable_collider_ = false;
 		is_dead_ = true;
+		gsPlaySE(Se_SkeletonDetate);
 		change_state(Skeketon::State::Dead, MotionDead, false);
 	}
 
@@ -185,7 +190,6 @@ void Skeketon::dead(float delta_time) {
 }
 
 void Skeketon::attack(float delta_time) {
-
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		if (is_trun()) {
 			GSint motion = (target_signed_angle() >= 0.0f) ? MotionTurnLeft : MotionTurnRight;
@@ -215,14 +219,14 @@ void Skeketon::slash() {
 }
 
 bool Skeketon::is_run() const {
-	return target_distance() > 2.0f;
+	return target_distance() > RunDistance;
 }
 
 bool Skeketon::is_trun() const
 {
-	return target_angle() >= 10.0f;
+	return target_angle() >= TurnAroundAngle;
 }
 
 bool Skeketon::is_attack() const {
-	return target_distance() <= 2.0f && target_angle() <= 10.0f;
+	return target_distance() <= RunDistance && target_angle() <= TurnAroundAngle;
 }

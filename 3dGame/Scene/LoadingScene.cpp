@@ -59,6 +59,7 @@ void LoadingScene::load_assets(void* self) {
 	LoadingScene* load = (LoadingScene*)self;
 	//シェーダーの初期化
 	gsInitDefaultShader();
+
 	// メッシュ用のシェーダー
 	gsLoadShader(Shader_StandardMesh, "Assets/shader/StandardMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
 	// スキニングメッシュ用のシェーダー
@@ -78,7 +79,6 @@ void LoadingScene::load_assets(void* self) {
 	// 補助ライトの読み込み
 	gsLoadAuxLight(0, "Assets/AuxLight/AuxLight_Torch_.txt");
 	gsLoadAuxLight(1, "Assets/AuxLight/AuxLight.txt"); 
-	
 
 	//プレイヤーの読み込み
 	gsLoadMesh(Mesh_Player, "Assets/model/Player/Player.mshb");
@@ -102,7 +102,10 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadTexture(Texture_Fade, "Assets/Texture/fade.png");
 	gsLoadTexture(Texture_GameOver, "Assets/Texture/GameOver.png");
 	gsLoadTexture(Texture_GameClear, "Assets/Texture/GameClear.png");
+	gsLoadTexture(Texture_Lock, "Assets/Texture/LockOn.png");
 	//SE読み込み
+	gsLoadSE(Se_GameStart, "Assets/Sound/SE/Titel.wav",1, GWAVE_DEFAULT);
+	gsLoadSE(Se_GameClear, "Assets/Sound/SE/clear.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerAttack, "Assets/Sound/SE/Player/Player_Combo01_Swing.wav",1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerBlock, "Assets/Sound/SE/Player/Player_Block.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerDamage, "Assets/Sound/SE/Player/Player_Damage.wav", 1, GWAVE_DEFAULT);
@@ -115,27 +118,33 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadSE(Se_DragonFoot, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonLanding, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonSpitFire, "Assets/Sound/SE/Dragon/Dragon_SpitFire.wav", 1, GWAVE_DEFAULT);
-	
+	gsLoadSE(Se_DragonExplosion, "Assets/Sound/SE/Dragon/Dragon_Explosion.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_WitchDetate, "Assets/Sound/SE/Witch/Witch_Death.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_SkeletonDetate, "Assets/Sound/SE/Skeleton/Skeleton_Death.wav", 1, GWAVE_DEFAULT);
+	//BG読み込み
+	gsLoadBGM(Sound_Titel, "Assets/Sound/BGM/Result.ogg",GS_TRUE);
+	gsLoadBGM(Sound_Wind, "Assets/Sound/BGM/Wind.ogg",GS_TRUE);
 
-	// スカイボックスメッシュの読み込み
-	gsLoadMesh(Mesh_Skybox, "Assets/Skybox/skydome.msh");
 	// 描画用オクツリーの読み込み
 	gsLoadOctree(Octree_Stage, "Assets/TtestFiled/Field01.oct");
 	// 衝突判定用オクツリーの読み込み
 	gsLoadOctree(Octree_Collider, "Assets/TtestFiled/Field01_collider.oct");
 	//音量設定
-	gsSetVolumeSE(Se_PlayerRun, 0.4f);
-	gsSetVolumeSE(Se_PlayerAttack, 0.4f);
-	gsSetVolumeSE(Se_PlayerBlock, 0.4f);
-	gsSetVolumeSE(Se_PlayerDamage, 0.4f);
-	gsSetVolumeSE(Se_EnemyDamage, 0.4f);
-	gsSetVolumeSE(Se_DragonAttack1, 0.3f);
-	gsSetVolumeSE(Se_DragonAttack2, 0.3f);
-	gsSetVolumeSE(Se_DragonDeath, 0.3f);
-	gsSetVolumeSE(Se_DragonFire, 0.3f);
-	gsSetVolumeSE(Se_DragonFoot, 0.3f);
+	gsSetVolumeSE(Se_PlayerRun, 0.5f);
+	gsSetVolumeSE(Se_PlayerAttack, 0.5f);
+	gsSetVolumeSE(Se_PlayerBlock, 0.5f);
+	gsSetVolumeSE(Se_PlayerDamage, 0.5f);
+	gsSetVolumeSE(Se_EnemyDamage, 0.5f);
+	gsSetVolumeSE(Se_DragonAttack1, 0.5f);
+	gsSetVolumeSE(Se_DragonAttack2, 0.5f);
+	gsSetVolumeSE(Se_DragonDeath, 0.5f);
+	gsSetVolumeSE(Se_DragonFire, 0.5f);
+	gsSetVolumeSE(Se_DragonFoot, 0.5f);
 	gsSetVolumeSE(Se_DragonLanding, 0.5f);
-	gsSetVolumeSE(Se_DragonSpitFire, 0.3f);
+	gsSetVolumeSE(Se_DragonSpitFire, 0.5f);
+	gsSetVolumeSE(Se_DragonExplosion, 0.5f);
+	gsSetVolumeSE(Se_WitchDetate, 0.5f);
+	gsSetVolumeSE(Se_SkeletonDetate, 0.5f);
 
 	load->is_end_ = true;
 

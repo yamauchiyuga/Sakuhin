@@ -112,7 +112,6 @@ private:
 	std::vector<GSmatrix4>  local_bone_matrices_;
 	// ボーンの変換行列
 	std::vector<GSmatrix4>  bone_matrices_;
-	// 座標変換行列
 	GSmatrix4               transform_;
 };
 

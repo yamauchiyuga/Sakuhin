@@ -23,12 +23,12 @@ protected:
 	void collide_field();
 	//攻撃判定を生成
 	void generate_attac_collider(const float radius, const float distance, const float height,const float width,const float delay,const float life_span);
-	//
+	//壁にぶつかったか
 	bool is_hit_wall()const;
 
 public:
 
-	//
+	//死亡しているか?
 	bool dead()const;
 
 	//コピー禁止
@@ -37,18 +37,19 @@ public:
 
 protected:
 	
-	//モーションのループ設定
-	bool motion_loop_{true};
-	// 状態タイマ
-	float state_timer_{0.0f};
-	//
-	bool is_dead_{ false };
-	//
-	bool hit_wall_{ false };
-	//プレイヤー
-	std::shared_ptr<Actor> player_{nullptr};
-	//
+    //プレイヤー
+	std::shared_ptr<Actor> player_;
+	//体力
 	HP HP_;
+	//モーションのループ設定
+	bool motion_loop_;
+	// 状態タイマ
+	float state_timer_;
+	//死亡したか？
+	bool is_dead_;
+	//壁にぶつかったか？
+	bool hit_wall_;
+
 };
 
 #endif // !ENEMY_H_

@@ -10,12 +10,19 @@
 #include<imgui/imgui.h>
 #include <GSstandard_shader.h>
 #include<GSeffect.h>
+#include<imgui/imgui.h>
 
 // 標準シェーダーの設定
 #define GS_ENABLE_AUX_LIGHT                 // 補助ライトを有効にする
 #define GS_ENABLE_BAKED_LIGHTMAP_SHADOW     // ベイクしたライトマップに影を落とす
 #define GS_ENABLE_SOFT_SHADOW               // ソフトシャドウ（影の輪郭をぼかす）
 #define GS_ENABLE_RIM_LIGHT                 // リムライトを有効にする
+
+	// ポストエフェクトのパラメータ
+	static float   saturation_{ 1.0f };
+	static GScolor color_{ 1.0f, 1.0f, 1.0f, 1.0f };
+	static float   luminance_{ 1.0f };
+	static float   exposure_{ 1.0 };
 
 void GamePlayScene::start() {
 	// 終了フラグを初期化
@@ -26,9 +33,9 @@ void GamePlayScene::start() {
 	gsCreateRenderTarget(0, 1280, 720, GS_TRUE, GS_TRUE, GS_TRUE);
 	//視錐台カリングを有効にする
 	gsEnable(GS_FRUSTUM_CULLING);
-
 	world_ = std::make_shared<World>();
-
+	gsSetVolumeBGM(0.5f);
+	gsPlayBGM(Sound_Wind);
 	// シャドウマップの作成（２枚のカスケードシャドウマップ）
 	static const GSuint shadow_map_size[] = { 2024, 1024 };
 	gsCreateShadowMap(2, shadow_map_size, GS_TRUE);
@@ -38,11 +45,17 @@ void GamePlayScene::start() {
 	gsSetShadowMapDistance(60.0f);
 
 	// エフェクトの読み込み（松明の炎）
-	gsLoadEffect(0, "Assets/Effect/Fire/Fire.efk");
+	gsLoadEffect(Effect_TorchFlame, "Assets/Effect/Fire/Fire.efk");
+	gsLoadEffect(Effect_Blood, "Assets/Effect/Blood.efk");
+	gsLoadEffect(Effect_HitSpark, "Assets/Effect/HitSpark1.efk");
+	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
+	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
+	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
+
 	// プレーヤーの追加
 	world_->add_actor( std::make_shared<Player>( world_, GSvector3{-5,4.0,10} ));
 	// フィールドクラスの追加
-	world_->add_field(std::make_shared<Field>( Octree_Stage, Octree_Collider, Mesh_Skybox ));
+	world_->add_field(std::make_shared<Field>( Octree_Stage, Octree_Collider));
 	// カメラクラスの追加
 	world_->add_camera(std::make_shared<CameraTPS>(
 			  world_, GSvector3{0.0f, 3.2f, -4.8f}, GSvector3{0.0f, 1.0, 0.0f} ));
@@ -56,10 +69,11 @@ void GamePlayScene::start() {
 	for (GSint i = 0; i < 17; ++i) {
 		// 補助ライトの位置を取得
 		GSvector3 position;
-		gsGetAuxLightPosition(0, i, &position);
+		gsGetAuxLightPosition(Effect_TorchFlame, i, &position);
 		// 補助ライトの位置に炎のエフェクトを出現させる
-		gsPlayEffect(0, &position);
+		gsPlayEffect(Effect_TorchFlame, &position);
 	}
+
 
 }
 
@@ -70,18 +84,55 @@ void GamePlayScene::update(float delta_time) {
 	fog_.update(delta_time);
 	enemy_generator_->update(delta_time);
 
+	// ポストエフェクトのパラメータ調整
+	ImGui::Begin("PostEffect");
+	// 色調整
+	ImGui::ColorEdit3("color", color_);
+	// 彩度調整
+	ImGui::DragFloat("saturation", &saturation_, 0.01f, 0.0f, 2.0f);
+	// 輝度調整
+	ImGui::DragFloat("luminance", &luminance_, 0.01f, 0.0f, 2.0f);
+	// 露出調整
+	ImGui::DragFloat("exposure", &exposure_, 0.01f);
+	ImGui::End();
+
 }
 
 // 描画
 void GamePlayScene::draw() const {
-
+	// レンダーターゲットを有効にする
+	gsBeginRenderTarget(0);
+	// レンダーターゲットのクリア
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	// ワールドの描画
 	world_->draw();
-	//
+	//GUI描画
 	world_->draw_gui();
-	//
+	//fog描画
 	fog_.draw();
-	
+	 //レンダーターゲットを無効にする
+	gsEndRenderTarget();
+
+	 //シェーダーを有効にする
+	GScolor col = color_ * luminance_;
+	col.a = 1.0f;
+	gsBeginShader(0);
+	// 彩度の設定
+	gsSetShaderParam1f("u_Saturation", saturation_);
+	// テクスチャの設定
+	gsSetShaderParamTexture("u_RenderTexture", 0);
+	// 色調整
+	gsSetShaderParam4f("u_Color", &col);
+	// 露出
+	gsSetShaderParam1f("u_Exposure", exposure_);
+	// レンダーターゲット用のテクスチャをバインド
+	gsBindRenderTargetTextureEx(0, 0, 0);
+	// レンダーターゲットを描画
+	gsDrawRenderTargetEx(0);
+	// レンダーターゲット用のテクスチャの解除
+	gsUnbindRenderTargetTextureEx(0, 0, 0);
+	// シェーダーを無効にする
+	gsEndShader();
 }
 
 // 終了しているか？
@@ -98,4 +149,9 @@ std::string GamePlayScene::next() const {
 void GamePlayScene::end() {
 	// ワールドを消去
 	world_->clear();
+	// 再生中の全エフェクトを停止（削除）する
+	gsStopAllEffects();
+	//
+	gsDeleteBGM(Sound_Wind);
+	gsDeleteSE(Se_GameStart);
 }

@@ -161,7 +161,6 @@
     <ClCompile Include="Actor\Light.cpp" />
     <ClCompile Include="Actor\Enemy\Enemy.cpp" />
     <ClCompile Include="Actor\Enemy\Dragon.cpp" />
-    <ClCompile Include="Actor\Effect\Explosion.cpp" />
     <ClCompile Include="CSVReader.cpp" />
     <ClCompile Include="EnemyGenerator.cpp" />
     <ClCompile Include="Fog.cpp" />
@@ -190,7 +189,6 @@
     <ClInclude Include="Actor\AttackCollider.h" />
     <ClInclude Include="Actor\Enemy\Enemy.h" />
     <ClInclude Include="Actor\Enemy\Dragon.h" />
-    <ClInclude Include="Actor\Effect\Explosion.h" />
     <ClInclude Include="CSVReader.h" />
     <ClInclude Include="EnemyGenerator.h" />
     <ClInclude Include="Fog.h" />

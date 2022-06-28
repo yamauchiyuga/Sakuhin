@@ -13,13 +13,13 @@ class Player :public Actor {
 public:
 	//プレーヤー状態
 	enum class State {
-		Move,			//移動中
-		Attack,			//攻撃中
-		Dodge,			//回避中
-		GuardStart,		//ガード始まり
-		Guarding,		//ガード中
-		Damage,			//ダメージ中
-		End				//死亡中
+		Move,			
+		Attack,		   
+		Dodge,		   
+		GuardStart,  
+		Guarding,	  
+		Damage,	 
+		End		     
 	};
 
 	//コンストラクタ
@@ -43,32 +43,31 @@ private:
 
 	//攻撃中
 	void attack(float delta_time);
-	//
+	//回避中
 	void dodge(float delta_time);
-	//
+	//ガード始まり
 	void guard_start(float delta_time);
-	//
+	//攻撃ヒット
 	void guarding(float delta_time);
-
 	//ダメージ中
 	void damage(float delta_time);
-	//
+	//死亡
 	void end(float delta_time);
-	//
+	//振り向く
 	void turn();
-	//
-	bool can_attackable()const;
-	//
-	bool can_guard()const;
-	//
-	bool end_line()const;
-	//
+	//ノックバック処理
 	void knock_back(Actor& other, float power);
-	//
+	//攻撃可能か？
+	bool can_attackable()const;
+	//ガード可能か？
+	bool can_guard()const;
+	//死亡ラインか？
+	bool end_line()const;
+	//アクター判定
 	void collide_actor(Actor& other);
-	//
+	//フィールド判定
 	void collide_field();
-	//
+	//攻撃判定生成
 	void generate_attac_collider();
 
 private:
@@ -76,19 +75,17 @@ private:
 	AnimatedMesh	mesh_;
 	//モーション番号
 	GSuint motion_;
-	//
 	HP HP_;
-	//
 	ST ST_;
 	//モーションのループ設定
 	bool motion_loop_;
-	//
+	//死亡ライン
 	bool det_line_;
 	//状態
 	State state_;
 	//状態タイマ
 	float state_timer_;
-	//
+	//コンボ数
 	int combo_;
 };
 #endif

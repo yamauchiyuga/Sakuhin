@@ -3,8 +3,9 @@
 
 #include"Actor.h"
 #include<memory>
-//攻撃判定クラス
-class AttackCollider :public Actor {
+
+class AttackCollider :public Actor 
+{
 public:
 	//コンストラクタ
 	AttackCollider(std::shared_ptr<IWorld> world, const BoundingSphere& collider,

@@ -37,8 +37,8 @@ private:
 	float yaw_{ 0.0f };
 	//
 	float pitch_{ 0.0f };
-
-
+	//
+	std::shared_ptr<Actor> a_;
 };
 
 #endif // !CAMERA_TPS_H_

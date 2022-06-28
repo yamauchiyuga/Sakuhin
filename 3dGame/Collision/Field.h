@@ -10,7 +10,7 @@ class BoundingSphere;
 class Field {
 public:
     // コンストラクタ
-    Field(GSuint octree, GSuint collider, GSuint skybox);
+    Field(GSuint octree, GSuint collider);
 
     // 更新
     void update(float delta_time);
@@ -35,8 +35,6 @@ private:
     GSuint	octree_;
     // 衝突判定用オクトリー
     GSuint	collider_;
-    // スカイボックス
-    GSuint	skybox_;
 };
 
 #endif

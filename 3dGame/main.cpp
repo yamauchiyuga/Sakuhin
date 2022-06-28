@@ -8,7 +8,7 @@
 #include"Input.h"
 #include<crtdbg.h>
 #include<memory>
-
+#include<GSeffect.h>
 
 class MyGame :public gslib::Game 
 {
@@ -51,13 +51,13 @@ public:
 		gsDeleteTexture(Texture_Titel);
 		gsDeleteTexture(Texture_GameClear);
 		gsDeleteTexture(Texture_GameOver);
+		gsDeleteTexture(Texture_Lock);
 
 		// メッシュの削除
 		gsDeleteMesh(Mesh_Player);
 		gsDeleteMesh(Mesh_Dragon);
 		gsDeleteMesh(Mesh_Skeleton);
 		gsDeleteMesh(Mesh_Witch);
-		gsDeleteMesh(Mesh_Skybox);
 		// スケルトンの削除
 		gsDeleteSkeleton(Mesh_Player);
 		gsDeleteSkeleton(Mesh_Dragon);
@@ -72,6 +72,8 @@ public:
 		gsDeleteOctree(Octree_Stage);
 		gsDeleteOctree(Octree_Collider);
 		//SEの削除
+		gsDeleteSE(Se_GameClear);
+		gsDeleteSE(Se_GameStart);
 		gsDeleteSE(Se_PlayerAttack);
 		gsDeleteSE(Se_PlayerBlock);
 		gsDeleteSE(Se_PlayerDamage);
@@ -84,12 +86,27 @@ public:
 		gsDeleteSE(Se_DragonFoot);
 		gsDeleteSE(Se_DragonLanding);
 		gsDeleteSE(Se_DragonSpitFire);
+		gsDeleteSE(Se_DragonExplosion);
+		gsDeleteSE(Se_WitchDetate);
+		gsDeleteSE(Se_SkeletonDetate);
 		// ライトマップの削除
 		gsDeleteLightmap(0);
 		// リフレクションプローブの削除
 		gsDeleteReflectionProbe(0);
 		// 補助ライトの削除
 		gsDeleteAuxLight(0);
+		//
+		gsDeleteEffect(Effect_Blood);
+		gsDeleteEffect(Effect_Explosion);
+		gsDeleteEffect(Effect_FireBall);
+		gsDeleteEffect(Effect_HitSpark);
+		gsDeleteEffect(Effect_Smoke);
+		gsDeleteEffect(Effect_TorchFlame);
+
+		//BGM削除
+		gsDeleteBGM(Sound_Titel);
+		gsDeleteBGM(Sound_Wind);
+
 	}
 
 	bool is_running()override 

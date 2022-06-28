@@ -12,6 +12,8 @@ void TitleScene::start()
     is_fade_ = true;
     //フェードのアルファ値を初期化
     alpha_ = 1.0f;
+    gsPlayBGM(Sound_Titel);
+    gsSetVolumeBGM(0.2f);
     //40フレームかけてフェードイン
     Tween::value(1.0f, 0.0f, 60.0f, [=](GSfloat val) {alpha_ = val; })
         .on_complete([=] {is_fade_ = false; });
@@ -23,6 +25,7 @@ void TitleScene::update(float delta_time)
     if (is_fade_)return;
     // エンターキーを押したらシーン終了
     if (Input::is_a_push()) {
+        gsPlaySE(Se_GameStart);
         is_end_ = true;     // シーン終了
     }
 }
@@ -53,6 +56,8 @@ std::string TitleScene::next() const {
 void TitleScene::end() {
     //Tweenの削除
     Tween::clear();
+    //BGMの削除
+    gsDeleteBGM(Sound_Titel);
 }
 
 //フェード処理

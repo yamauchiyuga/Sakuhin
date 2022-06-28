@@ -9,7 +9,8 @@
 class Actor;    // アクタークラスの前方宣言
 
 // アクターマネージャ
-class ActorManager {
+class ActorManager
+{
 public:
     // デフォルトコンストラクタ
     ActorManager() = default;

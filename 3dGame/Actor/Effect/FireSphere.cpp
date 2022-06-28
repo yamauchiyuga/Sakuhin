@@ -3,6 +3,7 @@
 #include"../../Collision/Field.h"
 #include"../../Collision/Line.h"
 #include"../../Assets.h"
+#include<GSeffect.h>
 
 FireSphere::FireSphere(std::shared_ptr<IWorld> world, const GSvector3& position, const GSvector3& velocity) {
 	// ワールドを設定
@@ -17,19 +18,11 @@ FireSphere::FireSphere(std::shared_ptr<IWorld> world, const GSvector3& position,
 	collider_ = BoundingSphere{ 1.0f };
 	// 座標の初期化
 	transform_.position(position);
-	// 寿命
-	lifespan_timer_ = 120.0f;
+	 effect_=gsPlayEffect(Effect_FireBall, &position);
 	gsPlaySE(Se_DragonSpitFire);
 }
 
 void FireSphere::update(float delta_time) {
-	// 寿命が尽きたら死亡
-	if (lifespan_timer_ <= 0.0f) {
-		die();
-		return;
-	}
-	// 寿命の更新
-	lifespan_timer_ -= delta_time;
 	// フィールドとの衝突判定
 	Line line;
 	line.start = transform_.position();
@@ -38,22 +31,33 @@ void FireSphere::update(float delta_time) {
 	if (world_->field()->collide(line, &intersect)) {
 		// 交点の座標に補正
 		transform_.position(intersect);
-		// フィールドに衝突したら死亡
 		die();
+		// フィールドに衝突したら死亡
+		GSvector3 position{ transform_.position() };
+		gsStopEffect(effect_);
+		effect_=gsPlayEffect(Effect_Explosion, &position);
 		return;
 	}
+
 	// 移動する（ワールド座標系基準）
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 }
 
 void FireSphere::draw() const {
-	// デバッグ表示
-	collider().draw();
+	//エフェクトに自身のワールド変換行列を設定
+	GSmatrix4 world = transform_.localToWorldMatrix();
+	gsSetEffectMatrix(effect_, &world);
 }
 
 void FireSphere::react(Actor& other) {
+
 	if (other.tag() == "PlayerTag") {
 		// 衝突したら死亡
 		die();
+		GSvector3 position{ transform_.position() };
+		gsPlaySE(Se_DragonExplosion);
+		gsStopEffect(effect_);
+		effect_= gsPlayEffect(Effect_Explosion, &position);
 	}
+
 }

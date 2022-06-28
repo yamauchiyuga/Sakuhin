@@ -5,12 +5,14 @@
 //コンストラクタ
 Light::Light(std::shared_ptr<IWorld> world) :
 	// ライトのパラメータ
-	light_ambient_{ 0.0087f, 0.094f, 0.333f, 1.0f },
+	light_ambient_{ 0.0f, 0.0f, 0.0f, 0.0f },
 	light_diffuse_{ 0.9f, 0.5f, 0.2f, 1.0f },
 	light_specular_{ 0.9f, 0.5f, 0.2f, 1.0f },
 	light_constant_attenuation_{ 1.0f },
 	light_linear_attenuation_{ 0.1f },
-	light_quadtatic_attenuation_{ 0.1f }
+	light_quadtatic_attenuation_{ 0.1f },
+	light_rim_color_{ 255,255,255,1 },
+	light_rim_exponent_{ 0.0f }
 {
 	world_ = world;
 	Camera_ = world_->camera();
@@ -25,11 +27,11 @@ void Light::update(float delta_time)
 	ImGui::Begin("Lighting");
 	ImGui::ColorEdit3("ambient", light_ambient_, ImGuiColorEditFlags_Float);
 	ImGui::ColorEdit3("diffuse", light_diffuse_, ImGuiColorEditFlags_Float);
-	ImGui::DragFloat("constant", &light_constant_attenuation_, 0.001f, 0.0f, 1.0f);
+	ImGui::DragFloat("constant", &light_constant_attenuation_, 0.001f, 0.0f, 0.7f);
 	ImGui::DragFloat("linear", &light_linear_attenuation_, 0.001f, 0.0f, 1.0f);
 	ImGui::DragFloat("quadratic", &light_quadtatic_attenuation_, 0.001f, 0.0f, 1.0f);
 	ImGui::ColorEdit3("rim color", light_rim_color_, ImGuiColorEditFlags_Float);
-	ImGui::DragFloat("rim exponent", &light_rim_exponent_, 0.01f);
+	ImGui::DragFloat("rim exponent", &light_rim_exponent_, 0.1f);
 	ImGui::End();
 }
 

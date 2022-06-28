@@ -4,8 +4,8 @@
 #include"BoundingSphere.h"
 
 // コンストラクタ
-Field::Field(GSuint octree, GSuint collider, GSuint skybox) :
-	octree_{ octree }, collider_{ collider }, skybox_{ skybox } 
+Field::Field(GSuint octree, GSuint collider) :
+	octree_{ octree }, collider_{ collider }
 {
 }
 //更新
@@ -14,8 +14,6 @@ void Field::update(float delta_time){ }
 // 描画
 void Field::draw() const 
 {
-	// スカイボックスの描画
-	gsDrawSkybox(skybox_);
 	// オクトリーの描画
 	gsDrawOctree(octree_);
 }

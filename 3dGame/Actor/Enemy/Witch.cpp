@@ -1,13 +1,14 @@
 #include "Witch.h"
 #include"../Player/Player.h"
 #include"../Effect/FireSphere.h"
-#include"../Effect/Explosion.h"
 #include"../../World/IWorld.h"
 #include"../../Collision/Field.h"
 #include"../../Collision/Line.h"
 #include"../AttackCollider.h"
 #include"../../Assets.h"
+#include<GSeffect.h>
 
+//モーション番号
 enum {
 	MotionExplosion,
 	MotionSpitFire,
@@ -15,86 +16,104 @@ enum {
 	MotionIdle,
 	MotionRun
 };
-
+//重力
 const float Gravity{ -0.016f };
-//
+//最大体力
 const float MaxHP{ 15 };
-//
+//走り出す距離
 const float RunDistance{ 10.0f };
-//
-const float StaopDistance{ 12.0f };
-//
+//走るスピード
 const float RunSpeed{ 0.1f };
-//
+//ダメージ量
 const int HitDamage{ 5 };
 
 Witch::Witch(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	mesh_{ Mesh_Witch,Mesh_Witch, Mesh_Witch, MotionIdle },
 	state_{ State::Idle },
 	motion_{ MotionIdle }{
+	//ワールド設定
 	world_ = world;
+	//タグ
 	tag_ = "EnemyTag";
+	//名前
 	name_ = "Witch";
+	//プレイヤー検索よう
 	player_ = nullptr;
+	//壁に衝突下か？
 	hit_wall = false;
-	is_dead_=false;
+	//死亡したか？
+	is_dead_ = false;
+	//当たり判定球
 	collider_ = BoundingSphere{ 0.5f, GSvector3{0.0f, 1.0f, 0.0f} };
 	HP_ = { MaxHP };
 	//座標の初期化
 	transform_.position(position);
+	// メッシュの変換行列を初期化
 	mesh_.transform(transform_.localToWorldMatrix());
-
+	//イベント登録
 	mesh_.add_event(MotionSpitFire, 23.0f, [=] {spit_fire(); });
-	//mesh_.add_animation_event(MotionExplosion, 100.0f, [=] {explosion(); });
 }
 
+//更新
 void Witch::update(float delta_time) {
-	//
+	//プレイヤー検索
 	player_ = world_->find_actor("Player");
-	//
+	//状態の更新
 	update_state(delta_time);
-	//
+	//重力
 	velocity_.y += Gravity * delta_time;
-	//
 	transform_.translate(0.0f, velocity_.y, 0.0f);
-	//
+	//フィールドの判定
 	collide_field();
-	//
+	//モーション変更
 	mesh_.change_motion(motion_, motion_loop_);
-	//
+	//アニメーション更新
 	mesh_.update(delta_time);
-	//
+	//// メッシュの変換行列を更新
 	mesh_.transform(transform_.localToWorldMatrix());
-
-
 }
 
-void Witch::draw() const {
-	//
+//描画
+void Witch::draw() const 
+{
 	mesh_.draw();
-	//
-	if (enable_collider_) {
-		//
-		collider().draw();
-	}
 }
 
-void Witch::react(Actor& other) {
-	if (other.tag() == "EnemyTag") {
+//当たり判定
+void Witch::react(Actor& other) 
+{
+	//敵と衝突したか
+	if (other.tag() == "EnemyTag")
+	{
 		collide_actor(other);
 	}
-
-	if (other.tag() == "PlayerAttackTag") {
+	//プレイヤーと衝突したか
+	if (other.tag() == "PlayerAttackTag")
+	{
+		//seを鳴らす
+		gsPlaySE(Se_EnemyDamage);
+		//修正値
+		GSvector3 Offset{ 0.0f,0.5f,0.0f };
+		//エフェクを出す位置
+		GSvector3 Pos = transform_.position()+Offset;
+		//エフェクト表示
+		gsPlayEffect(Effect_Blood, &Pos);
+		//ダメージ
 		HP_.hit_damage(HitDamage);
 	}
-
-	if (HP_.is_end()) {
+	//死亡してるか？
+	if (HP_.is_end())
+	{
+		//当たり判定を無効
 		enable_collider_ = false;
+		//死亡
 		is_dead_ = true;
+		gsPlaySE(Se_WitchDetate);
 		change_state(Witch::State::Dead, MotionDead, false);
 	}
 }
 
+//状態の更新
 void Witch::update_state(float delta_time) {
 	switch (state_)
 	{
@@ -106,7 +125,9 @@ void Witch::update_state(float delta_time) {
 	state_timer_ += delta_time;
 }
 
-void Witch::change_state(State state, int motion, bool loop) {
+//状態の変更
+void Witch::change_state(State state, int motion, bool loop) 
+{
 	motion_ = motion;
 	motion_loop_ = loop;
 	state_ = state;
@@ -114,45 +135,61 @@ void Witch::change_state(State state, int motion, bool loop) {
 	hit_wall_ = false;
 }
 
-void Witch::idle(float delta_time) {
-	if (state_timer_ >= mesh_.motion_end_time()) {
-		if (is_run()) {
+//アイドル
+void Witch::idle(float delta_time) 
+{
+	if (state_timer_ >= mesh_.motion_end_time()) 
+	{
+		//走るか？
+		if (is_run()) 
+		{
 			change_state(State::Run, MotionRun, true);
 			return;
 		}
-
-		if (is_attack()) {
+		//攻撃範囲か？
+		if (is_attack())
+		{
 			attack_selection();
 			return;
 		}
 	}
 
 }
-
-void Witch::run(float delta_time) {
-	
+//走る
+void Witch::run(float delta_time) 
+{
 	// 前進する（ローカル座標基準）
 	transform_.translate(0.0f, 0.0f, RunSpeed * delta_time);
-	if (is_attack()||is_hit_wall()) {
+	//攻撃範囲か、壁にぶつかったか？
+	if (is_attack() || is_hit_wall()) 
+	{
 		attack_selection();
 	}
 }
 
-void Witch::dead(float delta_time) {
-	if (state_timer_ >= mesh_.motion_end_time()) {
+//死亡
+void Witch::dead(float delta_time)
+{
+	if (state_timer_ >= mesh_.motion_end_time())
+	{
+		//死亡
 		dead_ = true;
 	}
 }
 
-void Witch::attack(float delta_time) {
-
-	if (state_timer_ >= mesh_.motion_end_time()) {
+//攻撃中
+void Witch::attack(float delta_time)
+{
+	if (state_timer_ >= mesh_.motion_end_time())
+	{
 		change_state(State::Idle, MotionIdle, false);
 	}
 
 }
 
-void Witch::attack_selection() {
+//次の攻撃
+void Witch::attack_selection() 
+{
 	// ターゲット方向の角度を求める
 	float angle = target_signed_angle();
 	// 向きを変える
@@ -160,13 +197,8 @@ void Witch::attack_selection() {
 	change_state(State::Attack, MotionSpitFire, false);
 }
 
-//void Witch::explosion() {
-//
-//	// 爆発の生成
-//	world_->add_actor(new Explosion{ world_, player_->transform().position() });
-//}
-
-void Witch::spit_fire() {
+void Witch::spit_fire() 
+{
 	// 弾を生成する場所の距離
 	const float GenerateDistance{ 1.0f };
 	// 生成する位置の高さの補正値
@@ -182,14 +214,15 @@ void Witch::spit_fire() {
 	velocity = transform_.forward() * Speed;
 
 	// 弾の生成
-	world_->add_actor(std::make_unique< FireSphere>( world_, position, velocity ));
+	world_->add_actor(std::make_unique< FireSphere>(world_, position, velocity));
 }
 
+//走るか？
 bool Witch::is_run() const
 {
 	return target_distance() < RunDistance;
 }
-
+//攻撃範囲か？
 bool Witch::is_attack() const
 {
 	return target_distance() >= RunDistance;

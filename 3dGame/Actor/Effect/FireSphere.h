@@ -16,7 +16,7 @@ public:
 	virtual void react(Actor& other)override;
 private:
 	//
-	float lifespan_timer_;
+	int effect_;
 };
 
 #endif // !Fire_Sphere_H_

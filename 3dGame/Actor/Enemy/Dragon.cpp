@@ -6,6 +6,7 @@
 #include"../../Collision/Line.h"
 #include"../AttackCollider.h"
 #include"../../Assets.h"
+#include<GSeffect.h>
 
 enum {
 	MotionBite,
@@ -28,21 +29,19 @@ const float MaxHP{ 400 };
 //
 const float Gravity{ -0.003f };
 //
-const float TurnDistance{ 1.5f };
+const float AttackAngle{ 25.0f };
 //
-const float RunDistance{ 3.0f };
+const float RunDistance{ 6.0f };
 //
-const float RunSpeed{ 0.1f };
+const float RunSpeed{ 0.09f };
 //
-const float FlySpeed{ 0.2f };
+const float FlySpeed{ 0.11f };
 //
-const float TurnAngle{ 2.0f };
-//
-const float FlyTurnAngle{ 2.0f };
+const float TurnAngle{ 1.5f };
 //
 const float TurnAroundAngle{ 10.0f };
 //
-const int HitDamage{10 };
+const int HitDamage{ 20 };
 
 Dragon::Dragon(std::shared_ptr<IWorld>world, const GSvector3& position) :
 	mesh_{ Mesh_Dragon,Mesh_Dragon, Mesh_Dragon, MotionIdle },
@@ -102,12 +101,6 @@ void Dragon::update(float delta_time) {
 void Dragon::draw() const {
 	//
 	mesh_.draw();
-
-	//
-	if (enable_collider_) {
-		//
-		collider().draw();
-	}
 }
 
 void Dragon::draw_gui() const {
@@ -119,6 +112,9 @@ void Dragon::react(Actor& other) {
 	if (other.tag() == "PlayerAttackTag") {
 		gsPlaySE(Se_EnemyDamage);
 		HP_.hit_damage(HitDamage);
+		GSvector3 Offset{ 0.0f,0.5f,0.0f };
+		GSvector3 Pos = transform_.position() + Offset;
+		gsPlayEffect(Effect_Blood, &Pos);
 	}
 	if (HP_.is_end()) {
 		enable_collider_ = false;
@@ -166,7 +162,17 @@ void Dragon::idle(float delta_time) {
 	}
 	//
 	if (is_attack()) {
-		attack_selection();
+		int next = gsRand(0, 2);
+		if (next == 0)
+		{
+			GSvector3 position{ transform_.position() };
+			gsPlayEffect(Effect_Smoke, &position);
+			change_state(State::FlyStart, MotionGoInAir, false);
+		}
+		else
+		{
+			attack_selection();
+		}
 		return;
 	}
 }
@@ -192,6 +198,8 @@ void Dragon::turn(float delta_time) {
 			//
 			int next = gsRand(0, 3);
 			if (next == 0) {
+				GSvector3 position{ transform_.position() };
+				gsPlayEffect(Effect_Smoke, &position);
 				change_state(State::FlyStart, MotionGoInAir, false);
 			}
 			else if (next == 1) {
@@ -251,7 +259,7 @@ void Dragon::fly_idle(float delta_time) {
 }
 
 void Dragon::fly_move(float delta_time) {
-	float angle = CLAMP(target_signed_angle(), -FlyTurnAngle, FlyTurnAngle);
+	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
 	transform_.translate(0.0f, 0.0f, FlySpeed * delta_time);
 
@@ -261,9 +269,10 @@ void Dragon::fly_move(float delta_time) {
 			change_state(State::FlyAttack, MotionFlySpitFireball, false);
 		}
 		else {
+			GSvector3 position{ transform_.position() };
+			gsPlayEffect(Effect_Smoke, &position);
 			change_state(State::FlyEnd, MotionLanding, false);
 		}
-
 	}
 
 	if (state_timer_ >= mesh_.motion_end_time()) {
@@ -312,7 +321,7 @@ void Dragon::attack_selection() {
 	else if (attack == 1) {
 		motion = MotionTailAttack;
 	}
-	else if(attack==2)
+	else if (attack == 2)
 	{
 		motion = MotionSpitFireball;
 	}
@@ -378,7 +387,7 @@ void Dragon::spit_fire() {
 		velocity = (player_->transform().position() - position).normalized() * Speed;
 	}
 	// ’e‚Ì¶¬
-	world_->add_actor(std::make_unique<FireSphere>( world_, position, velocity ));
+	world_->add_actor(std::make_unique<FireSphere>(world_, position, velocity));
 }
 
 
@@ -390,12 +399,13 @@ bool Dragon::is_trun() const {
 
 
 bool Dragon::is_run() const {
-	return target_distance() > 6.0f;
+	
+	return target_distance() > RunDistance;
 
 }
 
 bool Dragon::is_attack()const {
-	return target_distance() <= 6.0f && target_angle() <= 20.0f;
+	return target_distance() < RunDistance && target_angle() <= AttackAngle;
 }
 
 bool Dragon::is_gravity() const
