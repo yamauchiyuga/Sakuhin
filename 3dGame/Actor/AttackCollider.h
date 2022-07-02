@@ -2,14 +2,15 @@
 #define ATTACK_COLLIDER_H_
 
 #include"Actor.h"
+#include<memory>
 
-//攻撃判定クラス
-class AttackCollider :public Actor {
+class AttackCollider :public Actor 
+{
 public:
 	//コンストラクタ
-	AttackCollider(IWorld* world, const BoundingSphere& collider,
+	AttackCollider(std::shared_ptr<IWorld> world, const BoundingSphere& collider,
 		const std::string& tag, const std::string& name,
-		const std::string& ownwr_tag = "",
+		const std::string& owner_tag = "",
 		float lifespan = 1.0f, float delay = 0.0f);
 
 	//更新

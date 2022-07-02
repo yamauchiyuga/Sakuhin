@@ -11,7 +11,13 @@ void Input::update(float delta_time)
 	gsXBoxPadGetLeftAxis(0, &input_left_);
 	gsXBoxPadGetRightAxis(0, &input_right_);
 }
-//攻撃ボタンを押されているか？
+//Aボタンを押したか？
+bool Input::is_a_push() {
+	return gsXBoxPadButtonTrigger(0, GS_XBOX_PAD_A);
+}
+
+
+//攻撃ボタンを押したか？
 bool Input::is_attack()
 {
 	return gsXBoxPadButtonTrigger(0, GS_XBOX_PAD_X);
@@ -36,13 +42,21 @@ bool Input::is_determination()
 {
 	return  gsXBoxPadButtonTrigger(0, GS_XBOX_PAD_A);
 }
-//左スティックの入力値を受け取る
-GSvector2 Input::get_input_left()
+//左スティックの縦の入力量
+float Input::get_left_vertical()
 {
-	return input_left_;
+	return input_left_.y;
 }
-//右スティックの入力値を受け取る
-GSvector2 Input::get_input_right()
+//左スティックの横の入力量
+float Input::get_left_horizontal() 
 {
-	return input_right_;
+	return input_left_.x;
+}
+//右スティックの縦の入力量
+float Input::get_right_vertical() {
+	return input_right_.y;
+}
+//右スティックの横の入力量
+float Input::get_right_horizontal() {
+	return input_right_.x;
 }

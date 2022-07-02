@@ -19,9 +19,9 @@ public:
 
 public:
     // ”¼Œa
-    float       radius{ 0.0f };
+    float       radius_{ 0.0f };
     // ’†SÀ•W
-    GSvector3   center{ 0.0f, 0.0f, 0.0f };
+    GSvector3   center_{ 0.0f, 0.0f, 0.0f };
 };
 
 #endif

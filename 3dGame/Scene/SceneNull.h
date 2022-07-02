@@ -3,8 +3,9 @@
 
 #include "IScene.h"
 
-//ヌルシーン
-class SceneNull :public IScene {
+
+class SceneNull :public IScene 
+{
 public:
 	//開始
 	virtual void start()override {}
@@ -17,7 +18,8 @@ public:
 		return false;
 	}
 	//次のシーンを返す
-	virtual std::string next()const override {
+	virtual std::string next()const override
+	{
 		return "SceneNull";
 	}
 	//終了

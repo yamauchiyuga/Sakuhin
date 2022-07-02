@@ -1,45 +1,41 @@
 #ifndef FIELD_H_
 #define FIELD_H_
 
-#include<gslib.h>
+#include <gslib.h>
 
 class Ray;
 class Line;
 class BoundingSphere;
 
-//
 class Field {
 public:
-	//
-	static const float MinX;
-	static const float MaxX;
-	static const float MinZ;
-	static const float MaxZ;
+    // コンストラクタ
+    Field(GSuint octree, GSuint collider);
 
-	//
-	Field(GSuint octree, GSuint collider, GSuint skybox);
-	//
-	void update(float delta_time);
-	//
-	void draw()const;
+    // 更新
+    void update(float delta_time);
+    // 描画
+    void draw() const;
 
-	//
-	bool collide(const Line& line, GSvector3* intersect=nullptr,GSplane* plane=nullptr)const;
-	//
-	bool collide(const Ray& ray, float max_distance, GSvector3* intersect = nullptr, GSplane* plane = nullptr)const;
-	//
-	bool collide(const BoundingSphere& sphere, GSvector3* center = nullptr) const;
+    // 線分との衝突判定
+    bool collide(const Line& line,
+        GSvector3* intersect = nullptr, GSplane* plane = nullptr) const;
+    // レイとの衝突判定
+    bool collide(const Ray& ray, float max_distance,
+        GSvector3* intersect = nullptr, GSplane* plane = nullptr) const;
+    // 球体との衝突判定
+    bool collide(const BoundingSphere& sphere, GSvector3* center = nullptr) const;
 
-	//
-	Field(const Field& other) = delete;
-	Field& operator=(const Field& other) = delete;
+    // コピー禁止
+    Field(const Field& other) = delete;
+    Field& operator = (const Field& other) = delete;
+
 private:
-	//
-	GSuint octree_;
-	//
-	GSuint collider_;
-	//
-	GSuint skybox_;
+    // 描画用オクトリー
+    GSuint	octree_;
+    // 衝突判定用オクトリー
+    GSuint	collider_;
 };
 
-#endif // !FIELD_H_
+#endif
+
