@@ -36,7 +36,7 @@ const float AnimationDelaytime{ 60.0f };
 //ダメージ
 const int HitDamage{ 5 };
 
-Skeketon::Skeketon(std::shared_ptr<IWorld> world, const GSvector3& position) :
+Skeleton::Skeleton(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	mesh_{ Mesh_Skeleton,Mesh_Skeleton, Mesh_Skeleton, MotionGeneration,false },
 	state_{ State::Generation },
 	motion_{ MotionGeneration }
@@ -46,7 +46,7 @@ Skeketon::Skeketon(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	//タグ
 	tag_ = "EnemyTag";
 	//名前
-	name_ = "Skeketon";
+	name_ = "Skeleton";
 	is_dead_ = false;
 	player_ = nullptr;
 	//判定用球
@@ -62,7 +62,7 @@ Skeketon::Skeketon(std::shared_ptr<IWorld> world, const GSvector3& position) :
 }
 
 //更新
-void Skeketon::update(float delta_time)
+void Skeleton::update(float delta_time)
 {
 	//プレイヤー検索
 	player_ = world_->find_actor("Player");
@@ -82,12 +82,12 @@ void Skeketon::update(float delta_time)
 }
 
 //描画
-void Skeketon::draw() const
+void Skeleton::draw() const
 {
 	mesh_.draw();
 }
 
-void Skeketon::react(Actor& other)
+void Skeleton::react(Actor& other)
 {
 	//生成中なら判定しない
 	if (state_ == State::Generation)return;
@@ -119,27 +119,27 @@ void Skeketon::react(Actor& other)
 		//死亡
 		is_dead_ = true;
 		gsPlaySE(Se_SkeletonDetate);
-		change_state(Skeketon::State::Dead, MotionDead, false);
+		change_state(Skeleton::State::Dead, MotionDead, false);
 	}
 
 }
 
 //状態の更新
-void Skeketon::update_state(float delta_time)
+void Skeleton::update_state(float delta_time)
 {
 	switch (state_) {
-	case Skeketon::State::Generation: generation(delta_time); break;
-	case Skeketon::State::Idle:idle(delta_time); break;
-	case Skeketon::State::Run:run(delta_time); break;
-	case Skeketon::State::Turn:turn(delta_time); break;
-	case Skeketon::State::Attack:attack(delta_time); break;
-	case Skeketon::State::Dead:dead(delta_time); break;
+	case Skeleton::State::Generation: generation(delta_time); break;
+	case Skeleton::State::Idle:idle(delta_time); break;
+	case Skeleton::State::Run:run(delta_time); break;
+	case Skeleton::State::Turn:turn(delta_time); break;
+	case Skeleton::State::Attack:attack(delta_time); break;
+	case Skeleton::State::Dead:dead(delta_time); break;
 	}
 	state_timer_ += delta_time;
 }
 
 //状態の変更
-void Skeketon::change_state(State state, int motion, bool loop) {
+void Skeleton::change_state(State state, int motion, bool loop) {
 	motion_ = motion;
 	motion_loop_ = loop;
 	state_ = state;
@@ -147,7 +147,7 @@ void Skeketon::change_state(State state, int motion, bool loop) {
 }
 
 //生成
-void Skeketon::generation(float delta_time)
+void Skeleton::generation(float delta_time)
 {
 	if (state_timer_ >= mesh_.motion_end_time())
 	{
@@ -156,7 +156,7 @@ void Skeketon::generation(float delta_time)
 }
 
 //アイドル
-void Skeketon::idle(float delta_time)
+void Skeleton::idle(float delta_time)
 {
 	if (state_timer_ >= mesh_.motion_end_time() + AnimationDelaytime)
 	{
@@ -184,7 +184,7 @@ void Skeketon::idle(float delta_time)
 }
 
 //走る
-void Skeketon::run(float delta_time) 
+void Skeleton::run(float delta_time) 
 {
 	// ターゲット方向の角度を求める
 	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
@@ -199,7 +199,7 @@ void Skeketon::run(float delta_time)
 }
 
 //振り向き
-void Skeketon::turn(float delta_time) 
+void Skeleton::turn(float delta_time) 
 {
 	if (state_timer_ >= mesh_.motion_end_time())
 	{
@@ -222,7 +222,7 @@ void Skeketon::turn(float delta_time)
 }
 
 //死亡
-void Skeketon::dead(float delta_time) 
+void Skeleton::dead(float delta_time) 
 {
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		dead_ = true;
@@ -230,7 +230,7 @@ void Skeketon::dead(float delta_time)
 }
 
 //攻撃
-void Skeketon::attack(float delta_time)
+void Skeleton::attack(float delta_time)
 {
 	if (state_timer_ >= mesh_.motion_end_time()) 
 	{
@@ -244,7 +244,7 @@ void Skeketon::attack(float delta_time)
 }
 
 //攻撃の判定生成
-void Skeketon::slash() 
+void Skeleton::slash() 
 {
 	// 攻撃判定の半径
 	const float AttackColliderRadius{ 0.5f };
@@ -261,19 +261,19 @@ void Skeketon::slash()
 }
 
 //走しるか？
-bool Skeketon::is_run() const
+bool Skeleton::is_run() const
 {
 	return target_distance() > RunDistance;
 }
 
 //振り向くか？
-bool Skeketon::is_trun() const
+bool Skeleton::is_trun() const
 {
 	return target_angle() >= TurnAroundAngle;
 }
 
 //攻撃範囲か？
-bool Skeketon::is_attack() const 
+bool Skeleton::is_attack() const 
 {
 	return target_distance() <= RunDistance && target_angle() <= TurnAroundAngle;
 }

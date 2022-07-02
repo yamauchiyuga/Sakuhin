@@ -128,4 +128,6 @@ private:
 int main()
 {
 	return MyGame().run();
+	OutputDebugString(std::to_string(  _CrtDumpMemoryLeaks()).c_str());
 }
+

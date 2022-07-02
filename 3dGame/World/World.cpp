@@ -10,6 +10,8 @@ World::~World() {
 }
 
 void World::update(float delta_time) {
+	//エフェクトの更新処理を行う
+	gsUpdateEffect(delta_time);
 	//フィールド更新
 	field_->update(delta_time);
 	//アクター更新
@@ -22,9 +24,7 @@ void World::update(float delta_time) {
 	actors_.remove();
 	//カメラ更新
 	camera_->update(delta_time);
-	//エフェクトの更新処理を行う
-	gsUpdateEffect(delta_time);
-	light_->update(delta_time);
+	
 }
 // 描画
 void World::draw() const {
@@ -44,7 +44,6 @@ void World::draw() const {
 	actors_.draw_transparent();
 	//エフェク描画
 	gsDrawEffect();
-	
 }
 
 void World::draw_gui() const {
@@ -64,10 +63,8 @@ void World::clear() {
 	// アクターを消去
 	actors_.clear();
 	// カメラを消去
-	//delete camera_;
 	camera_ = nullptr;
 	// ライトを消去
-	//delete light_;
 	light_ = nullptr;
 	// フィールドを消去
 	//delete field_;
@@ -80,17 +77,20 @@ void World::clear() {
 }
 // カメラの追加
 void World::add_camera(std::shared_ptr<Actor> camera) {
-	camera_ =camera;
+	std::shared_ptr<Actor> Temp{ camera };
+	camera_ =std::move(Temp);
 }
 
 // ライトの追加
 void World::add_light(std::shared_ptr<Actor> light) {
-	light_ = light;
+	std::shared_ptr<Actor> Temp{ light };
+	light_ = std::move(Temp);
 }
 
 // フィールドの追加
 void World::add_field(std::shared_ptr<Field> field) {
-	field_ = field;
+	std::shared_ptr<Field> Temp{ field };
+	field_ = std::move(Temp);
 }
 
 // シャドウマップの描画用の関数

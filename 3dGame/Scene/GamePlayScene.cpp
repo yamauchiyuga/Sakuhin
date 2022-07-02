@@ -18,10 +18,10 @@
 #define GS_ENABLE_RIM_LIGHT                 // リムライトを有効にする
 
 	// ポストエフェクトのパラメータ
-	static GScolor color_{ 1.0f, 1.0f, 1.0f, 1.0f };
-	static float   saturation_{ 1.0f };
-	static float   luminance_{ 1.4f };
-	static float   exposure_{ 0.8f };
+static GScolor color_{ 1.0f, 1.0f, 1.0f, 1.0f };
+static float   saturation_{ 1.0f };
+static float   luminance_{ 1.4f };
+static float   exposure_{ 0.8f };
 
 void GamePlayScene::start() {
 	// 終了フラグを初期化
@@ -50,20 +50,22 @@ void GamePlayScene::start() {
 	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
 	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
 	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
-	
+
+
 
 	// プレーヤーの追加
-	world_->add_actor( std::make_shared<Player>( world_, GSvector3{-5,4.0,10} ));
+	world_->add_actor(std::make_shared<Player>(world_, GSvector3{ -5,4.0,10 }));
+	world_->add_actor(std::make_shared<Dragon>(world_, GSvector3{ -5,4.0,50 }));
 	// フィールドクラスの追加
-	world_->add_field(std::make_shared<Field>( Octree_Stage, Octree_Collider));
+	world_->add_field(std::make_shared<Field>(Octree_Stage, Octree_Collider));
 	// カメラクラスの追加
 	world_->add_camera(std::make_shared<CameraTPS>(
-			  world_, GSvector3{0.0f, 3.2f, -4.8f}, GSvector3{0.0f, 1.0, 0.0f} ));
+		world_, GSvector3{ 0.0f, 3.2f, -4.8f }, GSvector3{ 0.0f, 1.0, 0.0f }));
 	// ライトクラスの追加
-	world_->add_light(std::make_shared<Light>( world_ ));
+	world_->add_light(std::make_shared<Light>(world_));
 	//ステージデータ読み込み
 	enemy_generator_ = std::make_shared<EnemyGenerator>(world_, "Assets/StageData/StatgeData.csv", "Assets/StageData/FasePos.csv");
-	
+
 	// 炎のエフェクトを再生する(0～8が松明用ライト）
 	for (GSint i = 0; i < 17; ++i) {
 		// 補助ライトの位置を取得
@@ -81,7 +83,7 @@ void GamePlayScene::update(float delta_time) {
 	// ワールドの更新
 	world_->update(delta_time);
 	//ジェネレータの更新
-	enemy_generator_->update(delta_time);
+	//enemy_generator_->update(delta_time);
 }
 
 // 描画
@@ -96,10 +98,10 @@ void GamePlayScene::draw() const {
 	world_->draw_gui();
 	//fog描画
 	fog_.draw();
-	 //レンダーターゲットを無効にする
+	//レンダーターゲットを無効にする
 	gsEndRenderTarget();
 
-	 //シェーダーを有効にする
+	//シェーダーを有効にする
 	GScolor col = color_ * luminance_;
 	col.a = 1.0f;
 	gsBeginShader(0);

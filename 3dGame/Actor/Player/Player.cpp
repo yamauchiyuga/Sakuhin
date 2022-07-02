@@ -157,9 +157,6 @@ void Player::react(Actor& other)
 			// ノックバックする
 			knock_back(other, 0.2f);
 			//エフェクを出す
-			GSvector3 Offset{ 0.0f,1.0f,0.5f };
-			GSvector3 Pos = transform_.position() + Offset;
-			gsPlayEffect(Effect_HitSpark, &Pos);
 			//SEを鳴らす
 			gsPlaySE(Se_PlayerBlock);
 			//ガードのスタミナ消費

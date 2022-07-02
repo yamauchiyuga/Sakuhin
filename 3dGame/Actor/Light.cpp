@@ -25,8 +25,6 @@ Light::Light(std::shared_ptr<IWorld> world) :
 //描画
 void Light::draw() const 
 {
-
-
 	// カメラの位置をライトの位置に設定する（ポイントライト）
 	float light_position[4]{ Camera_->transform().position().x,Camera_->transform().position().y, Camera_->transform().position().z,1.0f};
 

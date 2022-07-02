@@ -5,7 +5,7 @@
 #include"../AnimatedMesh.h"
 #include<memory>
 
-class Skeketon :public Enemy 
+class Skeleton :public Enemy 
 {
 public:
 	//状態
@@ -19,7 +19,7 @@ public:
 		Attack
 	};
 	//コンストラクタ
-	Skeketon(std::shared_ptr<IWorld> world, const GSvector3& position);
+	Skeleton(std::shared_ptr<IWorld> world, const GSvector3& position);
 	//更新
 	virtual void update(float delta_time)override;
 	//描画

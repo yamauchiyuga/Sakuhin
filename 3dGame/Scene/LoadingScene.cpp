@@ -25,7 +25,7 @@ void LoadingScene::update(float delta_time)
 		//ドットが指定数より多くならないよう初期化
 		now_loading_ = "Now Loading";
 		dot_count_ = (dot_count_ + 1) % 4;
-		for (int i = 0; i < dot_count_ ; ++i) {
+		for (int i = 0; i < dot_count_; ++i) {
 			now_loading_ += ".";
 		}
 		timer_ = 0.0f;
@@ -48,7 +48,7 @@ bool LoadingScene::is_end() const
 
 std::string LoadingScene::next() const
 {
-	return "TitleScene";
+	return "GamePlayScene";
 }
 
 void LoadingScene::end() {
@@ -57,10 +57,10 @@ void LoadingScene::end() {
 void LoadingScene::load_assets(void* self) {
 
 	LoadingScene* load = (LoadingScene*)self;
-	// エフェクトの初期化
-	gsInitEffect();
 	//シェーダーの初期化
 	gsInitDefaultShader();
+	// エフェクトの初期化
+	gsInitEffect();
 	// メッシュ用のシェーダー
 	gsLoadShader(Shader_StandardMesh, "Assets/shader/StandardMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
 	// スキニングメッシュ用のシェーダー
@@ -76,10 +76,10 @@ void LoadingScene::load_assets(void* self) {
 	// リフレクションプローブの読み込み(0番に読み込めば自動的に適用される）
 	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
-	gsLoadLightmap(0, "Assets/Lightmap01/Lightmap.txt");
+	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
 	// 補助ライトの読み込み
 	gsLoadAuxLight(0, "Assets/AuxLight/AuxLight_Torch_.txt");
-	gsLoadAuxLight(1, "Assets/AuxLight/AuxLight.txt"); 
+	gsLoadAuxLight(1, "Assets/AuxLight/AuxLight.txt");
 
 	//プレイヤーの読み込み
 	gsLoadMesh(Mesh_Player, "Assets/model/Player/Player.mshb");
@@ -106,9 +106,9 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadTexture(Texture_Lock, "Assets/Texture/LockOn.png");
 	gsLoadTexture(Texture_TitelName, "Assets/Texture/Name.png");
 	//SE読み込み
-	gsLoadSE(Se_GameStart, "Assets/Sound/SE/Titel.wav",1, GWAVE_DEFAULT);
-	gsLoadSE(Se_GameClear, "Assets/Sound/SE/clear.wav",1, GWAVE_DEFAULT);
-	gsLoadSE(Se_PlayerAttack, "Assets/Sound/SE/Player/Player_Combo01_Swing.wav",1, GWAVE_DEFAULT);
+	gsLoadSE(Se_GameStart, "Assets/Sound/SE/Titel.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_GameClear, "Assets/Sound/SE/clear.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_PlayerAttack, "Assets/Sound/SE/Player/Player_Combo01_Swing.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerBlock, "Assets/Sound/SE/Player/Player_Block.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerDamage, "Assets/Sound/SE/Player/Player_Damage.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_PlayerRun, "Assets/Sound/SE/Player/Player_W.wav", 1, GWAVE_DEFAULT);
@@ -125,9 +125,8 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadSE(Se_WitchDetate, "Assets/Sound/SE/Witch/Witch_Death.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_SkeletonDetate, "Assets/Sound/SE/Skeleton/Skeleton_Death.wav", 1, GWAVE_DEFAULT);
 	//BG読み込み
-	gsLoadBGM(Sound_Titel, "Assets/Sound/BGM/Result.ogg",GS_TRUE);
-	gsLoadBGM(Sound_Wind, "Assets/Sound/BGM/Wind.ogg",GS_TRUE);
-
+	gsLoadBGM(Sound_Titel, "Assets/Sound/BGM/Result.ogg", GS_TRUE);
+	gsLoadBGM(Sound_Wind, "Assets/Sound/BGM/Wind.ogg", GS_TRUE);
 	// エフェクトの読み込み（松明の炎）
 	gsLoadEffect(Effect_TorchFlame, "Assets/Effect/Fire/Fire.efk");
 	gsLoadEffect(Effect_Blood, "Assets/Effect/Blood.efk");
@@ -136,10 +135,11 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
 	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
 
+
 	// 描画用オクツリーの読み込み
-	gsLoadOctree(Octree_Stage, "Assets/TtestFiled/Field01.oct");
+	gsLoadOctree(Octree_Stage, "Assets/Filed/Field.oct");
 	// 衝突判定用オクツリーの読み込み
-	gsLoadOctree(Octree_Collider, "Assets/TtestFiled/Field01_collider.oct");
+	gsLoadOctree(Octree_Collider, "Assets/Filed/Field_collider.oct");
 	//音量設定
 	gsSetVolumeSE(Se_PlayerRun, 0.5f);
 	gsSetVolumeSE(Se_PlayerAttack, 0.5f);
