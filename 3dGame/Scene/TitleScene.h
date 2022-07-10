@@ -2,7 +2,10 @@
 #define TITLE_SCENE_H_
 
 #include "IScene.h"
+#include"../World/World.h"
+#include"../Fog/Fog.h"
 #include <gslib.h>
+#include<memory>
 
 class TitleScene : public IScene 
 {
@@ -20,6 +23,8 @@ public:
     // 終了
     virtual void end() override;
 private:
+   std::shared_ptr<World> world_;
+   Fog fog;
     //フェード画像の描画
     void draw_fade() const;
     // 終了フラグ

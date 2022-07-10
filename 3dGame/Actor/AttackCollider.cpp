@@ -48,7 +48,9 @@ void AttackCollider::update(float delta_time)
 void AttackCollider::draw()const 
 {
 	//衝突判定用のデバッグ表示
-	//collider().draw();
+	if (enable_collider_) {
+		collider().draw();
+	}
 }
 
 //衝突リアクション

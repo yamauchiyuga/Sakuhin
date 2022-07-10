@@ -9,6 +9,14 @@
 
 void LoadingScene::start()
 {
+	// エフェクトの初期化
+	gsInitEffect();
+	// エフェクトの読み込み（松明の炎）
+	gsLoadEffect(Effect_TorchFlame, "Assets/Effect/Fire/Fire.efk");
+	gsLoadEffect(Effect_Blood, "Assets/Effect/Blood.efk");
+	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
+	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
+	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
 	now_loading_ = "Now Loading";
 	timer_ = 0.0f;
 	dot_count_ = 0;
@@ -48,7 +56,7 @@ bool LoadingScene::is_end() const
 
 std::string LoadingScene::next() const
 {
-	return "GamePlayScene";
+	return "TitleScene";
 }
 
 void LoadingScene::end() {
@@ -59,8 +67,6 @@ void LoadingScene::load_assets(void* self) {
 	LoadingScene* load = (LoadingScene*)self;
 	//シェーダーの初期化
 	gsInitDefaultShader();
-	// エフェクトの初期化
-	gsInitEffect();
 	// メッシュ用のシェーダー
 	gsLoadShader(Shader_StandardMesh, "Assets/shader/StandardMeshBump.vert", "Assets/shader/StandardMeshBump.frag");
 	// スキニングメッシュ用のシェーダー
@@ -73,10 +79,6 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadShader(Shader_ShadowMapSkinnedMesh, "Assets/shader/ShadowMapSkinned.vert", "Assets/shader/ShadowMap.frag");
 	// ポストエフェクトシェーダーの読み込み
 	gsLoadShader(0, "Assets/Shader/RenderTexture.vert", "Assets/Shader/PostEffect.frag");
-	// リフレクションプローブの読み込み(0番に読み込めば自動的に適用される）
-	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
-	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
-	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
 	// 補助ライトの読み込み
 	gsLoadAuxLight(0, "Assets/AuxLight/AuxLight_Torch_.txt");
 	gsLoadAuxLight(1, "Assets/AuxLight/AuxLight.txt");
@@ -127,19 +129,11 @@ void LoadingScene::load_assets(void* self) {
 	//BG読み込み
 	gsLoadBGM(Sound_Titel, "Assets/Sound/BGM/Result.ogg", GS_TRUE);
 	gsLoadBGM(Sound_Wind, "Assets/Sound/BGM/Wind.ogg", GS_TRUE);
-	// エフェクトの読み込み（松明の炎）
-	gsLoadEffect(Effect_TorchFlame, "Assets/Effect/Fire/Fire.efk");
-	gsLoadEffect(Effect_Blood, "Assets/Effect/Blood.efk");
-	gsLoadEffect(Effect_HitSpark, "Assets/Effect/HitSpark1.efk");
-	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
-	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
-	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
-
-
 	// 描画用オクツリーの読み込み
 	gsLoadOctree(Octree_Stage, "Assets/Filed/Field.oct");
 	// 衝突判定用オクツリーの読み込み
 	gsLoadOctree(Octree_Collider, "Assets/Filed/Field_collider.oct");
+
 	//音量設定
 	gsSetVolumeSE(Se_PlayerRun, 0.5f);
 	gsSetVolumeSE(Se_PlayerAttack, 0.5f);

@@ -2,6 +2,7 @@
 #define LOADING_SCENE_H_
 
 #include "IScene.h"
+
 class LoadingScene : public IScene
 {
 public:
@@ -20,13 +21,12 @@ public:
 private:
     //ロード用スレッド
     static void load_assets(void* self);
-    //
     std::string now_loading_;
     //ドットを出現させるタイマー
     float timer_;
     //ドットの数
     int dot_count_;
-    //終了しているか
+    //終了しているかk
     bool is_end_;
 };
 

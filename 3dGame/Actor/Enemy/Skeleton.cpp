@@ -24,13 +24,13 @@ const float Gravity{ -0.016f };
 //最大体力
 const float MaxHP{ 10 };
 //走り出す距離
-const float RunDistance{ 1.5f };
+const float RunDistance{ 2.5f };
 //走るスピード
 const float RunSpeed{ 0.06f };
 //回転量
 const float TurnAngle{ 2.5f };
 //回転する角度
-const float TurnAroundAngle{ 4.0f };
+const float TurnAroundAngle{ 10.0f };
 //
 const float AnimationDelaytime{ 60.0f };
 //ダメージ

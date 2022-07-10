@@ -23,8 +23,8 @@ const GSvector3 PlayerOffset{ 0.0f, 2.0f, -6.5f };
 //コンストラクタ
 CameraTPS::CameraTPS(std::shared_ptr<IWorld> world, const GSvector3& position, const GSvector3& at) :
 	state_{ State::PlayerLockOn },
-	player_{nullptr},
-	target_{nullptr}
+	player_{ nullptr },
+	target_{ nullptr }
 {
 	world_ = world;
 	// タグの設定
@@ -33,7 +33,7 @@ CameraTPS::CameraTPS(std::shared_ptr<IWorld> world, const GSvector3& position, c
 	name_ = "Camera";
 	// 視点の位置を設定
 	transform_.position(position);
-	
+
 	// 注視点を設定（注視点の方向に向きを変える）
 	transform_.lookAt(at);
 	//x軸回りの回転角度の初期化
@@ -44,8 +44,8 @@ CameraTPS::CameraTPS(std::shared_ptr<IWorld> world, const GSvector3& position, c
 	timer_ = 0;
 }
 
-void CameraTPS::update(float delta_time) 
-{	
+void CameraTPS::update(float delta_time)
+{
 	player_update();
 
 	if (is_player_dead()) return;
@@ -57,6 +57,17 @@ void CameraTPS::update(float delta_time)
 }
 void CameraTPS::draw()const
 {
+	// 透視射影の変換行列を設定する
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(
+		45.0f,
+		1280.0f / 720.0f,
+		0.3f,
+		100.0f
+	);
+
+
 	// 視点の位置
 	GSvector3 eye = transform_.position();
 	// 注視点の位置
@@ -73,11 +84,11 @@ void CameraTPS::draw()const
 		up.x, up.y, up.z       // 視点の上方向
 	);
 
-	if (state_==State::EnemyLockOn)
+	if (state_ == State::EnemyLockOn)
 	{
 		//ロックオンのテクスチャ描画
-		GSvector3 Offset{ 0.0f,1.0f,0.0f };
-		GSvector3 Pos = target_->transform(). position()+Offset;
+		const GSvector3 Offset{ 0.0f,1.0f,0.0f };
+		GSvector3 Pos = target_->transform().position() + Offset;
 		GSrect billboard_size{ -1.0f, 1.0f, 1.0f, -1.0f };  // ビルボードの大きさ
 		gsDrawSprite3D(Texture_Lock, &Pos, &billboard_size, NULL, NULL, NULL, 0.0f);
 
@@ -94,14 +105,14 @@ void CameraTPS::input_update()
 	else if (decide_targe()) state_++;
 }
 void CameraTPS::state_update(float delta_time)
-{	
+{
 	switch (state_)
 	{
 	case State::PlayerLockOn:player_lock_on(delta_time); break;
 	case State::EnemyLockOn:
-		if(!enemy_lock_on(delta_time)) state_ = State::PlayerLockOn; break;
+		if (!enemy_lock_on(delta_time)) state_ = State::PlayerLockOn; break;
 	case State::LookAtPlayerFromEnemy:
-		if(lock_on_enemy_to_player(delta_time)) state_ = State::PlayerLockOn; 
+		if (lock_on_enemy_to_player(delta_time)) state_ = State::PlayerLockOn;
 		break;
 	default:break;
 	}
@@ -111,7 +122,7 @@ void CameraTPS::player_update()
 	std::shared_ptr<Actor> temp{ world_->find_actor("Player") };
 	player_ = std::move(temp);
 }
-void CameraTPS::player_lock_on(float delta_time) 
+void CameraTPS::player_lock_on(float delta_time)
 {
 	operation_processor(delta_time);
 	//注視点の座標を求める
@@ -123,7 +134,7 @@ void CameraTPS::player_lock_on(float delta_time)
 	GSvector3::smoothDamp(transform_.position(), position_, velocity_, SmoothTime, MaxSpeed, delta_time);
 	linear_interpolation(SmoothTime, MaxSpeed, delta_time);
 }
-bool CameraTPS::enemy_lock_on(float delta_time) 
+bool CameraTPS::enemy_lock_on(float delta_time)
 {
 	if (target_->is_dead()) return false;
 
@@ -140,7 +151,7 @@ bool CameraTPS::enemy_lock_on(float delta_time)
 	position_ = player_->transform().position() + EnemyToPlayer;
 
 	static const float SmoothTime{ 30.0f }, MaxSpeed{ 0.5f };
-	linear_interpolation(SmoothTime, MaxSpeed, delta_time);	
+	linear_interpolation(SmoothTime, MaxSpeed, delta_time);
 
 	return true;
 }
@@ -161,7 +172,7 @@ bool CameraTPS::lock_on_enemy_to_player(float delta_time) {
 	}
 	return false;
 }
-bool CameraTPS::decide_targe() 
+bool CameraTPS::decide_targe()
 {
 	target_.reset();
 	std::vector<std::shared_ptr<Actor>> enemies = world_->find_actor_with_tag("EnemyTag");
@@ -169,7 +180,7 @@ bool CameraTPS::decide_targe()
 
 	std::vector<std::pair<float, std::shared_ptr<Actor>>> min_distance;
 
-	for (const auto& e : enemies) 
+	for (const auto& e : enemies)
 	{
 		if (e->name() == "Dragon") set_target(e);
 		else
@@ -195,7 +206,7 @@ void CameraTPS::field_react()
 		position_ = intersect;
 	}
 }
-void CameraTPS::set_parameter() 
+void CameraTPS::set_parameter()
 {
 	//視点の位置の設定
 	transform_.position(position_);

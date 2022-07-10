@@ -1,4 +1,3 @@
-3
+2
 3 Lightmap@Color0.dds Lightmap@Dir0.dds 
 3 Lightmap@Color1.dds Lightmap@Dir1.dds 
-3 Lightmap@Color2.dds Lightmap@Dir2.dds 

@@ -7,27 +7,15 @@
 #include"../Assets.h"
 #include"../Actor/Enemy/Skeleton.h"
 #include"../Actor/Enemy/Dragon.h"
-#include<imgui/imgui.h>
 #include <GSstandard_shader.h>
 #include<GSeffect.h>
 
-// 標準シェーダーの設定
-#define GS_ENABLE_AUX_LIGHT                 // 補助ライトを有効にする
-#define GS_ENABLE_BAKED_LIGHTMAP_SHADOW     // ベイクしたライトマップに影を落とす
-#define GS_ENABLE_SOFT_SHADOW               // ソフトシャドウ（影の輪郭をぼかす）
-#define GS_ENABLE_RIM_LIGHT                 // リムライトを有効にする
 
-	// ポストエフェクトのパラメータ
-static GScolor color_{ 1.0f, 1.0f, 1.0f, 1.0f };
-static float   saturation_{ 1.0f };
-static float   luminance_{ 1.4f };
-static float   exposure_{ 0.8f };
 
 void GamePlayScene::start() {
 	// 終了フラグを初期化
 	is_end_ = false;
-	// エフェクトの初期化
-	gsInitEffect();
+	gsSetActiveAuxLightMax(4);
 	// 視錐台カリングを有効にする
 	gsCreateRenderTarget(0, 1280, 720, GS_TRUE, GS_TRUE, GS_TRUE);
 	//視錐台カリングを有効にする
@@ -35,6 +23,12 @@ void GamePlayScene::start() {
 	world_ = std::make_shared<World>();
 	gsSetVolumeBGM(0.5f);
 	gsPlayBGM(Sound_Wind);
+
+	// リフレクションプローブの読み込み(0番に読み込めば自動的に適用される）
+	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
+	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
+	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
+
 	// シャドウマップの作成（２枚のカスケードシャドウマップ）
 	static const GSuint shadow_map_size[] = { 2024, 1024 };
 	gsCreateShadowMap(2, shadow_map_size, GS_TRUE);
@@ -43,19 +37,8 @@ void GamePlayScene::start() {
 	// シャドウマップの距離を設定
 	gsSetShadowMapDistance(60.0f);
 
-	// エフェクトの読み込み（松明の炎）
-	gsLoadEffect(Effect_TorchFlame, "Assets/Effect/Fire/Fire.efk");
-	gsLoadEffect(Effect_Blood, "Assets/Effect/Blood.efk");
-	gsLoadEffect(Effect_HitSpark, "Assets/Effect/HitSpark1.efk");
-	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
-	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
-	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
-
-
-
 	// プレーヤーの追加
 	world_->add_actor(std::make_shared<Player>(world_, GSvector3{ -5,4.0,10 }));
-	world_->add_actor(std::make_shared<Dragon>(world_, GSvector3{ -5,4.0,50 }));
 	// フィールドクラスの追加
 	world_->add_field(std::make_shared<Field>(Octree_Stage, Octree_Collider));
 	// カメラクラスの追加
@@ -65,7 +48,6 @@ void GamePlayScene::start() {
 	world_->add_light(std::make_shared<Light>(world_));
 	//ステージデータ読み込み
 	enemy_generator_ = std::make_shared<EnemyGenerator>(world_, "Assets/StageData/StatgeData.csv", "Assets/StageData/FasePos.csv");
-
 	// 炎のエフェクトを再生する(0～8が松明用ライト）
 	for (GSint i = 0; i < 17; ++i) {
 		// 補助ライトの位置を取得
@@ -83,16 +65,16 @@ void GamePlayScene::update(float delta_time) {
 	// ワールドの更新
 	world_->update(delta_time);
 	//ジェネレータの更新
-	//enemy_generator_->update(delta_time);
+	enemy_generator_->update(delta_time);
 }
 
 // 描画
 void GamePlayScene::draw() const {
-	// レンダーターゲットを有効にする
+	 //レンダーターゲットを有効にする
 	gsBeginRenderTarget(0);
-	// レンダーターゲットのクリア
+	 //レンダーターゲットのクリア
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	// ワールドの描画
+	 //ワールドの描画
 	world_->draw();
 	//GUI描画
 	world_->draw_gui();
@@ -100,6 +82,12 @@ void GamePlayScene::draw() const {
 	fog_.draw();
 	//レンダーターゲットを無効にする
 	gsEndRenderTarget();
+
+	// ポストエフェクトのパラメータ
+	static GScolor color_{ 1.0f, 1.0f, 1.0f, 1.0f };
+	static float   saturation_{ 1.0f };
+	static float   luminance_{ 1.0f };
+	static float   exposure_{ 1.0f };
 
 	//シェーダーを有効にする
 	GScolor col = color_ * luminance_;
@@ -139,8 +127,6 @@ void GamePlayScene::end() {
 	world_->clear();
 	// 再生中の全エフェクトを停止（削除）する
 	gsStopAllEffects();
-	//BGM 削除
-	gsDeleteBGM(Sound_Wind);
-	//SE削除
-	gsDeleteSE(Se_GameStart);
+	//BGM 止める
+	gsStopBGM();
 }

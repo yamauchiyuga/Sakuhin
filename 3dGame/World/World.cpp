@@ -28,14 +28,13 @@ void World::update(float delta_time) {
 }
 // 描画
 void World::draw() const {
+	glClearColor(0.1800f, 0.180f, 0.275f,1.0f);
 	// カメラの描画
 	camera_->draw();
-	//エフェクト用のカメラを設定
-	gsSetEffectCamera();
 	// ライトの描画
 	light_->draw();
-	 //シャドウマップの描画
-	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
+	//エフェクト用のカメラを設定
+	gsSetEffectCamera();
 	// フィールドの描画
 	field_->draw();
 	// アクターの描画
@@ -44,6 +43,9 @@ void World::draw() const {
 	actors_.draw_transparent();
 	//エフェク描画
 	gsDrawEffect();
+	//シャドウマップの描画
+	gsDrawShadowMap(World::shadow_map_callback, (void*)this);
+
 }
 
 void World::draw_gui() const {
@@ -55,8 +57,6 @@ void World::draw_gui() const {
 	draw_game_over_texture();
 	//フェイドアウト
 	draw_fade();
-
-
 }
 // 消去
 void World::clear() {
@@ -67,13 +67,13 @@ void World::clear() {
 	// ライトを消去
 	light_ = nullptr;
 	// フィールドを消去
-	//delete field_;
 	field_ = nullptr;
 	//各変数の値を初期化
 	is_game_over_ = false;
 	fade_alpha_ = 0.0f;
 	game_over_alpha_ = 0.0f;
 	clear_alpha_ = 0.0f;
+	gsStopAllEffects();
 }
 // カメラの追加
 void World::add_camera(std::shared_ptr<Actor> camera) {

@@ -2,8 +2,6 @@
 #include"../Player/Player.h"
 #include"../Effect/FireSphere.h"
 #include"../../World/IWorld.h"
-#include"../../Collision/Field.h"
-#include"../../Collision/Line.h"
 #include"../AttackCollider.h"
 #include"../../Assets.h"
 #include<GSeffect.h>
@@ -41,7 +39,7 @@ const float FlySpeed{ 0.11f };
 //‰ñ“]—Ê
 const float TurnAngle{ 1.5f };
 //‰ñ“]‚·‚éŠp“x
-const float TurnAroundAngle{ 15.0f };
+const float TurnAroundAngle{ 25.0f };
 //ƒ_ƒ[ƒW—Ê
 const int HitDamage{ 20 };
 
@@ -354,7 +352,7 @@ void Dragon::fly_move(float delta_time)
 //‹ó’†UŒ‚
 void Dragon::fly_attack(float delta_time) {
 	//ƒ^[ƒQƒbƒg•ûŒü‚ÌŠp“x‚ð‹‚ß‚é
-	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
+	float angle = (target_signed_angle() >= 0.0f) ? TurnAngle : -TurnAngle;
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
 	transform_.translate(0.0f, 0.0f, -FlySpeed * delta_time);
 	if (state_timer_ >= mesh_.motion_end_time()) {

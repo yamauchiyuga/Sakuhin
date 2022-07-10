@@ -7,7 +7,7 @@ BoundingSphere::BoundingSphere(float radius, const GSvector3& center) :
 
 // •½sˆÚ“®
 BoundingSphere BoundingSphere::translate(const GSvector3& position) const {
-    return BoundingSphere{ radius_, center_ + position };
+   return BoundingSphere{ radius_, center_ + position };
 }
 
 // À•W•ÏŠ·

@@ -4,7 +4,8 @@
 #include"../../UI/HP.h"
 #include<memory>
 
-//
+class PlayerAttack;
+
 class Enemy :public Actor {
 public:
 	Enemy() = default;

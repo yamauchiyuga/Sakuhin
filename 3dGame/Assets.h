@@ -4,7 +4,9 @@
 //メッシュデータ
 enum {
     Mesh_Player,
+    Mesh_TitlePlayer,
     Mesh_Dragon,
+    Mesh_TitleDragon,
     Mesh_Skeleton,
     Mesh_Witch,
 };
@@ -12,7 +14,9 @@ enum {
 //オクトー
 enum {       
     Octree_Stage,
-    Octree_Collider
+    Octree_Collider,
+    Octree_TitelStage,
+    Octree_TitelCollider
 };
 
 //テクスチャデータ
@@ -67,9 +71,8 @@ enum {
 enum {
     Effect_TorchFlame,
     Effect_FireBall,
-    Effect_HitSpark,
     Effect_Blood,
     Effect_Explosion,
-    Effect_Smoke
+    Effect_Smoke,
 };
 #endif // !ASSETS_H_

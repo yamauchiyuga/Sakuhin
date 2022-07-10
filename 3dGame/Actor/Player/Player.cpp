@@ -25,6 +25,7 @@ enum
 //スポーンする位置
 const GSvector3 RestartPosition{ -5.0f,6.0f,10.0f };
 
+
 //高さ
 const float PlayerHeight{ 1.0f };
 //球の半径
@@ -93,7 +94,7 @@ Player::Player(std::shared_ptr<IWorld> world, const GSvector3& position) :
 }
 
 //更新
-void Player::update(float delta_time) 
+void Player::update(float delta_time)
 {
 	//
 	update_state(delta_time);
@@ -111,7 +112,7 @@ void Player::update(float delta_time)
 	//スタミナの更新
 	ST_.update(delta_time);
 	//リスポーン
-	if (end_line()) 
+	if (end_line())
 	{
 		transform_.position() = GSvector3::zero();
 		transform_.position(RestartPosition);
@@ -120,23 +121,26 @@ void Player::update(float delta_time)
 }
 
 //描画
-void Player::draw()const 
+void Player::draw()const
 {
 	mesh_.draw();
+	if (enable_collider_) {
+		collider().draw();
+	}
 }
 
 //GUI描画
-void Player::draw_gui()const 
+void Player::draw_gui()const
 {
 	HP_.draw_player();
 	ST_.draw();
 }
 
 //衝突判定
-void Player::react(Actor& other) 
+void Player::react(Actor& other)
 {
 	//敵との判定
-	if (other.tag() == "EnemyTag") 
+	if (other.tag() == "EnemyTag")
 	{
 		collide_actor(other);
 		return;
@@ -152,11 +156,10 @@ void Player::react(Actor& other)
 	if (other.tag() == "EnemyAttackTag")
 	{
 		//ガード可能か？
-		if (can_guard()) 
+		if (can_guard())
 		{
 			// ノックバックする
 			knock_back(other, 0.2f);
-			//エフェクを出す
 			//SEを鳴らす
 			gsPlaySE(Se_PlayerBlock);
 			//ガードのスタミナ消費
@@ -165,8 +168,8 @@ void Player::react(Actor& other)
 			return;
 		}
 		//エフェクを出す
-		GSvector3 Offset{ 0.0f,0.5f,0.0f };
-		GSvector3 Pos = transform_.position() + Offset;
+		const GSvector3 Offset{ 0.0f,0.5f,0.0f };
+		const GSvector3 Pos = transform_.position() + Offset;
 		gsPlayEffect(Effect_Blood, &Pos);
 		//SEを鳴らす
 		gsPlaySE(Se_PlayerDamage);
@@ -181,7 +184,7 @@ void Player::react(Actor& other)
 		HP_.hit_damage(Damage);
 	}
 	//死亡
-	if (HP_.is_end()) 
+	if (HP_.is_end())
 	{
 		change_state(State::End, MotionEnd, false);
 		//ゲームオーバーを呼び出す
@@ -214,9 +217,8 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 }
 
 //移動
-void Player::move(float delta_time) 
+void Player::move(float delta_time)
 {
-
 	//回避ボタンを押したか、スタミナは足りるか
 	if (Input::is_dodge() && ST_.get_stamina() > DodgeStamina) {
 		//前方向に加速
@@ -256,7 +258,7 @@ void Player::move(float delta_time)
 	if (Input::get_left_horizontal() > Input)velocity += right;
 	if (Input::get_left_horizontal() < -Input)velocity += -right;
 	//正規化して移動速度を掛ける
-	velocity = velocity .normalize()* WalkSpeed * delta_time;
+	velocity = velocity.normalize() * WalkSpeed * delta_time;
 
 	//回転速度
 	const float Rotate{ 30.0f };
@@ -274,7 +276,6 @@ void Player::move(float delta_time)
 
 	change_state(State::Move, motion);
 	transform_.translate(velocity_, GStransform::Space::World);
-
 }
 
 
@@ -316,14 +317,14 @@ void Player::attack(float delta_time) {
 
 }
 //回避中
-void Player::dodge(float delta_time) 
+void Player::dodge(float delta_time)
 {
 	transform_.translate(velocity_, GStransform::Space::World);
 	//減速
 	const float decrement_value{ 0.2f };
 	velocity_ -= GSvector3{ velocity_.x,0.0f,velocity_.z }*decrement_value * delta_time;
 	//モーション終了か？
-	if (state_timer_ >= mesh_.motion_end_time()-20.0f) 
+	if (state_timer_ >= mesh_.motion_end_time() - 20.0f)
 	{
 		//コンボリッセト
 		combo_ = 0;
@@ -355,7 +356,7 @@ void Player::damage(float delta_time) {
 	//ノックバックする
 	transform_.translate(velocity_ * delta_time, GStransform::Space::World);
 	//減速させる
-	constexpr float damp{ 0.4f };
+	const float damp{ 0.4f };
 	velocity_ -= GSvector3{ velocity_.x, 0.0f, velocity_.z } *damp * delta_time;
 	//ダメージモーションの終了を待つ
 	if (state_timer_ >= mesh_.motion_end_time()) {

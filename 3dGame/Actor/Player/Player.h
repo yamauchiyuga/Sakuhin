@@ -9,7 +9,6 @@
 
 //プレーヤークラス
 class Player :public Actor {
-
 public:
 	//プレーヤー状態
 	enum class State {
@@ -32,7 +31,6 @@ public:
 	virtual void draw_gui()const override;
 	//衝突リアクション
 	virtual void react(Actor& other)override;
-
 private:
 	//状態の更新
 	void update_state(float delta_time);
@@ -75,6 +73,7 @@ private:
 	AnimatedMesh	mesh_;
 	//モーション番号
 	GSuint motion_;
+	//ステータス
 	HP HP_;
 	ST ST_;
 	//モーションのループ設定

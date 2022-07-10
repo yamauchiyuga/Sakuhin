@@ -75,22 +75,26 @@
     <IncludePath>C:\gslib_2021\inc;C:\gseffect_2021\inc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\gslib_2021\lib;C:\gseffect_2021\lib;$(LibraryPath)</LibraryPath>
     <TargetName>DragonSlayer</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\gslib_2021\inc;C:\gseffect_2021\inc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\gslib_2021\lib;C:\gseffect_2021\lib;$(LibraryPath)</LibraryPath>
     <TargetName>DragonSlayer</TargetName>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>C:\gslib_2021\inc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\gslib_2021\lib;$(LibraryPath)</LibraryPath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>C:\gslib_2021\inc;$(IncludePath)</IncludePath>
     <LibraryPath>C:\gslib_2021\lib;$(LibraryPath)</LibraryPath>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -169,6 +173,9 @@
     <ClCompile Include="Scene\LoadingScene.cpp" />
     <ClCompile Include="Scene\TitleScene.cpp" />
     <ClCompile Include="Actor\Enemy\Skeleton.cpp" />
+    <ClCompile Include="Actor\Player\TitlePlayer.cpp" />
+    <ClCompile Include="Actor\Enemy\TitleDragon.cpp" />
+    <ClCompile Include="Camera\TitleCamera.cpp" />
     <ClCompile Include="Tween\Vector2Unit.cpp" />
     <ClCompile Include="UI\HP.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -197,6 +204,9 @@
     <ClInclude Include="Scene\LoadingScene.h" />
     <ClInclude Include="Scene\TitleScene.h" />
     <ClInclude Include="Actor\Enemy\Skeleton.h" />
+    <ClInclude Include="Actor\Player\TitlePlayer.h" />
+    <ClInclude Include="Actor\Enemy\TitleDragon.h" />
+    <ClInclude Include="Camera\TitleCamera.h" />
     <ClInclude Include="Tween\Vector2Unit.h" />
     <ClInclude Include="UI\HP.h" />
     <ClInclude Include="Input.h" />

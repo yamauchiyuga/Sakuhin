@@ -15,22 +15,33 @@ public:
 	virtual void draw()const override;
 
 private:
+	//入力更新
 	void input_update();
+	//状態の更新
 	void state_update(float delta_time);
+	//プレイヤー
 	void player_update();
-
+	//プレイヤーをロックオン
 	void player_lock_on(float delta_time);
+	//敵をロックオン
 	bool enemy_lock_on(float delta_time);
+	//敵からプレイヤーへ視点を戻す
 	bool lock_on_enemy_to_player(float delta_taime);
-
+	//ターゲットが死んでるか
 	bool decide_targe();
+	//フィールドの衝突判定
 	void field_react();
+	//視点の設定
 	void set_parameter();
+	//ターゲットを取得
 	void set_target(const std::shared_ptr<Actor>& target);
-
+	//注視点の補完
 	void set_reference_point(const GSvector3& at);
+	//視点の回転の処理
 	void operation_processor(float delta_time);
+	//視点移動の補完
 	void linear_interpolation(const float time, const float max_speed, float delta_time);
+	//プレイヤーが死んでるか
 	bool is_player_dead() const;
 private:
 	
@@ -48,7 +59,6 @@ private:
 	float input_horizontal_amount_{ 0.0f };
 	float input_vertical_amount_{ 0.0f };	
 
-	std::string x, y, z;
 };
 
 #endif // !CAMERA_TPS_H_

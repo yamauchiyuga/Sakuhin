@@ -56,22 +56,30 @@ public:
 
 		// メッシュの削除
 		gsDeleteMesh(Mesh_Player);
+		gsDeleteMesh(Mesh_TitlePlayer);
+		gsDeleteMesh(Mesh_TitleDragon);
 		gsDeleteMesh(Mesh_Dragon);
 		gsDeleteMesh(Mesh_Skeleton);
 		gsDeleteMesh(Mesh_Witch);
 		// スケルトンの削除
+		gsDeleteSkeleton(Mesh_TitlePlayer);
 		gsDeleteSkeleton(Mesh_Player);
+		gsDeleteSkeleton(Mesh_TitleDragon);
 		gsDeleteSkeleton(Mesh_Dragon);
 		gsDeleteSkeleton(Mesh_Skeleton);
 		gsDeleteSkeleton(Mesh_Witch);
 		// アニメーションの削除
 		gsDeleteAnimation(Mesh_Player);
+		gsDeleteAnimation(Mesh_TitlePlayer);
+		gsDeleteAnimation(Mesh_TitleDragon);
 		gsDeleteAnimation(Mesh_Dragon);
 		gsDeleteAnimation(Mesh_Skeleton);
 		gsDeleteAnimation(Mesh_Witch);
 		// オクトリーの削除
 		gsDeleteOctree(Octree_Stage);
 		gsDeleteOctree(Octree_Collider);
+		gsDeleteOctree(Octree_TitelStage);
+		gsDeleteOctree(Octree_TitelCollider);
 		//SEの削除
 		gsDeleteSE(Se_GameClear);
 		gsDeleteSE(Se_GameStart);
@@ -101,7 +109,6 @@ public:
 		gsDeleteEffect(Effect_Blood);
 		gsDeleteEffect(Effect_Explosion);
 		gsDeleteEffect(Effect_FireBall);
-		gsDeleteEffect(Effect_HitSpark);
 		gsDeleteEffect(Effect_Smoke);
 		gsDeleteEffect(Effect_TorchFlame);
 
@@ -128,6 +135,5 @@ private:
 int main()
 {
 	return MyGame().run();
-	OutputDebugString(std::to_string(  _CrtDumpMemoryLeaks()).c_str());
 }
 
