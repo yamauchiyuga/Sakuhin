@@ -11,7 +11,6 @@
 #include<GSeffect.h>
 
 
-
 void GamePlayScene::start() {
 	// 終了フラグを初期化
 	is_end_ = false;
@@ -65,7 +64,7 @@ void GamePlayScene::update(float delta_time) {
 	// ワールドの更新
 	world_->update(delta_time);
 	//ジェネレータの更新
-	enemy_generator_->update(delta_time);
+	//enemy_generator_->update(delta_time);
 }
 
 // 描画

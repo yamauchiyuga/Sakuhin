@@ -19,8 +19,6 @@ private:
 	float cullent_stamina_;
 	//最大スタミナ
 	const float max_stamina_;
-	//消費スタミナ
-	int consumption_stamina_;
 
 };
 

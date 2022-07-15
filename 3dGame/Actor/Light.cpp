@@ -44,7 +44,7 @@ void Light::draw() const
 	// 補助ライトをバインド
 	gsBindAuxLight(0);
 
-	static float position[]{ 10.0f, 10.0f, 10.0f, 0.0f };
+	static float position[]{ 0.0f, 10.0f, 0.0f, 0.0f };
 	// シャドウマップのライトの位置を設定
 	GSvector3 shadow_map_light_position{ position[0], position[1], position[2] };
 	gsSetShadowMapLightPosition(&shadow_map_light_position);

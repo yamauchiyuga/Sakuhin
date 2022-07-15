@@ -67,7 +67,7 @@ void TitleScene::start()
 void TitleScene::update(float delta_time)
 {
 	world_->update(delta_time);
-	//if (is_fade_)return;
+	if (is_fade_)return;
 	// エンターキーを押したらシーン終了
 	if (Input::is_a_push()) {
 		gsPlaySE(Se_GameStart);

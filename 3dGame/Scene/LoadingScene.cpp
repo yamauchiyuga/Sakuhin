@@ -1,11 +1,16 @@
 #include "LoadingScene.h"
-#include <GSstandard_shader.h>
 #include "../Assets.h"
+// 標準シェーダーの設定
+#define GS_ENABLE_AUX_LIGHT                 // 補助ライトを有効にする
+#define GS_ENABLE_BAKED_LIGHTMAP_SHADOW     // ベイクしたライトマップに影を落とす
+#define GS_ENABLE_SOFT_SHADOW               // ソフトシャドウ（影の輪郭をぼかす）
+//#define GS_ENABLE_RIM_LIGHT                 // リムライトを有効にする
 #include <GSmusic.h>
 #include <gslib.h>
 #include <GSgame.h>
 #include <cmath>
 #include<GSeffect.h>
+#include <GSstandard_shader.h>
 
 void LoadingScene::start()
 {
@@ -17,6 +22,7 @@ void LoadingScene::start()
 	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
 	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
 	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
+	gsLoadEffect(Effect_meteo, "Assets/Effect/meteo.efk");
 	now_loading_ = "Now Loading";
 	timer_ = 0.0f;
 	dot_count_ = 0;

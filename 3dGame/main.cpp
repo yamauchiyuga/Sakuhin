@@ -111,6 +111,7 @@ public:
 		gsDeleteEffect(Effect_FireBall);
 		gsDeleteEffect(Effect_Smoke);
 		gsDeleteEffect(Effect_TorchFlame);
+		gsDeleteEffect(Effect_meteo);
 
 		//BGMçÌèú
 		gsDeleteBGM(Sound_Titel);

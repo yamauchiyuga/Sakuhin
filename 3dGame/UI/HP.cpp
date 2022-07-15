@@ -1,8 +1,9 @@
 #include "HP.h"
 #include"../Assets.h"
+#include"UIparameter.h"
 
 //コンストラクタ
-HP::HP(const float max_health):
+HP::HP(const float max_health) :
 	max_health_{ max_health },
 	cullent_health_{ max_health }
 {
@@ -14,52 +15,40 @@ void HP::hit_damage(int power) {
 	cullent_health_ = MAX(cullent_health_ - power, 0);
 }
 //プレイヤー用
-void HP::draw_player() const{
-	//HPゲージの位置
-	const GSvector2 position{ 80.0f, 70.0f };
-	//ゲージのフレームの位置
-	const GSvector2 framePosition{ 79.0f, 69.0f };
-	//HPゲージ本体の矩形
-	const GSrect rect{ 0, 0, (cullent_health_ / max_health_) * 250.0f, 13.0f };
-	//背景の矩形
-	const GSrect back_rect{ 0,0,250.0f, 13.0f };
-	//HPゲージの色
-	const GScolor barColor{ 0,1,0,1 };
-	//背景の色
-	const GScolor backColor{ 0,0,0,1 };
+void HP::draw_player() const {
+	UIparameter Player;
+	Player.gage_position={ 80.0f, 70.0f };
+	Player.gage_frame_position={ 79.0f, 69.0f };
+	Player.gage={ 0, 0, (cullent_health_ / max_health_) * 250.0f, 13.0f };
+	Player.back_gage={ 0,0,250.0f, 13.0f };
+	Player.gage_color={ 0,1,0,1 };
+	Player.gage_frame_color = { 1,1,1,1 };
+	Player.back_gage_color={ 0,0,0,1 };
+
 	//フレームの描画
-	gsDrawSprite2D(Texture_Frame, &framePosition, NULL, NULL, NULL, NULL, 0.0f);
+	gsDrawSprite2D(Texture_Frame, &Player.gage_frame_position, NULL, NULL, &Player.gage_frame_color, NULL, 0.0f);
 	//背景の描画
-	gsDrawSprite2D(Texture_HP, &position, &back_rect, NULL, &backColor, NULL, 0.0f);
+	gsDrawSprite2D(Texture_HP, &Player.gage_position, &Player.back_gage, NULL, &Player.back_gage_color, NULL, 0.0f);
 	//HPゲージの描画
-	gsDrawSprite2D(Texture_HP, &position, &rect, NULL, &barColor, NULL, 0.0f);
+	gsDrawSprite2D(Texture_HP, &Player.gage_position, &Player.gage, NULL, &Player.gage_color, NULL, 0.0f);
 }
 
 //ボス用
-void HP::draw_boss() const{
-	//HPゲージの位置
-	const GSvector2 Position{ 250.0f, 650.0f };
-	//ゲージのフレームの位置
-	const GSvector2 FramePosition{ 248.0f, 649.0f };
-	//HPゲージ本体の矩形
-	const GSrect Rect{ 0, 0, (cullent_health_ / max_health_) * 750.0f, 10.0f };
-	//背景画像の矩形
-	const GSrect BackRect{ 0,0,750.0f, 10.0f };
-	//フレームの矩形
-	const GSrect FrameRect{ 0,0, 754.0f, 12.0f };
-	//HPゲージの色
-	const GScolor HealthColor{ 1,0,0,1 };
-	//背景の色
-	const GScolor BackColor{ 0,0,0,1 };
-	//フレームの色
-	const GScolor FrameColor{ 1,1,1,1 };
-
+void HP::draw_boss() const {
+	UIparameter Dragon;
+	Dragon.gage_position = { 250.0f, 650.0f };
+	Dragon.gage_frame_position = { 248.0f, 649.0f };
+	Dragon.gage = { 0, 0, (cullent_health_ / max_health_) * 750.0f, 10.0f };
+	Dragon.back_gage = { 0,0, 754.0f, 12.0f };
+	Dragon.gage_color = { 1,0,0,1 };
+	Dragon.gage_frame_color = { 1,1,1,1 };
+	Dragon.back_gage_color = { 0,0,0,1 };
 	//フレームの描画
-	gsDrawSprite2D(Texture_HP, &FramePosition, &FrameRect, NULL, &FrameColor, NULL, 0.0f);
+	gsDrawSprite2D(Texture_Frame, &Dragon.gage_frame_position, NULL, NULL, &Dragon.gage_frame_color, NULL, 0.0f);
 	//背景の描画
-	gsDrawSprite2D(Texture_HP, &Position, &BackRect, NULL, &BackColor, NULL, 0.0f);
+	gsDrawSprite2D(Texture_HP, &Dragon.gage_position, &Dragon.back_gage, NULL, &Dragon.back_gage_color, NULL, 0.0f);
 	//HPゲージの描画
-	gsDrawSprite2D(Texture_HP, &Position, &Rect, NULL, &HealthColor, NULL, 0.0f);
+	gsDrawSprite2D(Texture_HP, &Dragon.gage_position, &Dragon.gage, NULL, &Dragon.gage_color, NULL, 0.0f);
 }
 //現在のHP を返す
 float HP::cullent_health()const {

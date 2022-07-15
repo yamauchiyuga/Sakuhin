@@ -443,7 +443,7 @@ void Dragon::spit_fire()
 	// 弾を生成する場所の距離
 	const float GenerateDistance{ 5.0f };
 	// 生成する位置の高さの補正値
-	const float GenerateHeight{ 1.5f };
+	const float GenerateHeight{ 1.0f };
 	// 弾の移動スピード
 	const float Speed{ 0.6f };
 	// 生成位置の計算

@@ -28,7 +28,7 @@ void World::update(float delta_time) {
 }
 // •`‰æ
 void World::draw() const {
-	glClearColor(0.1800f, 0.180f, 0.275f,1.0f);
+	glClearColor(0.458656447f,0.458656447f,0.556097861f,1.0f);
 	// ƒJƒƒ‰‚Ì•`‰æ
 	camera_->draw();
 	// ƒ‰ƒCƒg‚Ì•`‰æ

@@ -223,6 +223,7 @@
     <ClInclude Include="Actor\Enemy\Witch.h" />
     <ClInclude Include="Tween\ValueUnit.h" />
     <ClInclude Include="Tween\Vector3Unit.h" />
+    <ClInclude Include="UI\UIparameter.h" />
     <ClInclude Include="World\IWorld.h" />
     <ClInclude Include="Actor\Light.h" />
     <ClInclude Include="Collision\Line.h" />

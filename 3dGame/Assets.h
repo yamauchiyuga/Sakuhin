@@ -74,5 +74,6 @@ enum {
     Effect_Blood,
     Effect_Explosion,
     Effect_Smoke,
+    Effect_meteo
 };
 #endif // !ASSETS_H_

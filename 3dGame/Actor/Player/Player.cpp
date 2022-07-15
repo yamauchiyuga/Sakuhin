@@ -273,7 +273,6 @@ void Player::move(float delta_time)
 	}
 	velocity_.x = velocity.x;
 	velocity_.z = velocity.z;
-
 	change_state(State::Move, motion);
 	transform_.translate(velocity_, GStransform::Space::World);
 }
@@ -362,6 +361,7 @@ void Player::damage(float delta_time) {
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::Move, MotionIdle, false);
 		enable_collider_ = true;
+		gsStopEffect(Effect_Blood);
 	}
 }
 
