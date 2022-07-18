@@ -1,5 +1,4 @@
 #include "Skeleton.h"
-#include"../Player/Player.h"
 #include"../../World/IWorld.h"
 #include"../../Collision/Field.h"
 #include"../../Collision/Line.h"
@@ -12,6 +11,7 @@ enum
 {
 	MotionAttack,
 	MotionDead,
+	MotionDamage,
 	MotionRun,
 	MotionTurnLeft,
 	MotionTurnRight,
@@ -22,7 +22,7 @@ enum
 // 重力
 const float Gravity{ -0.016f };
 //最大体力
-const float MaxHP{ 10 };
+const float MaxHP{ 20 };
 //走り出す距離
 const float RunDistance{ 2.5f };
 //走るスピード
@@ -96,15 +96,23 @@ void Skeleton::react(Actor& other)
 	{
 		collide_actor(other);
 	}
+	if (state_ == State::Damage)return;
 	//プレイヤーとの判定
 	if (other.tag() == "PlayerAttackTag")
 	{
+		if(HP_.cullent_health()<= MaxHP/2)
+		{
+			change_state(State::Damage, MotionDamage, false);
+		}
 		//SEを鳴らす
 		gsPlaySE(Se_EnemyDamage);
+		const GSvector3 ZanOffset{ 0.0f,0.8f,0.0f };
+		const GSvector3 ZanPos = transform_.position() + ZanOffset;
+		gsPlayEffect(Effect_Attack, &ZanPos);
 		//修正値
-		GSvector3 Offset{ 0.0f,0.6f,0.0f };
+		const GSvector3 Offset{ 0.0f,0.6f,0.0f };
 		//エフェクを出す位置
-		GSvector3 Pos = transform_.position() + Offset;
+		const GSvector3 Pos = transform_.position() + Offset;
 		//エフェク描画
 		gsPlayEffect(Effect_Blood, &Pos);
 		//ダメージ
@@ -131,6 +139,7 @@ void Skeleton::update_state(float delta_time)
 	case Skeleton::State::Generation: generation(delta_time); break;
 	case Skeleton::State::Idle:idle(delta_time); break;
 	case Skeleton::State::Run:run(delta_time); break;
+	case Skeleton::State::Damage:damage(delta_time); break;
 	case Skeleton::State::Turn:turn(delta_time); break;
 	case Skeleton::State::Attack:attack(delta_time); break;
 	case Skeleton::State::Dead:dead(delta_time); break;
@@ -239,6 +248,14 @@ void Skeleton::attack(float delta_time)
 			// 振り向き状態に遷移
 			change_state(State::Turn, motion);
 		}
+		change_state(State::Idle, MotionIdle, true);
+	}
+}
+
+void Skeleton::damage(float delta_time)
+{
+	if (state_timer_ >= mesh_.motion_end_time())
+	{
 		change_state(State::Idle, MotionIdle, true);
 	}
 }

@@ -10,6 +10,8 @@
 #include<memory>
 #include<GSeffect.h>
 
+
+
 class MyGame :public gslib::Game 
 {
 public:
@@ -112,6 +114,9 @@ public:
 		gsDeleteEffect(Effect_Smoke);
 		gsDeleteEffect(Effect_TorchFlame);
 		gsDeleteEffect(Effect_meteo);
+		gsDeleteEffect(Effect_Attack);
+		gsDeleteEffect(Effect_Attack1);
+		gsDeleteEffect(Effect_Thunder);
 
 		//BGMçÌèú
 		gsDeleteBGM(Sound_Titel);
@@ -137,4 +142,5 @@ int main()
 {
 	return MyGame().run();
 }
+
 

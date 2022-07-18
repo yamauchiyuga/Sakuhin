@@ -16,6 +16,7 @@ public:
 		Run,
 		Turn,
 		Dead,
+		Damage,
 		Attack
 	};
 	//コンストラクタ
@@ -43,6 +44,8 @@ private:
 	void dead(float delta_time);
 	//攻撃中
 	void attack(float delta_time);
+	//
+	void damage(float delta_time);
 	//攻撃
 	void slash();
 	//走るか？

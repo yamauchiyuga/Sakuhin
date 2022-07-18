@@ -43,14 +43,14 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -117,7 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -132,6 +132,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +147,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -167,6 +169,7 @@
     <ClCompile Include="Actor\Light.cpp" />
     <ClCompile Include="Actor\Enemy\Enemy.cpp" />
     <ClCompile Include="Actor\Enemy\Dragon.cpp" />
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EnemyGenerator\CSVReader.cpp" />
     <ClCompile Include="EnemyGenerator\EnemyGenerator.cpp" />
     <ClCompile Include="Fog\Fog.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="Actor\Player\TitlePlayer.cpp" />
     <ClCompile Include="Actor\Enemy\TitleDragon.cpp" />
     <ClCompile Include="Camera\TitleCamera.cpp" />
+    <ClCompile Include="Actor\Effect\Thunder.cpp" />
     <ClCompile Include="Tween\Vector2Unit.cpp" />
     <ClCompile Include="UI\HP.cpp" />
     <ClCompile Include="Input.cpp" />
@@ -198,6 +202,7 @@
     <ClInclude Include="Actor\AttackCollider.h" />
     <ClInclude Include="Actor\Enemy\Enemy.h" />
     <ClInclude Include="Actor\Enemy\Dragon.h" />
+    <ClInclude Include="Debug.h" />
     <ClInclude Include="EnemyGenerator\CSVReader.h" />
     <ClInclude Include="EnemyGenerator\EnemyGenerator.h" />
     <ClInclude Include="Fog\Fog.h" />
@@ -207,6 +212,7 @@
     <ClInclude Include="Actor\Player\TitlePlayer.h" />
     <ClInclude Include="Actor\Enemy\TitleDragon.h" />
     <ClInclude Include="Camera\TitleCamera.h" />
+    <ClInclude Include="Actor\Effect\Thunder.h" />
     <ClInclude Include="Tween\Vector2Unit.h" />
     <ClInclude Include="UI\HP.h" />
     <ClInclude Include="Input.h" />

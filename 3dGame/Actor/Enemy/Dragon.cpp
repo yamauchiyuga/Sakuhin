@@ -1,5 +1,4 @@
 #include "Dragon.h"
-#include"../Player/Player.h"
 #include"../Effect/FireSphere.h"
 #include"../../World/IWorld.h"
 #include"../AttackCollider.h"
@@ -124,6 +123,9 @@ void Dragon::react(Actor& other)
 	{
 		//SEを鳴らす
 		gsPlaySE(Se_EnemyDamage);
+		const GSvector3 ZanOffset{ 0.0f,0.8f,0.0f };
+		const GSvector3 ZanPos = transform_.position() + ZanOffset;
+		gsPlayEffect(Effect_Attack1, &ZanPos);
 		//ダメージ
 		HP_.hit_damage(HitDamage);
 		//エフェクの描画
@@ -441,7 +443,7 @@ void Dragon::tail_attack() {
 void Dragon::spit_fire()
 {
 	// 弾を生成する場所の距離
-	const float GenerateDistance{ 5.0f };
+	const float GenerateDistance{ 3.0f };
 	// 生成する位置の高さの補正値
 	const float GenerateHeight{ 1.0f };
 	// 弾の移動スピード

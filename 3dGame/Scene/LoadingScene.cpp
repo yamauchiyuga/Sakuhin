@@ -23,6 +23,9 @@ void LoadingScene::start()
 	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
 	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
 	gsLoadEffect(Effect_meteo, "Assets/Effect/meteo.efk");
+	gsLoadEffect(Effect_Attack, "Assets/Effect/zan.efk");
+	gsLoadEffect(Effect_Attack1, "Assets/Effect/zan1.efk");
+	gsLoadEffect(Effect_Thunder, "Assets/Effect/Thunder.efk");
 	now_loading_ = "Now Loading";
 	timer_ = 0.0f;
 	dot_count_ = 0;

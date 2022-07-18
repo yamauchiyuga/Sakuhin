@@ -51,8 +51,6 @@ private:
 	void damage(float delta_time);
 	//死亡
 	void end(float delta_time);
-	//振り向く
-	void turn();
 	//ノックバック処理
 	void knock_back(Actor& other, float power);
 	//攻撃可能か？

@@ -1,25 +1,27 @@
 #include "Witch.h"
-#include"../Player/Player.h"
 #include"../Effect/FireSphere.h"
 #include"../../World/IWorld.h"
 #include"../../Collision/Field.h"
 #include"../../Collision/Line.h"
 #include"../AttackCollider.h"
 #include"../../Assets.h"
+#include"../Effect/thunder.h"
 #include<GSeffect.h>
 
 //モーション番号
 enum {
-	MotionExplosion,
+	MotionThunder,
 	MotionSpitFire,
 	MotionDead,
+	MotionGeneration,
+	MotionDmage,
 	MotionIdle,
 	MotionRun
 };
 //重力
 const float Gravity{ -0.016f };
 //最大体力
-const float MaxHP{ 15 };
+const float MaxHP{ 20 };
 //走り出す距離
 const float RunDistance{ 10.0f };
 //走るスピード
@@ -28,9 +30,9 @@ const float RunSpeed{ 0.1f };
 const int HitDamage{ 5 };
 
 Witch::Witch(std::shared_ptr<IWorld> world, const GSvector3& position) :
-	mesh_{ Mesh_Witch,Mesh_Witch, Mesh_Witch, MotionIdle },
-	state_{ State::Idle },
-	motion_{ MotionIdle }{
+	mesh_{ Mesh_Witch,Mesh_Witch, Mesh_Witch, MotionGeneration },
+	state_{ State::Generation },
+	motion_{ MotionGeneration}{
 	//ワールド設定
 	world_ = world;
 	//タグ
@@ -50,8 +52,15 @@ Witch::Witch(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	transform_.position(position);
 	// メッシュの変換行列を初期化
 	mesh_.transform(transform_.localToWorldMatrix());
+	//エフェクを出す
+	const GSvector3 Offset{ 0.0f,0.1f,0.0f };
+	const GSvector3 Pos = transform_.position() + Offset;
+	
 	//イベント登録
 	mesh_.add_event(MotionSpitFire, 23.0f, [=] {spit_fire(); });
+	mesh_.add_event(MotionThunder, 103.0f, [=] {thunder(); });
+	mesh_.add_event(MotionGeneration, 2.0f, [=] {gsPlayEffect(Effect_meteo, &Pos); });
+	
 }
 
 //更新
@@ -87,15 +96,25 @@ void Witch::react(Actor& other)
 	{
 		collide_actor(other);
 	}
+	if (state_ == State::Generation)return;
+	if (state_ == State::Damage)return;
+
 	//プレイヤーと衝突したか
 	if (other.tag() == "PlayerAttackTag")
 	{
+		if (HP_.cullent_health() <= MaxHP / 2)
+		{
+			change_state(State::Damage, MotionDmage, false);
+		}
 		//seを鳴らす
 		gsPlaySE(Se_EnemyDamage);
+		const GSvector3 ZanOffset{ 0.0f,0.8f,0.0f };
+		const GSvector3 ZanPos = transform_.position() + ZanOffset;
+		gsPlayEffect(Effect_Attack, &ZanPos);
 		//修正値
-		GSvector3 Offset{ 0.0f,0.5f,0.0f };
+		const GSvector3 Offset{ 0.0f,0.5f,0.0f };
 		//エフェクを出す位置
-		GSvector3 Pos = transform_.position()+Offset;
+		const GSvector3 Pos = transform_.position()+Offset;
 		//エフェクト表示
 		gsPlayEffect(Effect_Blood, &Pos);
 		//ダメージ
@@ -117,8 +136,10 @@ void Witch::react(Actor& other)
 void Witch::update_state(float delta_time) {
 	switch (state_)
 	{
+	case Witch::State::Generation:generation(delta_time); break;
 	case Witch::State::Idle:idle(delta_time); break;
 	case Witch::State::Run:run(delta_time); break;
+	case Witch::State::Damage:damage(delta_time); break;
 	case Witch::State::Dead:dead(delta_time); break;
 	case Witch::State::Attack:attack(delta_time); break;
 	}
@@ -133,6 +154,16 @@ void Witch::change_state(State state, int motion, bool loop)
 	state_ = state;
 	state_timer_ = 0.0f;
 	hit_wall_ = false;
+}
+
+void Witch::generation(float delta_time)
+{
+	
+	if (state_timer_ >= mesh_.motion_end_time())
+	{
+		gsStopEffect(Effect_meteo);
+		change_state(State::Idle, MotionIdle, true);
+	}
 }
 
 //アイドル
@@ -167,6 +198,14 @@ void Witch::run(float delta_time)
 	}
 }
 
+void Witch::damage(float delta_time)
+{
+	if (state_timer_ >= mesh_.motion_end_time())
+	{
+		change_state(State::Idle, MotionIdle, false);
+	}
+}
+
 //死亡
 void Witch::dead(float delta_time)
 {
@@ -194,7 +233,20 @@ void Witch::attack_selection()
 	float angle = target_signed_angle();
 	// 向きを変える
 	transform_.rotate(0.0f, angle, 0.0f);
-	change_state(State::Attack, MotionSpitFire, false);
+	int Next = gsRand(0, 2);
+	if (Next == 0) {
+		change_state(State::Attack, MotionThunder, false);
+	}
+	else
+	{
+		change_state(State::Attack, MotionSpitFire, false);
+	}
+}
+
+void Witch::thunder()
+{
+	const GSvector3 PlayerPos = player_->transform().position();
+	world_->add_actor(std::make_unique<Thunder>(world_, PlayerPos));
 }
 
 void Witch::spit_fire() 
@@ -212,7 +264,6 @@ void Witch::spit_fire()
 	// 移動量の計算
 	GSvector3 velocity = GSvector3::zero();
 	velocity = transform_.forward() * Speed;
-
 	// 弾の生成
 	world_->add_actor(std::make_unique< FireSphere>(world_, position, velocity));
 }

@@ -8,10 +8,12 @@
 class Witch : public Enemy{
 public :
 	enum class State{
+		Generation,
 		Idle,
 		Run,
 		Dead,
-		Attack
+		Attack,
+		Damage
 	};
 
 	//コンストラクタ
@@ -27,16 +29,22 @@ private:
 	void update_state(float delta_time);
 	//状態の変更
 	void change_state(State state, int motion, bool loop = true);
+	//
+	void generation(float delta_time);
 	//アイドル
 	void idle(float delta_time);
 	//走る
 	void run(float delta_time);
+	//
+	void damage(float delta_time);
 	//死亡
 	void dead(float delta_time);
 	//攻撃
 	void attack(float delta_time);
 	//次の攻撃
 	void attack_selection();
+	//
+	void thunder();
 	//火球
 	void spit_fire();
 	//走るか？

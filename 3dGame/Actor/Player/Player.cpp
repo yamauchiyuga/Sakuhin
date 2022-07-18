@@ -5,8 +5,10 @@
 #include "../../Collision/Line.h"
 #include "../../Assets.h"
 #include"../../Input.h"
+#include"../../Debug.h"
 #include <GSeffect.h>
 
+static Debug d;
 //モーション番号
 enum
 {
@@ -111,6 +113,8 @@ void Player::update(float delta_time)
 	mesh_.transform(transform_.localToWorldMatrix());
 	//スタミナの更新
 	ST_.update(delta_time);
+	//d.get_pos(transform_.forward());
+	d.get_pos(velocity_);
 	//リスポーン
 	if (end_line())
 	{
@@ -124,16 +128,6 @@ void Player::update(float delta_time)
 void Player::draw()const
 {
 	mesh_.draw();
-	if (enable_collider_) {
-		collider().draw();
-	}
-}
-
-//GUI描画
-void Player::draw_gui()const
-{
-	HP_.draw_player();
-	ST_.draw();
 }
 
 //衝突判定
@@ -149,6 +143,8 @@ void Player::react(Actor& other)
 	if (state_ == State::Dodge)return;
 	//ダメージ中なら何もしない
 	if (state_ == State::Damage)return;
+	//ガードのノックバック中は何もしない
+	if (state_ == State::Guarding)return;
 	//死亡中なら何もしない
 	if (state_ == State::End)return;
 
@@ -179,9 +175,9 @@ void Player::react(Actor& other)
 		enable_collider_ = false;
 		//コンボのリッセト
 		combo_ = 0;
-		change_state(State::Damage, MotionDamage, false);
 		//ダメージ
 		HP_.hit_damage(Damage);
+		change_state(State::Damage, MotionDamage, false);
 	}
 	//死亡
 	if (HP_.is_end())
@@ -240,7 +236,6 @@ void Player::move(float delta_time)
 		return;
 	}
 
-	int motion = MotionIdle;
 	//移動速度
 	const float WalkSpeed{ 0.1f };
 	//カメラの前方向を取得
@@ -260,9 +255,10 @@ void Player::move(float delta_time)
 	//正規化して移動速度を掛ける
 	velocity = velocity.normalize() * WalkSpeed * delta_time;
 
-	//回転速度
-	const float Rotate{ 30.0f };
+	int motion = MotionIdle;
 
+	//回転速度
+	const float Rotate{ 10.0f };
 	if (velocity_.length() != 0.0f)
 	{
 		GSquaternion rotation = GSquaternion::rotateTowards(transform_.rotation(),
@@ -271,18 +267,19 @@ void Player::move(float delta_time)
 		// 移動中のモーションにする
 		motion = MotionRun;
 	}
+	change_state(State::Move, motion);
 	velocity_.x = velocity.x;
 	velocity_.z = velocity.z;
-	change_state(State::Move, motion);
-	transform_.translate(velocity_, GStransform::Space::World);
-}
+	
 
+	transform_.translate(velocity_, GStransform::Space::World);
+
+}
 
 //攻撃中
 void Player::attack(float delta_time) {
 	//回避ボタンを押しているか、スタミナは足りているか？
 	if (Input::is_dodge() && ST_.get_stamina() > DodgeStamina) {
-		turn();
 		velocity_ = transform_.forward() * DodgeDistance;
 		ST_.consumption_stamina(DodgeStamina);
 		change_state(State::Dodge, MotionDodge, false);
@@ -290,7 +287,6 @@ void Player::attack(float delta_time) {
 	}
 	//攻撃ボタンを押しているか、攻撃可能か？
 	if (Input::is_attack() && can_attackable()) {
-		turn();
 		//スタミナ消費
 		ST_.consumption_stamina(AttackStamina);
 		//モーション番号
@@ -371,32 +367,6 @@ void Player::end(float delta_time) {
 	//何もしない
 }
 
-//振り向き
-void Player::turn()
-{
-	//カメラの前方向を取得
-	GSvector3 forwad = world_->camera()->transform().forward();
-	forwad.y = 0.0f;
-	//カメラの右方向を取得
-	GSvector3 right = world_->camera()->transform().right();
-	right.y = 0.0f;
-	//移動量
-	GSvector3 velocity{ 0.0f,0.0f,0.0f };
-	if (Input::get_left_vertical() > Input)velocity += forwad;
-	if (Input::get_left_vertical() < -Input)velocity += -forwad;
-	if (Input::get_left_horizontal() > Input)velocity += right;
-	if (Input::get_left_horizontal() < -Input)velocity += -right;
-	//正規化
-	velocity = velocity.normalize();
-	//移動量が0じゃないなら
-	if (velocity_.length() != 0.0f) {
-		//回転させる
-		GSquaternion rotation = GSquaternion::lookRotation(velocity);
-		transform_.rotation(rotation);
-	}
-}
-
-
 //攻撃可能か？
 bool Player::can_attackable() const
 {
@@ -404,7 +374,7 @@ bool Player::can_attackable() const
 	if (ST_.get_stamina() < AttackStamina)return false;
 	//現在のコンボが最大コンボを超えているか？
 	if (combo_ >= MaxCombo) return false;
-	const float NextAttackTime{ 40.0f };
+	const float NextAttackTime{ 30.0f };
 	//現在のタイマーが次の攻撃時間を超えているか？
 	if (state_timer_ <= mesh_.motion_end_time() - NextAttackTime)return false;
 	return true;
@@ -416,7 +386,6 @@ bool Player::can_guard() const
 	if (ST_.get_stamina() <= GuradStamin)return false;
 	//ガード状態以外か？
 	if (state_ != State::GuardStart)return false;
-	//
 	return true;
 }
 //死亡ラインを超えてるか？
@@ -499,4 +468,13 @@ void Player::generate_attac_collider() {
 	// 衝突判定を出現させる
 	world_->add_actor(std::make_unique<AttackCollider>(world_, collider,
 		"PlayerAttackTag", "PlayerAttack", tag_, AttackCollideLifeSpan, AttackCollideDelay));
+}
+
+//GUI描画
+void Player::draw_gui()const
+{
+	HP_.draw_player();
+	ST_.draw();
+	d.draw();
+	d.clear();
 }
