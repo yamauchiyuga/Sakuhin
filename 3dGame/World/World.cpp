@@ -4,12 +4,15 @@
 #include"../Assets.h"
 #include"../Tween/Tween.h"
 #include <GSeffect.h>
+
 //デストラクタ
-World::~World() {
+World::~World() 
+{
 	clear();
 }
 
-void World::update(float delta_time) {
+void World::update(float delta_time)
+{
 	//エフェクトの更新処理を行う
 	gsUpdateEffect(delta_time);
 	//フィールド更新
@@ -27,7 +30,8 @@ void World::update(float delta_time) {
 	
 }
 // 描画
-void World::draw() const {
+void World::draw() const 
+{
 	glClearColor(0.458656447f,0.458656447f,0.556097861f,1.0f);
 	// カメラの描画
 	camera_->draw();
@@ -48,7 +52,8 @@ void World::draw() const {
 
 }
 
-void World::draw_gui() const {
+void World::draw_gui() const 
+{
 	// GUIの描画
 	actors_.draw_gui();
 	//ゲームクリアを描画
@@ -58,8 +63,10 @@ void World::draw_gui() const {
 	//フェイドアウト
 	draw_fade();
 }
+
 // 消去
-void World::clear() {
+void World::clear() 
+{
 	// アクターを消去
 	actors_.clear();
 	// カメラを消去
@@ -76,25 +83,29 @@ void World::clear() {
 	gsStopAllEffects();
 }
 // カメラの追加
-void World::add_camera(std::shared_ptr<Actor> camera) {
+void World::add_camera(std::shared_ptr<Actor> camera) 
+{
 	std::shared_ptr<Actor> Temp{ camera };
 	camera_ =std::move(Temp);
 }
 
 // ライトの追加
-void World::add_light(std::shared_ptr<Actor> light) {
+void World::add_light(std::shared_ptr<Actor> light) 
+{
 	std::shared_ptr<Actor> Temp{ light };
 	light_ = std::move(Temp);
 }
 
 // フィールドの追加
-void World::add_field(std::shared_ptr<Field> field) {
+void World::add_field(std::shared_ptr<Field> field) 
+{
 	std::shared_ptr<Field> Temp{ field };
 	field_ = std::move(Temp);
 }
 
 // シャドウマップの描画用の関数
-void World::shadow_map_callback(void* param, const GSmatrix4* view, const GSmatrix4* projection) {
+void World::shadow_map_callback(void* param, const GSmatrix4* view, const GSmatrix4* projection) 
+{
 	World* self = (World*)param;
 	// シャドウマップにはアクターのみ描画
 	self->actors_.draw();
@@ -102,41 +113,50 @@ void World::shadow_map_callback(void* param, const GSmatrix4* view, const GSmatr
 
 
 // アクターの追加
-void World::add_actor(std::shared_ptr<Actor> actor) {
+void World::add_actor(std::shared_ptr<Actor> actor) 
+{
 	actors_.add(std::move(actor));
 }
 
 // アクターの検索
-std::shared_ptr<Actor> World::find_actor(const std::string& name) const {
+std::shared_ptr<Actor> World::find_actor(const std::string& name) const 
+{
 	return actors_.find(name);
 }
 
 // 指定したタグ名を持つアクターの検索
-std::vector<std::shared_ptr<Actor>> World::find_actor_with_tag(const std::string& tag) const {
+std::vector<std::shared_ptr<Actor>> World::find_actor_with_tag(const std::string& tag) const 
+{
 	return actors_.find_with_tag(tag);
 }
 
 // アクター数を返す
-int World::count_actor() const {
+int World::count_actor() const
+{
 	return actors_.count();
 }
 
 // 指定したタグ名を持つアクター数を返す
-int World::count_actor_with_tag(const std::string& tag) const {
+int World::count_actor_with_tag(const std::string& tag) const 
+{
 	return actors_.count_with_tag(tag);
 }
 
 // メッセージ送信
-void World::send_message(const std::string& message, std::shared_ptr<void> param) {
+void World::send_message(const std::string& message, std::shared_ptr<void> param) 
+{
 	actors_.send_message(message, param);
 }
-void World::draw_fade()const {
+
+void World::draw_fade()const 
+{
 	const GScolor color{ 1.0f, 1.0f, 1.0f, fade_alpha_ };
 	gsDrawSprite2D(Texture_Fade, NULL, NULL, NULL, &color, NULL, 0.0f);
 }
 
 //ゲームオーバー
-void World::game_over(){
+void World::game_over()
+{
 	//120フレームかけて死亡画像をフェードイン
 	Tween::value(0.0f, 1.0f, 120.0f, [=](GSfloat val) {game_over_alpha_ = val; }).delay(120.0f);
 	//100フレームかけてシーンをフェードアウト
@@ -145,8 +165,8 @@ void World::game_over(){
 }
 
 //ゲームクリア
-void World::game_cler(){
-
+void World::game_cler()
+{
 	//画像の大きさをセット
 	clear_scale_ = { 1.5f, 1.5f };
 	//100フレームかけてシーンをフェードアウト
@@ -161,34 +181,40 @@ void World::game_cler(){
 }
 
 //ゲームオーバーテクスチャ
-void World::draw_game_over_texture() const{
+void World::draw_game_over_texture() const
+{
 	const GScolor color{ 1.0f, 1.0f, 1.0f, game_over_alpha_ };
 	gsDrawSprite2D(Texture_GameOver, NULL, NULL, NULL, &color, NULL, 0.0f);
 }
 
 //ゲームクリアテクスチャ
-void World::draw_game_cler_texture() const{
+void World::draw_game_cler_texture() const
+{
 	const GSvector2 position{ 640.0f, 360.0f };
 	const GScolor color{ 1.0f, 1.0f, 1.0f, clear_alpha_ };
 	gsDrawSprite2D(Texture_GameClear, &position, NULL, &position, &color, &clear_scale_, 0.0f);
 }
 
 // カメラの取得
-std::shared_ptr<Actor> World::camera() {
+std::shared_ptr<Actor> World::camera() 
+{
 	return camera_;
 }
 
 // ライトの取得
-std::shared_ptr<Actor> World::light() {
+std::shared_ptr<Actor> World::light()
+{
 	return light_;
 }
 
 // フィールドの取得
-std::shared_ptr<Field> World::field() {
+std::shared_ptr<Field> World::field() 
+{
 	return field_;
 }
 
 //ゲームオーバーか？
-bool World::is_game_over()const {
+bool World::is_game_over()const
+{
 	return is_game_over_;
 }
