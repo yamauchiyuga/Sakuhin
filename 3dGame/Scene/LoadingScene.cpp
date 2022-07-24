@@ -138,10 +138,7 @@ void LoadingScene::load_assets(void* self) {
 	//BG読み込み
 	gsLoadBGM(Sound_Titel, "Assets/Sound/BGM/Result.ogg", GS_TRUE);
 	gsLoadBGM(Sound_Wind, "Assets/Sound/BGM/Wind.ogg", GS_TRUE);
-	// 描画用オクツリーの読み込み
-	gsLoadOctree(Octree_Stage, "Assets/Filed/Field.oct");
-	// 衝突判定用オクツリーの読み込み
-	gsLoadOctree(Octree_Collider, "Assets/Filed/Field_collider.oct");
+	
 
 	//音量設定
 	gsSetVolumeSE(Se_PlayerRun, 0.5f);

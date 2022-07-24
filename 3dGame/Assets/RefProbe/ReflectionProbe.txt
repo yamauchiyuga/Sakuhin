@@ -5,7 +5,7 @@
 -15.51501 -2.05814 -58.297
 13.15499 9.84186 -26.13701
 128 8
-ReflectionProbe-0.dds
+ReflectionProbe-8.dds
 00000000
 -5.219969 6.1307 -117.1475
 -28.28497 2.1307 -142.4774
@@ -53,4 +53,4 @@ ReflectionProbe-7.dds
 -10.50406 -2.84 -85.83577
 -0.7040601 16.26 -65.43578
 128 8
-ReflectionProbe-8.dds
+ReflectionProbe-0.dds

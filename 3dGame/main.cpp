@@ -6,7 +6,6 @@
 #include"Tween/Tween.h"
 #include"Assets.h"
 #include"Input.h"
-#include<crtdbg.h>
 #include<memory>
 #include<GSeffect.h>
 
