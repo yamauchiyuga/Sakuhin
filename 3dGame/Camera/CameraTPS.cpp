@@ -83,16 +83,6 @@ void CameraTPS::draw()const
 		at.x, at.y, at.z,      // 注視点の位置
 		up.x, up.y, up.z       // 視点の上方向
 	);
-
-	if (state_ == State::EnemyLockOn)
-	{
-		//ロックオンのテクスチャ描画
-		const GSvector3 Offset{ 0.0f,1.0f,0.0f };
-		GSvector3 Pos = target_->transform().position() + Offset;
-		GSrect billboard_size{ -1.0f, 1.0f, 1.0f, -1.0f };  // ビルボードの大きさ
-		gsDrawSprite3D(Texture_Lock, &Pos, &billboard_size, NULL, NULL, NULL, 0.0f);
-
-	}
 }
 void CameraTPS::input_update()
 {

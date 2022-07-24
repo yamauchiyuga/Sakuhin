@@ -3,6 +3,7 @@
 
 #include"Enemy.h"
 #include"../AnimatedMesh.h"
+#include<string>
 #include<memory>
 
 class Dragon : public Enemy 

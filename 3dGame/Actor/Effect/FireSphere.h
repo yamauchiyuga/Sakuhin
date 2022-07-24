@@ -2,12 +2,13 @@
 #define FIRE_SPHERE_H_
 
 #include<memory>
+#include<string>
 #include"../Actor.h"
 
 class FireSphere :public Actor {
 public:
 	//
-	FireSphere(std::shared_ptr<IWorld>world, const GSvector3& position, const GSvector3& velocity);
+	FireSphere(std::shared_ptr<IWorld>world, const GSvector3& position, const GSvector3& velocity,const std::string& attack_name);
 	//
 	virtual void update(float delta_time)override;
 	//

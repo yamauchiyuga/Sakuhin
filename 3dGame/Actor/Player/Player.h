@@ -5,6 +5,7 @@
 #include"../AnimatedMesh.h"
 #include"../../UI/HP.h"
 #include"../../UI/ST.h"
+#include"../../Timer.h"
 #include<memory>
 
 //プレーヤークラス
@@ -74,15 +75,15 @@ private:
 	//ステータス
 	HP HP_;
 	ST ST_;
-	//モーションのループ設定
-	bool motion_loop_;
-	//死亡ライン
-	bool det_line_;
 	//状態
 	State state_;
 	//状態タイマ
 	float state_timer_;
 	//コンボ数
 	int combo_;
+	//モーションのループ設定
+	bool motion_loop_;
+	//死亡ライン
+	bool det_line_;
 };
 #endif

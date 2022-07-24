@@ -32,18 +32,6 @@ void TitleScene::start()
 	Tween::value(1.0f, 0.0f, 120.0f, [=](GSfloat val) {alpha_ = val; })
 		.on_complete([=] {is_fade_ = false; });
 
-
-	gsLoadOctree(Octree_TitelStage, "Assets/TitelFiled/Field.oct");
-	gsLoadOctree(Octree_TitelCollider, "Assets/TitelFiled/Field_collider.oct");
-	//タイトル用プレイヤー
-	gsLoadMesh(Mesh_TitlePlayer, "Assets/model/Player/Player.mshb");
-	gsLoadSkeleton(Mesh_TitlePlayer, "Assets/model/Player/Player.sklb");
-	gsLoadAnimation(Mesh_TitlePlayer, "Assets/model/Player/Player.anmb");
-	//タイトル用ドラゴン
-	gsLoadMesh(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.mshb");
-	gsLoadSkeleton(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.sklb");
-	gsLoadAnimation(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.anmb");
-
 	//シャドウマップの作成（2枚のカスケードシャドウ）
 	static const GSuint shadow_map_size[] = { 2048, 1024 };
 	gsCreateShadowMap(2, shadow_map_size, GS_TRUE);
@@ -51,6 +39,11 @@ void TitleScene::start()
 	gsSetShadowMapDistance(80.0f);
 	//シャドウマップバイアス
 	gsSetShadowMapBias(0.0f);
+	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
+	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
+	// 補助ライトの読み込み
+	gsLoadAuxLight(0, "Assets/AuxLight/TitelAuxLight.txt");
+
 
 	world_ = std::make_shared<World>();
 	world_->add_actor(std::make_shared<TitleDragon>(world_, GSvector3{ 0.0f,3.0f,-5.0f }));
@@ -61,6 +54,14 @@ void TitleScene::start()
 	world_->add_camera(std::make_shared<TitleCamera>(world_, GSvector3{ 0.0f, 1.0f, 17.0f }, GSvector3{ 0.0f, 6.5, 0.0f }));
 	// ライトクラスの追加
 	world_->add_light(std::make_shared<Light>(world_));
+
+	for (GSint i = 0; i < 8; ++i) {
+		// 補助ライトの位置を取得
+		GSvector3 position;
+		gsGetAuxLightPosition(0, i, &position);
+		// 補助ライトの位置に炎のエフェクトを出現させる
+		gsPlayEffect(0, &position);
+	}
 }
 
 // 更新
@@ -137,6 +138,10 @@ void TitleScene::end() {
 	Tween::clear();
 	//BGMの削除
 	gsStopBGM();
+	//
+	gsDeleteAuxLight(0);
+	//
+	gsDeleteLightmap(0);
 }
 
 //フェード処理

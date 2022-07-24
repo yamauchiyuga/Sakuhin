@@ -1,3 +1,4 @@
-2
+3
 3 TitelLightmap@Color0.dds TitelLightmap@Dir0.dds 
 3 TitelLightmap@Color1.dds TitelLightmap@Dir1.dds 
+3 TitelLightmap@Color2.dds TitelLightmap@Dir2.dds 

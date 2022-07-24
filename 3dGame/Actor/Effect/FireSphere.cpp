@@ -5,13 +5,13 @@
 #include"../../Assets.h"
 #include<GSeffect.h>
 
-FireSphere::FireSphere(std::shared_ptr<IWorld> world, const GSvector3& position, const GSvector3& velocity) {
+FireSphere::FireSphere(std::shared_ptr<IWorld> world, const GSvector3& position, const GSvector3& velocity,const std::string& attack_name) {
 	// ワールドを設定
 	world_ = world;
 	// タグ名
 	tag_ = "EnemyAttackTag";
 	// アクター名
-	name_ = "EnemyAttack";
+	name_ = attack_name;
 	// 移動量の初期化
 	velocity_ = velocity;
 	// 衝突判定用の球体を設定

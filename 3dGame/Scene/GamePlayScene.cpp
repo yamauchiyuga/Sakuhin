@@ -27,6 +27,8 @@ void GamePlayScene::start() {
 	gsLoadReflectionProbe(0, "Assets/RefProbe/ReflectionProbe.txt");
 	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
 	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
+	// 補助ライトの読み込み
+	gsLoadAuxLight(0, "Assets/AuxLight/AuxLight_Torch_.txt");
 
 	// シャドウマップの作成（２枚のカスケードシャドウマップ）
 	static const GSuint shadow_map_size[] = { 2024, 1024 };

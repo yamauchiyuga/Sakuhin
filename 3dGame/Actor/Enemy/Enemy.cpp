@@ -78,7 +78,7 @@ void Enemy::collide_field() {
 }
 
 //攻撃判定の生成
-void Enemy::generate_attac_collider(const float radius, const float distance, const float height, const float width, const float delay, const float life_span) {
+void Enemy::generate_attac_collider(const float radius, const float distance, const float height, const float width, const float delay, const float life_span, const std::string& attack_name) {
 
 	// 衝突判定を出現させる座標を求める（前方の位置）
 	GSvector3 position = transform_.position() + (transform_.forward() * distance + transform_.right() * width);
@@ -88,7 +88,7 @@ void Enemy::generate_attac_collider(const float radius, const float distance, co
 	BoundingSphere collider{ radius, position };
 	// 衝突判定を出現させる
 	world_->add_actor(std::make_shared<AttackCollider>( world_, collider,
-		"EnemyAttackTag", "EnemyAttack", tag_, life_span, delay ));
+		"EnemyAttackTag", attack_name, tag_, life_span, delay ));
 }
 
 // 壁にぶつかったか

@@ -163,6 +163,7 @@
     <ClCompile Include="Actor\AnimatedMesh.cpp" />
     <ClCompile Include="Actor\AttackCollider.cpp" />
     <ClCompile Include="Actor\Player\Player.cpp" />
+    <ClCompile Include="Amplitude.cpp" />
     <ClCompile Include="Camera\CameraTPS.cpp" />
     <ClCompile Include="Collision\BoundingSphere.cpp" />
     <ClCompile Include="Collision\Field.cpp" />
@@ -202,6 +203,7 @@
     <ClInclude Include="Actor\AttackCollider.h" />
     <ClInclude Include="Actor\Enemy\Enemy.h" />
     <ClInclude Include="Actor\Enemy\Dragon.h" />
+    <ClInclude Include="Amplitude.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="EnemyGenerator\CSVReader.h" />
     <ClInclude Include="EnemyGenerator\EnemyGenerator.h" />
@@ -213,6 +215,7 @@
     <ClInclude Include="Actor\Enemy\TitleDragon.h" />
     <ClInclude Include="Camera\TitleCamera.h" />
     <ClInclude Include="Actor\Effect\Thunder.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="Tween\Vector2Unit.h" />
     <ClInclude Include="UI\HP.h" />
     <ClInclude Include="Input.h" />

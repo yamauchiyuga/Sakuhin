@@ -10,6 +10,7 @@
 
 //モーション番号
 enum {
+	MotionTemp,
 	MotionThunder,
 	MotionSpitFire,
 	MotionDead,
@@ -246,7 +247,8 @@ void Witch::attack_selection()
 void Witch::thunder()
 {
 	const GSvector3 PlayerPos = player_->transform().position();
-	world_->add_actor(std::make_unique<Thunder>(world_, PlayerPos));
+	std::string AttackName{ "WitchThunder" };
+	world_->add_actor(std::make_unique<Thunder>(world_, PlayerPos,AttackName));
 }
 
 void Witch::spit_fire() 
@@ -264,8 +266,9 @@ void Witch::spit_fire()
 	// 移動量の計算
 	GSvector3 velocity = GSvector3::zero();
 	velocity = transform_.forward() * Speed;
+	std::string AttackName{ "WitchSpitFire" };
 	// 弾の生成
-	world_->add_actor(std::make_unique< FireSphere>(world_, position, velocity));
+	world_->add_actor(std::make_unique< FireSphere>(world_, position, velocity,AttackName));
 }
 
 //走るか？

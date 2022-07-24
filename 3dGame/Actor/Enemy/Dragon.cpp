@@ -416,7 +416,8 @@ void Dragon::bite() {
 	// UŒ‚”»’è‚Ìõ–½
 	const float AttackCollideLifeSpan{ 10.0f };
 	//
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan);
+	std::string AttackName{ "DragonBite" };
+	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan,AttackName);
 	gsPlaySE(Se_DragonAttack2);
 }
 
@@ -434,8 +435,10 @@ void Dragon::tail_attack() {
 	const float AttackCollideDelay{ 9.0f };
 	// UŒ‚”»’è‚Ìõ–½
 	const float AttackCollideLifeSpan{ 10.0f };
+	//
+	std::string AttackName{ "DragonTail" };
 	//¶¬
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan);
+	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan,AttackName);
 	gsPlaySE(Se_DragonAttack1);
 }
 
@@ -455,13 +458,15 @@ void Dragon::spit_fire()
 	// ˆÚ“®—Ê‚ÌŒvZ
 	GSvector3 velocity = GSvector3::zero();
 	velocity = transform_.forward() * Speed;
-
+	//
+	std::string AttackName{"DragonSpitFire"};
 	if (state_ == State::FlyAttack)
 	{
+		AttackName = "DragonFlySpitFire";
 		velocity = (player_->transform().position() - position).normalized() * Speed;
 	}
 	// ’e‚Ì¶¬
-	world_->add_actor(std::make_unique<FireSphere>(world_, position, velocity));
+	world_->add_actor(std::make_unique<FireSphere>(world_, position, velocity,AttackName));
 }
 
 //U‚è•Ô‚é‚©

@@ -3,6 +3,7 @@
 #include"../Actor.h"
 #include"../../UI/HP.h"
 #include<memory>
+#include<string>
 
 class PlayerAttack;
 
@@ -23,7 +24,7 @@ protected:
 	//フィールドとの衝突リアクション
 	void collide_field();
 	//攻撃判定を生成
-	void generate_attac_collider(const float radius, const float distance, const float height,const float width,const float delay,const float life_span);
+	void generate_attac_collider(const float radius, const float distance, const float height,const float width,const float delay,const float life_span,const std::string& attack_name);
 	//壁にぶつかったか
 	bool is_hit_wall()const;
 

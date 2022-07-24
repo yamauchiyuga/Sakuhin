@@ -4,6 +4,7 @@
 
 #include "Enemy.h"
 #include"../AnimatedMesh.h"
+#include<string>
 #include<memory>
 class Witch : public Enemy{
 public :

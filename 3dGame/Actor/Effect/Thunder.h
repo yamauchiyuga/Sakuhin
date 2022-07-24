@@ -2,11 +2,12 @@
 #define THUNDER_H_
 
 #include<memory>
+#include<string>
 #include "../Actor.h"
 class Thunder :public Actor
 {
 public:
-	Thunder(std::shared_ptr<IWorld> world, const GSvector3& position);
+	Thunder(std::shared_ptr<IWorld> world, const GSvector3& position,const std::string& attack_name);
     // 更新
     virtual void update(float delta_time) override;
     // 衝突リアクション

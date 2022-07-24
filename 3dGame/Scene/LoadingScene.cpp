@@ -4,7 +4,6 @@
 #define GS_ENABLE_AUX_LIGHT                 // 補助ライトを有効にする
 #define GS_ENABLE_BAKED_LIGHTMAP_SHADOW     // ベイクしたライトマップに影を落とす
 #define GS_ENABLE_SOFT_SHADOW               // ソフトシャドウ（影の輪郭をぼかす）
-//#define GS_ENABLE_RIM_LIGHT                 // リムライトを有効にする
 #include <GSmusic.h>
 #include <gslib.h>
 #include <GSgame.h>
@@ -88,9 +87,19 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadShader(Shader_ShadowMapSkinnedMesh, "Assets/shader/ShadowMapSkinned.vert", "Assets/shader/ShadowMap.frag");
 	// ポストエフェクトシェーダーの読み込み
 	gsLoadShader(0, "Assets/Shader/RenderTexture.vert", "Assets/Shader/PostEffect.frag");
-	// 補助ライトの読み込み
-	gsLoadAuxLight(0, "Assets/AuxLight/AuxLight_Torch_.txt");
-	gsLoadAuxLight(1, "Assets/AuxLight/AuxLight.txt");
+
+
+	//タイトル用ステージ
+	gsLoadOctree(Octree_TitelStage, "Assets/TitelFiled/Field.oct");
+	gsLoadOctree(Octree_TitelCollider, "Assets/TitelFiled/Field_collider.oct");
+	//タイトル用プレイヤー
+	gsLoadMesh(Mesh_TitlePlayer, "Assets/model/Player/Player.mshb");
+	gsLoadSkeleton(Mesh_TitlePlayer, "Assets/model/Player/Player.sklb");
+	gsLoadAnimation(Mesh_TitlePlayer, "Assets/model/Player/Player.anmb");
+	//タイトル用ドラゴン
+	gsLoadMesh(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.mshb");
+	gsLoadSkeleton(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.sklb");
+	gsLoadAnimation(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.anmb");
 
 	//プレイヤーの読み込み
 	gsLoadMesh(Mesh_Player, "Assets/model/Player/Player.mshb");

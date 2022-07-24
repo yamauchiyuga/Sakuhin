@@ -5,6 +5,7 @@
 #include"../AttackCollider.h"
 #include"../../Assets.h"
 #include<GSeffect.h>
+#include<string>
 
 //モーション番号
 enum
@@ -16,13 +17,14 @@ enum
 	MotionTurnLeft,
 	MotionTurnRight,
 	MotionGeneration,
-	MotionIdle
+	MotionIdle,
+	MotionShieldBlock
 };
 
 // 重力
 const float Gravity{ -0.016f };
 //最大体力
-const float MaxHP{ 20 };
+const float MaxHP{ 15 };
 //走り出す距離
 const float RunDistance{ 2.5f };
 //走るスピード
@@ -100,7 +102,14 @@ void Skeleton::react(Actor& other)
 	//プレイヤーとの判定
 	if (other.tag() == "PlayerAttackTag")
 	{
-		if(HP_.cullent_health()<= MaxHP/2)
+		int CanBlock = gsRand(0, 3);
+		if (CanBlock == 0)
+		{
+			change_state(State::ShieldBlock, MotionShieldBlock, false);
+			return;
+		}
+
+		if (HP_.cullent_health() == 15)
 		{
 			change_state(State::Damage, MotionDamage, false);
 		}
@@ -139,6 +148,7 @@ void Skeleton::update_state(float delta_time)
 	case Skeleton::State::Generation: generation(delta_time); break;
 	case Skeleton::State::Idle:idle(delta_time); break;
 	case Skeleton::State::Run:run(delta_time); break;
+	case Skeleton::State::ShieldBlock:Shield_Block(delta_time); break;
 	case Skeleton::State::Damage:damage(delta_time); break;
 	case Skeleton::State::Turn:turn(delta_time); break;
 	case Skeleton::State::Attack:attack(delta_time); break;
@@ -193,7 +203,7 @@ void Skeleton::idle(float delta_time)
 }
 
 //走る
-void Skeleton::run(float delta_time) 
+void Skeleton::run(float delta_time)
 {
 	// ターゲット方向の角度を求める
 	float angle = CLAMP(target_signed_angle(), -TurnAngle, TurnAngle);
@@ -208,7 +218,7 @@ void Skeleton::run(float delta_time)
 }
 
 //振り向き
-void Skeleton::turn(float delta_time) 
+void Skeleton::turn(float delta_time)
 {
 	if (state_timer_ >= mesh_.motion_end_time())
 	{
@@ -230,8 +240,15 @@ void Skeleton::turn(float delta_time)
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
 }
 
+void Skeleton::Shield_Block(float  delta_time)
+{
+	if(state_timer_ >= mesh_.motion_end_time()) {
+		change_state(State::Idle, MotionIdle, false);
+	}
+}
+
 //死亡
-void Skeleton::dead(float delta_time) 
+void Skeleton::dead(float delta_time)
 {
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		dead_ = true;
@@ -241,7 +258,7 @@ void Skeleton::dead(float delta_time)
 //攻撃
 void Skeleton::attack(float delta_time)
 {
-	if (state_timer_ >= mesh_.motion_end_time()) 
+	if (state_timer_ >= mesh_.motion_end_time())
 	{
 		if (is_trun()) {
 			GSint motion = (target_signed_angle() >= 0.0f) ? MotionTurnLeft : MotionTurnRight;
@@ -261,7 +278,7 @@ void Skeleton::damage(float delta_time)
 }
 
 //攻撃の判定生成
-void Skeleton::slash() 
+void Skeleton::slash()
 {
 	// 攻撃判定の半径
 	const float AttackColliderRadius{ 0.5f };
@@ -273,8 +290,10 @@ void Skeleton::slash()
 	const float AttackCollideDelay{ 0.0f };
 	// 攻撃判定の寿命
 	const float AttackCollideLifeSpan{ 5.0f };
+	//
+	std::string AttackName{ "SkeketonSlash" };
 	//攻撃用球生成
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, 0.0f, AttackCollideDelay, AttackCollideLifeSpan);
+	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, 0.0f, AttackCollideDelay, AttackCollideLifeSpan,AttackName);
 }
 
 //走しるか？
@@ -290,7 +309,7 @@ bool Skeleton::is_trun() const
 }
 
 //攻撃範囲か？
-bool Skeleton::is_attack() const 
+bool Skeleton::is_attack() const
 {
 	return target_distance() <= RunDistance && target_angle() <= TurnAroundAngle;
 }

@@ -55,7 +55,11 @@ enum {
     Se_DragonLanding,	
     Se_DragonSpitFire,
     Se_DragonExplosion,
+    Se_SkeletonAttack,
+    Se_SkeletonDamage,
     Se_SkeletonDetate,
+    Se_SkeletonGeneration,
+    Se_SkeletonGuard,
     Se_WitchDetate
 };
 

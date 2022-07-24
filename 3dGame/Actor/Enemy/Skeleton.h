@@ -16,6 +16,7 @@ public:
 		Run,
 		Turn,
 		Dead,
+		ShieldBlock,
 		Damage,
 		Attack
 	};
@@ -40,6 +41,8 @@ private:
 	void run(float delta_time);
 	//U‚èŒü‚«’†
 	void turn(float delta_time);
+	//
+	void Shield_Block(float delta_time);
 	//€–S
 	void dead(float delta_time);
 	//UŒ‚’†

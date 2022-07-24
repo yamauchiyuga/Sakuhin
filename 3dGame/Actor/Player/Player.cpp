@@ -6,6 +6,7 @@
 #include "../../Assets.h"
 #include"../../Input.h"
 #include"../../Debug.h"
+#include"../../Amplitude.h"
 #include <GSeffect.h>
 
 static Debug d;
@@ -26,7 +27,6 @@ enum
 };
 //スポーンする位置
 const GSvector3 RestartPosition{ -5.0f,6.0f,10.0f };
-
 
 //高さ
 const float PlayerHeight{ 1.0f };
@@ -54,9 +54,6 @@ const int GuradStamin{ 20 };
 const int AttackStamina{ 10 };
 //最大コンボ数
 const int MaxCombo{ 2 };
-//ダメージ量
-const int Damage{ 5 };
-
 
 //コンストラクタ
 Player::Player(std::shared_ptr<IWorld> world, const GSvector3& position) :
@@ -176,7 +173,8 @@ void Player::react(Actor& other)
 		//コンボのリッセト
 		combo_ = 0;
 		//ダメージ
-		HP_.hit_damage(Damage);
+		Amplitude amplitude;
+		HP_.hit_damage(amplitude.amplitude_damage(other));
 		change_state(State::Damage, MotionDamage, false);
 	}
 	//死亡

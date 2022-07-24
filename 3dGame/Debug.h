@@ -7,6 +7,8 @@ using namespace std;
 class Debug
 {
 public:
+	Debug() = default;
+
 	~Debug() {
 		contents.clear();
 	}

@@ -5,7 +5,7 @@
 
 constexpr float DelayTime{ 12.0f };
 
-Thunder::Thunder(std::shared_ptr<IWorld> world, const GSvector3& position)
+Thunder::Thunder(std::shared_ptr<IWorld> world, const GSvector3& position,const std::string& attack_name)
 {
 	//
 	world_ = world;
@@ -14,7 +14,7 @@ Thunder::Thunder(std::shared_ptr<IWorld> world, const GSvector3& position)
 	//
 	tag_ = "EnemyAttackTag";
 	// アクター名
-	name_ = "EnemyAttack";
+	name_ = attack_name;
 	// 衝突判定用の球体を設定
 	collider_ = BoundingSphere{ 2.0f };
 	enable_collider_ = false;
@@ -29,6 +29,7 @@ void Thunder::update(float delta_time)
 	if (timer_ > DelayTime) 
 	{
 		enable_collider_ = true;
+		die();
 	}
 	++timer_;
 }
