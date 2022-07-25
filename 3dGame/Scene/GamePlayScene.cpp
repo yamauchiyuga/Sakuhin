@@ -37,10 +37,6 @@ void GamePlayScene::start() {
 	gsSetShadowMapAttenuation(0.6f);
 	// シャドウマップの距離を設定
 	gsSetShadowMapDistance(60.0f);
-	// 描画用オクツリーの読み込み
-	gsLoadOctree(Octree_Stage, "Assets/Filed/Field.oct");
-	// 衝突判定用オクツリーの読み込み
-	gsLoadOctree(Octree_Collider, "Assets/Filed/Field_collider.oct");
 
 	// プレーヤーの追加
 	world_->add_actor(std::make_shared<Player>(world_, GSvector3{ -5,4.0,10 }));

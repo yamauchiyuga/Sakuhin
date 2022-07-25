@@ -40,7 +40,9 @@ void TitleScene::start()
 	//シャドウマップバイアス
 	gsSetShadowMapBias(0.0f);
 	// ライトマップの読み込み(0番に読み込めば自動的に適用される）
-	gsLoadLightmap(0, "Assets/Lightmap/Lightmap.txt");
+	gsLoadLightmap(0, "Assets/TitelLightmap/TitelLightmap.txt");
+	//
+	gsLoadReflectionProbe(0, "Assets/TitelRefProbe/TitelReflectionProbe");
 	// 補助ライトの読み込み
 	gsLoadAuxLight(0, "Assets/AuxLight/TitelAuxLight.txt");
 
@@ -142,6 +144,8 @@ void TitleScene::end() {
 	gsDeleteAuxLight(0);
 	//
 	gsDeleteLightmap(0);
+	//
+	gsDeleteReflectionProbe(0);
 }
 
 //フェード処理

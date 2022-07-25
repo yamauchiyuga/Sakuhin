@@ -101,6 +101,10 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadSkeleton(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.sklb");
 	gsLoadAnimation(Mesh_TitleDragon, "Assets/model/Enemy/Dragon/Dragon.anmb");
 
+	// 描画用オクツリーの読み込み
+	gsLoadOctree(Octree_Stage, "Assets/Filed/Field.oct");
+	// 衝突判定用オクツリーの読み込み
+	gsLoadOctree(Octree_Collider, "Assets/Filed/Field_collider.oct");
 	//プレイヤーの読み込み
 	gsLoadMesh(Mesh_Player, "Assets/model/Player/Player.mshb");
 	gsLoadSkeleton(Mesh_Player, "Assets/model/Player/Player.sklb");
