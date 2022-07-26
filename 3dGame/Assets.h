@@ -59,8 +59,11 @@ enum {
     Se_SkeletonDamage,
     Se_SkeletonDetate,
     Se_SkeletonGeneration,
-    Se_SkeletonGuard,
-    Se_WitchDetate
+    Se_WitchAttack,
+    Se_WitchDamage,
+    Se_WitchThunder,
+    Se_WitchDetate,
+    Se_SpitFire
 };
 
 // シェーダー
@@ -78,7 +81,7 @@ enum {
     Effect_Blood,
     Effect_Explosion,
     Effect_Smoke,
-    Effect_meteo,
+    Effect_AppearanceBlood,
     Effect_Thunder,
     Effect_Attack,
     Effect_Attack1

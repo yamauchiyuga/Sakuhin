@@ -65,6 +65,7 @@ Dragon::Dragon(std::shared_ptr<IWorld>world, const GSvector3& position) :
 	mesh_.add_event(MotionBite, 36.0f, [=] {bite(); });
 	mesh_.add_event(MotionTailAttack, 45.0f, [=] {tail_attack(); });
 	mesh_.add_event(MotionSpitFireball, 23.0f, [=] {spit_fire(); });
+	mesh_.add_event(MotionSpitFireball, 23.0f, [=] {gsPlaySE(Se_DragonSpitFire); });
 	mesh_.add_event(MotionFlySpitFireball, 30.0f, [=] {spit_fire(); });
 	mesh_.add_event(MotionRun, 10, [] {gsPlaySE(Se_DragonFoot); });
 	mesh_.add_event(MotionRun, 40, [] {gsPlaySE(Se_DragonFoot); });

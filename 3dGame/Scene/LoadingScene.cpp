@@ -21,7 +21,7 @@ void LoadingScene::start()
 	gsLoadEffect(Effect_Explosion, "Assets/Effect/Explosion.efk");
 	gsLoadEffect(Effect_FireBall, "Assets/Effect/Ball.efk");
 	gsLoadEffect(Effect_Smoke, "Assets/Effect/Smoke.efk");
-	gsLoadEffect(Effect_meteo, "Assets/Effect/meteo.efk");
+	gsLoadEffect(Effect_AppearanceBlood, "Assets/Effect/appearance_blood.efk");
 	gsLoadEffect(Effect_Attack, "Assets/Effect/zan.efk");
 	gsLoadEffect(Effect_Attack1, "Assets/Effect/zan1.efk");
 	gsLoadEffect(Effect_Thunder, "Assets/Effect/Thunder.efk");
@@ -132,22 +132,29 @@ void LoadingScene::load_assets(void* self) {
 	//SEì«Ç›çûÇ›
 	gsLoadSE(Se_GameStart, "Assets/Sound/SE/Titel.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_GameClear, "Assets/Sound/SE/clear.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_PlayerAttack, "Assets/Sound/SE/Player/Player_Combo01_Swing.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_PlayerBlock, "Assets/Sound/SE/Player/Player_Block.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_PlayerDamage, "Assets/Sound/SE/Player/Player_Damage.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_PlayerRun, "Assets/Sound/SE/Player/Player_W.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_PlayerDrop, "Assets/Sound/SE/Player/BodyDrop.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_EnemyDamage, "Assets/Sound/SE/Player/Damage.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonAttack1, "Assets/Sound/SE/Dragon/Dragon_Attack1.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonAttack2, "Assets/Sound/SE/Dragon/Dragon_Attack2.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonDeath, "Assets/Sound/SE/Dragon/Dragon_Death.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonFire, "Assets/Sound/SE/Dragon/Dragon_Fire.wav", 2, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonFoot, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonLanding, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonSpitFire, "Assets/Sound/SE/Dragon/Dragon_SpitFire.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonExplosion, "Assets/Sound/SE/Dragon/Dragon_Explosion.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_WitchDetate, "Assets/Sound/SE/Witch/Witch_Death.wav", 1, GWAVE_DEFAULT);
-	gsLoadSE(Se_SkeletonDetate, "Assets/Sound/SE/Skeleton/Skeleton_Death.wav", 1, GWAVE_DEFAULT);
+	gsLoadSE(Se_PlayerAttack, "Assets/Sound/SE/Player/Player_Combo01_Swing.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_PlayerBlock, "Assets/Sound/SE/Player/Player_Block.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_PlayerDamage, "Assets/Sound/SE/Player/Player_Damage.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_PlayerRun, "Assets/Sound/SE/Player/Player_W.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_PlayerDrop, "Assets/Sound/SE/Player/BodyDrop.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_EnemyDamage, "Assets/Sound/SE/Player/Damage.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonAttack1, "Assets/Sound/SE/Dragon/Dragon_Attack1.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonAttack2, "Assets/Sound/SE/Dragon/Dragon_Attack2.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonDeath, "Assets/Sound/SE/Dragon/Dragon_Death.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonFire, "Assets/Sound/SE/Dragon/Dragon_Fire.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonFoot, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonLanding, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonSpitFire, "Assets/Sound/SE/Dragon/Dragon_SpitFire.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonExplosion, "Assets/Sound/SE/Dragon/Dragon_Explosion.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_SkeletonAttack, "Assets/Sound/SE/Skeleton/Attack_Voice.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_SkeletonDamage, "Assets/Sound/SE/Skeleton/Hit_Voice.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_SkeletonDetate, "Assets/Sound/SE/Skeleton/Skeleton_Death.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_SkeletonGeneration, "Assets/Sound/SE/Skeleton/Appear_Impact.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_WitchAttack, "Assets/Sound/SE/Witch/Attack01_Voice.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_WitchDamage, "Assets/Sound/SE/Witch/Hit_Voice.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_WitchDetate, "Assets/Sound/SE/Witch/Witch_Death.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_WitchThunder, "Assets/Sound/SE/Witch/Thunder.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_SpitFire, "Assets/Sound/SE/Witch/Attack01.wav", 5, GWAVE_DEFAULT);
 	//BGì«Ç›çûÇ›
 	gsLoadBGM(Sound_Titel, "Assets/Sound/BGM/Result.ogg", GS_TRUE);
 	gsLoadBGM(Sound_Wind, "Assets/Sound/BGM/Wind.ogg", GS_TRUE);
@@ -155,7 +162,6 @@ void LoadingScene::load_assets(void* self) {
 
 	//âπó ê›íË
 	gsSetVolumeSE(Se_PlayerRun, 0.5f);
-	gsSetVolumeSE(Se_PlayerAttack, 0.5f);
 	gsSetVolumeSE(Se_PlayerBlock, 0.5f);
 	gsSetVolumeSE(Se_PlayerDamage, 0.5f);
 	gsSetVolumeSE(Se_PlayerDrop, 0.5f);

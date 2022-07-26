@@ -56,11 +56,14 @@ Witch::Witch(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	//エフェクを出す
 	const GSvector3 Offset{ 0.0f,0.1f,0.0f };
 	const GSvector3 Pos = transform_.position() + Offset;
-	
+	gsPlayEffect(Effect_AppearanceBlood, &Pos);
 	//イベント登録
 	mesh_.add_event(MotionSpitFire, 23.0f, [=] {spit_fire(); });
+	mesh_.add_event(MotionSpitFire, 10.0f, [=] {gsPlaySE(Se_WitchAttack); });
 	mesh_.add_event(MotionThunder, 103.0f, [=] {thunder(); });
-	mesh_.add_event(MotionGeneration, 2.0f, [=] {gsPlayEffect(Effect_meteo, &Pos); });
+	mesh_.add_event(MotionThunder, 80.0f, [=] {gsPlaySE(Se_WitchAttack); });
+	mesh_.add_event(MotionThunder, 105.0f, [=] {gsPlaySE(Se_WitchThunder); });
+	
 	
 }
 
@@ -103,8 +106,9 @@ void Witch::react(Actor& other)
 	//プレイヤーと衝突したか
 	if (other.tag() == "PlayerAttackTag")
 	{
-		if (HP_.cullent_health() <= MaxHP / 2)
+		if (HP_.cullent_health() <= 10)
 		{
+			gsPlaySE(Se_WitchDamage);
 			change_state(State::Damage, MotionDmage, false);
 		}
 		//seを鳴らす
@@ -162,7 +166,7 @@ void Witch::generation(float delta_time)
 	
 	if (state_timer_ >= mesh_.motion_end_time())
 	{
-		gsStopEffect(Effect_meteo);
+		gsStopEffect(Effect_AppearanceBlood);
 		change_state(State::Idle, MotionIdle, true);
 	}
 }

@@ -58,9 +58,12 @@ Skeleton::Skeleton(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	transform_.position(position);
 	// メッシュの変換行列を初期化
 	mesh_.transform(transform_.localToWorldMatrix());
+	
 	//イベント登録
 	mesh_.add_event(MotionAttack, 10.0f, [=] {slash(); });
-	mesh_.add_event(MotionAttack, 10.0f, [] {gsPlaySE(Se_PlayerAttack); });
+	mesh_.add_event(MotionGeneration, 5.0f, [] {gsPlaySE(Se_SkeletonGeneration); });
+	mesh_.add_event(MotionGeneration, 120.0f, [] {gsPlaySE(Se_SkeletonGeneration); });
+	mesh_.add_event(MotionAttack, 5.0f, [] {gsPlaySE(Se_SkeletonAttack); });
 }
 
 //更新
@@ -102,15 +105,17 @@ void Skeleton::react(Actor& other)
 	//プレイヤーとの判定
 	if (other.tag() == "PlayerAttackTag")
 	{
-		int CanBlock = gsRand(0, 3);
+		const int CanBlock = gsRand(0, 3);
 		if (CanBlock == 0)
 		{
+			gsPlaySE(Se_PlayerBlock);
 			change_state(State::ShieldBlock, MotionShieldBlock, false);
 			return;
 		}
 
-		if (HP_.cullent_health() == 15)
+		if (HP_.cullent_health() == 10)
 		{
+			gsPlaySE(Se_SkeletonDamage);
 			change_state(State::Damage, MotionDamage, false);
 		}
 		//SEを鳴らす

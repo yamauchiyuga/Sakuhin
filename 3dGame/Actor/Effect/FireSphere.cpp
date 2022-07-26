@@ -19,7 +19,7 @@ FireSphere::FireSphere(std::shared_ptr<IWorld> world, const GSvector3& position,
 	// À•W‚Ì‰Šú‰»
 	transform_.position(position);
 	 effect_=gsPlayEffect(Effect_FireBall, &position);
-	gsPlaySE(Se_DragonSpitFire);
+	 gsPlaySE(Se_SpitFire);
 }
 
 void FireSphere::update(float delta_time) {

@@ -98,8 +98,15 @@ public:
 		gsDeleteSE(Se_DragonLanding);
 		gsDeleteSE(Se_DragonSpitFire);
 		gsDeleteSE(Se_DragonExplosion);
-		gsDeleteSE(Se_WitchDetate);
+		gsDeleteSE(Se_SkeletonAttack);
+		gsDeleteSE(Se_SkeletonDamage);
 		gsDeleteSE(Se_SkeletonDetate);
+		gsDeleteSE(Se_SkeletonGeneration);
+		gsDeleteSE(Se_WitchAttack);
+		gsDeleteSE(Se_WitchDamage);
+		gsDeleteSE(Se_WitchDetate);
+		gsDeleteSE(Se_WitchThunder);
+		gsDeleteSE(Se_SpitFire);
 		// ライトマップの削除
 		gsDeleteLightmap(0);
 		// リフレクションプローブの削除
@@ -112,7 +119,7 @@ public:
 		gsDeleteEffect(Effect_FireBall);
 		gsDeleteEffect(Effect_Smoke);
 		gsDeleteEffect(Effect_TorchFlame);
-		gsDeleteEffect(Effect_meteo);
+		gsDeleteEffect(Effect_AppearanceBlood);
 		gsDeleteEffect(Effect_Attack);
 		gsDeleteEffect(Effect_Attack1);
 		gsDeleteEffect(Effect_Thunder);
