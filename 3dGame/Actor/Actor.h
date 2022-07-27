@@ -6,6 +6,7 @@
 #include <string>
 #include "../Collision/BoundingSphere.h"
 #include"../Tween/Tween.h"
+#include"../HitStop.h"
 
 class IWorld;   // ワールド抽象インターフェースの前方宣言
 
@@ -70,6 +71,8 @@ protected:
 	GStransform     transform_;
 	// 移動量
 	GSvector3       velocity_{ 0.0f, 0.0f, 0.0f };
+	//
+	HitStop hit_stop_;
 	// 衝突判定が有効か？
 	bool            enable_collider_{ true };
 	// 衝突判定

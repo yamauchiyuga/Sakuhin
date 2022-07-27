@@ -140,7 +140,8 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadSE(Se_EnemyDamage, "Assets/Sound/SE/Player/Damage.wav", 5, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonAttack1, "Assets/Sound/SE/Dragon/Dragon_Attack1.wav", 5, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonAttack2, "Assets/Sound/SE/Dragon/Dragon_Attack2.wav", 5, GWAVE_DEFAULT);
-	gsLoadSE(Se_DragonDeath, "Assets/Sound/SE/Dragon/Dragon_Death.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonDamage, "Assets/Sound/SE/Dragon/hit_Voice.wav", 5, GWAVE_DEFAULT);
+	gsLoadSE(Se_DragonDetate, "Assets/Sound/SE/Dragon/Dragon_Death.wav", 5, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonFire, "Assets/Sound/SE/Dragon/Dragon_Fire.wav", 5, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonFoot, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 5, GWAVE_DEFAULT);
 	gsLoadSE(Se_DragonLanding, "Assets/Sound/SE/Dragon/Dragon_Foot.wav", 5, GWAVE_DEFAULT);
@@ -168,7 +169,7 @@ void LoadingScene::load_assets(void* self) {
 	gsSetVolumeSE(Se_EnemyDamage, 0.5f);
 	gsSetVolumeSE(Se_DragonAttack1, 0.5f);
 	gsSetVolumeSE(Se_DragonAttack2, 0.5f);
-	gsSetVolumeSE(Se_DragonDeath, 0.5f);
+	gsSetVolumeSE(Se_DragonDetate, 0.5f);
 	gsSetVolumeSE(Se_DragonFire, 0.5f);
 	gsSetVolumeSE(Se_DragonFoot, 0.5f);
 	gsSetVolumeSE(Se_DragonLanding, 0.5f);

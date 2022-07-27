@@ -95,8 +95,9 @@ Player::Player(std::shared_ptr<IWorld> world, const GSvector3& position) :
 //更新
 void Player::update(float delta_time)
 {
+	hit_stop_.update(delta_time);
 	//
-	update_state(delta_time);
+	update_state(delta_time * hit_stop_.b());
 	//重力加算
 	velocity_.y += Gravity * delta_time;
 	transform_.translate(0.0f, velocity_.y, 0.0f);
@@ -105,7 +106,7 @@ void Player::update(float delta_time)
 	//状態の変更
 	mesh_.change_motion(motion_, motion_loop_);
 	//アニメーション更新
-	mesh_.update(delta_time);
+	mesh_.update(delta_time * hit_stop_.b());
 	// メッシュの変換行列を更新
 	mesh_.transform(transform_.localToWorldMatrix());
 	//スタミナの更新
@@ -191,7 +192,7 @@ void Player::update_state(float delta_time) {
 	//
 	switch (state_) {
 	case Player::State::Move: move(delta_time);    break;
-	case Player::State::Attack:attack(delta_time); break;
+	case Player::State::Attack:attack(delta_time ); break;
 	case Player::State::Dodge: dodge(delta_time); break;
 	case Player::State::GuardStart: guard_start(delta_time); break;
 	case Player::State::Guarding: guarding(delta_time); break;
@@ -473,6 +474,6 @@ void Player::draw_gui()const
 {
 	HP_.draw_player();
 	ST_.draw();
-	d.draw();
-	d.clear();
+	/*d.draw();
+	d.clear();*/
 }

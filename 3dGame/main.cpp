@@ -92,7 +92,8 @@ public:
 		gsDeleteSE(Se_EnemyDamage);
 		gsDeleteSE(Se_DragonAttack1);
 		gsDeleteSE(Se_DragonAttack2);
-		gsDeleteSE(Se_DragonDeath);
+		gsDeleteSE(Se_DragonDamage);
+		gsDeleteSE(Se_DragonDetate);
 		gsDeleteSE(Se_DragonFire);
 		gsDeleteSE(Se_DragonFoot);
 		gsDeleteSE(Se_DragonLanding);

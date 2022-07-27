@@ -94,7 +94,6 @@ void Enemy::generate_attac_collider(const float radius, const float distance, co
 // •Ç‚É‚Ô‚Â‚©‚Á‚½‚©
 bool Enemy::is_hit_wall()const {
 	return hit_wall_;
-
 }
 
 

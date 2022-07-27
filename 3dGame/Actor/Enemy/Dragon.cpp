@@ -12,6 +12,7 @@ enum
 	MotionDead,
 	MotionFly,
 	MotionFlySpitFireball,
+	MotionDamage,
 	MotionGoInAir,
 	MotionIdle,
 	MotionLanding,
@@ -77,7 +78,7 @@ Dragon::Dragon(std::shared_ptr<IWorld>world, const GSvector3& position) :
 	mesh_.add_event(MotionLanding, 20, [] {gsPlaySE(Se_DragonLanding); });
 	mesh_.add_event(MotionGoInAir, 30, [] {gsPlaySE(Se_DragonFire); });
 	mesh_.add_event(MotionGoInAir, 80, [] {gsPlaySE(Se_DragonFire); });
-	mesh_.add_event(MotionDead, 10, [] {gsPlaySE(Se_DragonDeath); });
+	mesh_.add_event(MotionDead, 10, [] {gsPlaySE(Se_DragonDetate); });
 }
 
 //更新
@@ -122,6 +123,12 @@ void Dragon::react(Actor& other)
 	//プレイヤーの攻撃に当たったか？
 	if (other.tag() == "PlayerAttackTag")
 	{
+		if (HP_.cullent_health() == 200)
+		{
+			gsPlaySE(Se_DragonDamage);
+			change_state(State::Damage, MotionDamage, false);
+		}
+		hit_stop_.set_hit_stop(15.0f);
 		//SEを鳴らす
 		gsPlaySE(Se_EnemyDamage);
 		const GSvector3 ZanOffset{ 0.0f,0.8f,0.0f };
@@ -160,6 +167,7 @@ void Dragon::update_state(float delta_time)
 	case Dragon::State::FlyMove:fly_move(delta_time); break;
 	case Dragon::State::FlyAttack:fly_attack(delta_time); break;
 	case Dragon::State::FlyEnd:fly_end(delta_time); break;
+	case Dragon::State::Damage:damage(delta_time); break;
 	case Dragon::State::Dead:dead(delta_time); break;
 	}
 	state_timer_ += delta_time;
@@ -189,7 +197,7 @@ void Dragon::idle(float delta_time)
 	//走るか？
 	if (is_run())
 	{
-		change_state(State::Run, MotionRun,true);
+		change_state(State::Run, MotionRun, true);
 		return;
 	}
 
@@ -373,6 +381,14 @@ void Dragon::fly_end(float delta_time) {
 	}
 }
 
+//
+void Dragon::damage(float delta_time)
+{
+	if (state_timer_ >= mesh_.motion_end_time()) {
+		change_state(State::Idle, MotionIdle, false);
+	}
+}
+
 //死亡
 void Dragon::dead(float delta_time) {
 	//何もしない
@@ -418,7 +434,7 @@ void Dragon::bite() {
 	const float AttackCollideLifeSpan{ 10.0f };
 	//
 	std::string AttackName{ "DragonBite" };
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan,AttackName);
+	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
 	gsPlaySE(Se_DragonAttack2);
 }
 
@@ -439,7 +455,7 @@ void Dragon::tail_attack() {
 	//
 	std::string AttackName{ "DragonTail" };
 	//生成
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan,AttackName);
+	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
 	gsPlaySE(Se_DragonAttack1);
 }
 
@@ -460,14 +476,14 @@ void Dragon::spit_fire()
 	GSvector3 velocity = GSvector3::zero();
 	velocity = transform_.forward() * Speed;
 	//
-	std::string AttackName{"DragonSpitFire"};
+	std::string AttackName{ "DragonSpitFire" };
 	if (state_ == State::FlyAttack)
 	{
 		AttackName = "DragonFlySpitFire";
 		velocity = (player_->transform().position() - position).normalized() * Speed;
 	}
 	// 弾の生成
-	world_->add_actor(std::make_unique<FireSphere>(world_, position, velocity,AttackName));
+	world_->add_actor(std::make_unique<FireSphere>(world_, position, velocity, AttackName));
 }
 
 //振り返るか
@@ -479,13 +495,13 @@ bool Dragon::is_trun() const
 //走るか？
 bool Dragon::is_run() const
 {
-	return   target_distance()>RunDistance;
+	return   target_distance() > RunDistance;
 }
 
 //攻撃範囲か？
 bool Dragon::is_attack()const
 {
-	return target_distance()<=RunDistance && target_angle() <= AttackAngle;
+	return target_distance() <= RunDistance && target_angle() <= AttackAngle;
 }
 
 //重力を有効にするか？

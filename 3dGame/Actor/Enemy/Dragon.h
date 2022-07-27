@@ -20,6 +20,7 @@ public:
 		FlyIdel,
 		FlyAttack,
 		FlyEnd,
+		Damage,
 		Dead,
 		Attack
 	};
@@ -57,6 +58,8 @@ private:
 	void fly_attack(float delta_time);
 	//”òsI—¹
 	void fly_end(float delta_time);
+	//
+	void damage(float delta_time);
 	//€–S
 	void dead(float delta_time);
 
