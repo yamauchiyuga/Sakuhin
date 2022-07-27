@@ -18,6 +18,7 @@ public:
 	void reset()
 	{
 		time_ = 0;
+		limitTime_ = 0.0f;
 	}
 	//
 	bool is_time_out()const

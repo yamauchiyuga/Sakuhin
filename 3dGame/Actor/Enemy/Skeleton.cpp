@@ -28,13 +28,11 @@ const float MaxHP{ 15 };
 //走り出す距離
 const float RunDistance{ 2.5f };
 //走るスピード
-const float RunSpeed{ 0.06f };
+const float RunSpeed{ 0.07f };
 //回転量
-const float TurnAngle{ 2.5f };
+const float TurnAngle{ 1.5f };
 //回転する角度
-const float TurnAroundAngle{ 10.0f };
-//
-const float AnimationDelaytime{ 60.0f };
+const float TurnAroundAngle{ 20.0f };
 //ダメージ
 const int HitDamage{ 5 };
 
@@ -53,12 +51,12 @@ Skeleton::Skeleton(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	player_ = nullptr;
 	//判定用球
 	collider_ = BoundingSphere{ 0.4f, GSvector3{0.0f, 1.0f, 0.0f} };
-	HP_ = { MaxHP };
+	HP_ = MaxHP;
 	//座標の初期化
 	transform_.position(position);
 	// メッシュの変換行列を初期化
 	mesh_.transform(transform_.localToWorldMatrix());
-	
+
 	//イベント登録
 	mesh_.add_event(MotionAttack, 10.0f, [=] {slash(); });
 	mesh_.add_event(MotionGeneration, 5.0f, [] {gsPlaySE(Se_SkeletonGeneration); });
@@ -105,7 +103,7 @@ void Skeleton::react(Actor& other)
 	//プレイヤーとの判定
 	if (other.tag() == "PlayerAttackTag")
 	{
-		const int CanBlock = gsRand(0, 3);
+		const int CanBlock = gsRand(0, 1);
 		if (CanBlock == 0)
 		{
 			gsPlaySE(Se_PlayerBlock);
@@ -113,11 +111,9 @@ void Skeleton::react(Actor& other)
 			return;
 		}
 
-		if (HP_.cullent_health() == 10)
-		{
-			gsPlaySE(Se_SkeletonDamage);
-			change_state(State::Damage, MotionDamage, false);
-		}
+		hit_stop_.set_hit_stop(10.0f);
+		gsPlaySE(Se_SkeletonDamage);
+		change_state(State::Damage, MotionDamage, false);
 		//SEを鳴らす
 		gsPlaySE(Se_EnemyDamage);
 		const GSvector3 ZanOffset{ 0.0f,0.8f,0.0f };
@@ -182,7 +178,7 @@ void Skeleton::generation(float delta_time)
 //アイドル
 void Skeleton::idle(float delta_time)
 {
-	if (state_timer_ >= mesh_.motion_end_time() + AnimationDelaytime)
+	if (state_timer_ >= mesh_.motion_end_time())
 	{
 		//振り向くか？
 		if (is_trun())
@@ -247,7 +243,7 @@ void Skeleton::turn(float delta_time)
 
 void Skeleton::Shield_Block(float  delta_time)
 {
-	if(state_timer_ >= mesh_.motion_end_time()) {
+	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::Idle, MotionIdle, false);
 	}
 }
@@ -298,7 +294,7 @@ void Skeleton::slash()
 	//
 	std::string AttackName{ "SkeketonSlash" };
 	//攻撃用球生成
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, 0.0f, AttackCollideDelay, AttackCollideLifeSpan,AttackName);
+	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, 0.0f, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
 }
 
 //走しるか？
@@ -310,7 +306,7 @@ bool Skeleton::is_run() const
 //振り向くか？
 bool Skeleton::is_trun() const
 {
-	return target_angle() >= TurnAroundAngle;
+	return target_angle() > TurnAroundAngle;
 }
 
 //攻撃範囲か？

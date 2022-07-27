@@ -17,13 +17,13 @@ void HP::hit_damage(int power) {
 //プレイヤー用
 void HP::draw_player() const {
 	UIparameter Player;
-	Player.gage_position={ 80.0f, 70.0f };
-	Player.gage_frame_position={ 79.0f, 69.0f };
-	Player.gage={ 0, 0, (cullent_health_ / max_health_) * 250.0f, 13.0f };
-	Player.back_gage={ 0,0,250.0f, 13.0f };
-	Player.gage_color={ 0,1,0,1 };
+	Player.gage_position = { 80.0f, 70.0f };
+	Player.gage_frame_position = { 79.0f, 69.0f };
+	Player.gage = { 0, 0, (cullent_health_ / max_health_) * 250.0f, 13.0f };
+	Player.back_gage = { 0,0,250.0f, 13.0f };
+	Player.gage_color = { 0,1,0,1 };
 	Player.gage_frame_color = { 1,1,1,1 };
-	Player.back_gage_color={ 0,0,0,1 };
+	Player.back_gage_color = { 0,0,0,1 };
 
 	//フレームの描画
 	gsDrawSprite2D(Texture_Frame, &Player.gage_frame_position, NULL, NULL, &Player.gage_frame_color, NULL, 0.0f);

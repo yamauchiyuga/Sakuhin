@@ -48,7 +48,7 @@ Witch::Witch(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	is_dead_ = false;
 	//当たり判定球
 	collider_ = BoundingSphere{ 0.5f, GSvector3{0.0f, 1.0f, 0.0f} };
-	HP_ = { MaxHP };
+	HP_ = MaxHP ;
 	//座標の初期化
 	transform_.position(position);
 	// メッシュの変換行列を初期化
@@ -106,6 +106,7 @@ void Witch::react(Actor& other)
 	//プレイヤーと衝突したか
 	if (other.tag() == "PlayerAttackTag")
 	{
+		hit_stop_.set_hit_stop(10.0f);
 		if (HP_.cullent_health() <= 10)
 		{
 			gsPlaySE(Se_WitchDamage);

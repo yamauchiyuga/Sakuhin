@@ -23,5 +23,3 @@ private:
 };
 
 #endif // !ST_H_
-
-

@@ -39,9 +39,9 @@ const float Gravity{ -0.016f };
 //回避距離
 const float DodgeDistance{ 0.7 };
 //最大体力
-const float MaxHP{ 100.0f };
+const int MaxHP{ 100 };
 //最大スタミナ
-const float MaxST{ 100.0f };
+const int MaxST{ 100};
 //入力
 const float Input{ 0.3f };
 //リスポーンするy軸の高さ

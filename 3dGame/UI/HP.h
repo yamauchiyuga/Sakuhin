@@ -1,9 +1,9 @@
+
 #ifndef HP_H_
 #define HP_H_
 
 #include<GSvector2.h>
 #include<GSgraphics.h>
-
 class HP
 {
 public:
@@ -29,6 +29,4 @@ private:
 	float max_health_;
 
 };
-
-
-#endif 
+#endif

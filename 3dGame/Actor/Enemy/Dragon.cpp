@@ -29,15 +29,15 @@ const float MaxHP{ 400 };
 //重力
 const float Gravity{ -0.003f };
 //攻撃範囲
-const float AttackAngle{ 20.0f };
+const float AttackAngle{ 30.0f };
 //走り出す距離
-const float RunDistance{ 6.0f };
+const float RunDistance{ 7.0f };
 //走るスピード
-const float RunSpeed{ 0.09f };
+const float RunSpeed{ 0.11f };
 //飛行スピード
-const float FlySpeed{ 0.11f };
+const float FlySpeed{ 0.12f };
 //回転量
-const float TurnAngle{ 1.5f };
+const float TurnAngle{ 2.0f };
 //回転する角度
 const float TurnAroundAngle{ 25.0f };
 //ダメージ量
@@ -57,7 +57,7 @@ Dragon::Dragon(std::shared_ptr<IWorld>world, const GSvector3& position) :
 	player_ = nullptr;
 	//判定用球
 	collider_ = BoundingSphere{ 2.0f, GSvector3{0.0f, 2.0f, 0.0f} };
-	HP_ = { MaxHP };
+	HP_= MaxHP;
 	//座標の初期化
 	transform_.position(position);
 	// メッシュの変換行列を初期化
@@ -123,7 +123,7 @@ void Dragon::react(Actor& other)
 	//プレイヤーの攻撃に当たったか？
 	if (other.tag() == "PlayerAttackTag")
 	{
-		if (HP_.cullent_health() == 200)
+		if (HP_.cullent_health() ==200)
 		{
 			gsPlaySE(Se_DragonDamage);
 			change_state(State::Damage, MotionDamage, false);
