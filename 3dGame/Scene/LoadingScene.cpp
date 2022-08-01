@@ -130,6 +130,7 @@ void LoadingScene::load_assets(void* self) {
 	gsLoadTexture(Texture_GameClear, "Assets/Texture/GameClear.png");
 	gsLoadTexture(Texture_Lock, "Assets/Texture/LockOn.png");
 	gsLoadTexture(Texture_TitelName, "Assets/Texture/Name.png");
+	gsLoadTexture(Texture_Lock, "Assets/Texture/ten.png");
 	//SEì«Ç›çûÇ›
 	gsLoadSE(Se_GameStart, "Assets/Sound/SE/Titel.wav", 1, GWAVE_DEFAULT);
 	gsLoadSE(Se_GameClear, "Assets/Sound/SE/clear.wav", 1, GWAVE_DEFAULT);

@@ -35,6 +35,8 @@ const float TurnAngle{ 1.8f };
 const float TurnAroundAngle{ 20.0f };
 //ダメージ
 const int HitDamage{ 5 };
+//
+const float  Delay{ (float)gsRand(3,6) * 10 };
 
 Skeleton::Skeleton(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	mesh_{ Mesh_Skeleton,Mesh_Skeleton, Mesh_Skeleton, MotionGeneration,false },
@@ -103,7 +105,7 @@ void Skeleton::react(Actor& other)
 	//プレイヤーとの判定
 	if (other.tag() == "PlayerAttackTag")
 	{
-		const int CanBlock = gsRand(0, 1);
+		const int CanBlock = gsRand(0, 2);
 		if (CanBlock == 0)
 		{
 			gsPlaySE(Se_PlayerBlock);
@@ -184,7 +186,7 @@ void Skeleton::generation(float delta_time)
 //アイドル
 void Skeleton::idle(float delta_time)
 {
-	if (state_timer_ >= mesh_.motion_end_time())
+	if (state_timer_ >= mesh_.motion_end_time() + Delay)
 	{
 		//振り向くか？
 		if (is_trun())
@@ -250,7 +252,7 @@ void Skeleton::turn(float delta_time)
 void Skeleton::shield_block(float  delta_time)
 {
 	if (state_timer_ >= mesh_.motion_end_time()) {
-		change_state(State::Idle, MotionIdle, false);
+		change_state(State::Idle, MotionIdle, true);
 	}
 }
 

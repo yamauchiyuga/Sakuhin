@@ -40,7 +40,7 @@ const float DodgeDistance{ 0.37f };
 //最大体力
 const int MaxHP{ 100 };
 //最大スタミナ
-const int MaxST{ 1600 };
+const int MaxST{ 200 };
 //入力
 const float Input{ 0.3f };
 //リスポーンするy軸の高さ
@@ -136,7 +136,6 @@ void Player::react(Actor& other)
 		collide_actor(other);
 		return;
 	}
-	return;
 	//回避中なら何もしない
 	if (state_ == State::Dodge)return;
 	//ダメージ中なら何もしない
@@ -237,7 +236,7 @@ void Player::move(float delta_time)
 	}
 
 	//移動速度
-	const float WalkSpeed{ 0.1f };
+	const float WalkSpeed{ 0.12f };
 	//カメラの前方向を取得
 	GSvector3 forward = world_->camera()->transform().forward();
 	forward.y = 0.0f;
@@ -319,7 +318,7 @@ void Player::dodge(float delta_time)
 	const float MoveTime{ mesh_.motion_end_time() - 20 };
 	easing_time_ += delta_time;
 	const float t = easing_time_ / MoveTime;
-	
+
 	velocity_ = GSvector3::lerp(GSvector3{ velocity_.x,0.0f,velocity_.z }, GSvector3::zero(), gsEasingInQuad(t));
 	//減速
 	/*const float decrement_value{ 0.2f };
