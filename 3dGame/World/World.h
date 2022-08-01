@@ -48,11 +48,11 @@ public:
 	//
 	virtual void game_over()override;
 	//
-	virtual void game_cler()override;
+	virtual void game_clear()override;
 	//ゲームオーバー画像
 	void draw_game_over_texture()const;
 	//ゲームクリア画像
-	void draw_game_cler_texture()const;
+	void draw_game_clear_texture()const;
 
 	// カメラの取得
 	virtual std::shared_ptr<Actor> camera() override;
@@ -86,7 +86,7 @@ private:
 	//死亡画像のアルファ値
 	float game_over_alpha_{ 0.0f };
 	//クリア画像のアルファ値
-	float clear_alpha_{ 0.0f };
+	float game_clear_alpha_{ 0.0f };
 	//クリア画像の大きさ
 	GSvector2 clear_scale_{ 1.5f, 1.5f };
 };

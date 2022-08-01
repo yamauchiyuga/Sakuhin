@@ -79,8 +79,6 @@ protected:
 	BoundingSphere  collider_;
 	// Ž€–Sƒtƒ‰ƒO
 	bool            dead_{ false };
-	//
-	int powe_;
 };
 
 #endif

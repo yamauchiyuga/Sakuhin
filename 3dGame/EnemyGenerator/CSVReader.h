@@ -12,6 +12,7 @@ public:
     CsvReader(const std::string& file_name);
     // ファイルの読み込み
     void load(const std::string& file_name);
+
     // データの取得(文字列で取得）
     const std::string& get(int row, int column) const;
     // データの取得（int型に変換して取得）

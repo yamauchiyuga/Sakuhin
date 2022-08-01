@@ -1,7 +1,6 @@
 #include "Dragon.h"
 #include"../Effect/FireSphere.h"
 #include"../../World/IWorld.h"
-#include"../AttackCollider.h"
 #include"../../Assets.h"
 #include<GSeffect.h>
 
@@ -150,7 +149,7 @@ void Dragon::react(Actor& other)
 		is_dead_ = true;
 		change_state(Dragon::State::Dead, MotionDead, false);
 		//ÉNÉäÉAâÊñ ÇåƒÇ‘
-		world_->game_cler();
+		world_->game_clear();
 	}
 }
 
@@ -434,7 +433,7 @@ void Dragon::bite() {
 	const float AttackCollideLifeSpan{ 10.0f };
 	//
 	std::string AttackName{ "DragonBite" };
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
+	generate_attack_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
 	gsPlaySE(Se_DragonAttack2);
 }
 
@@ -455,7 +454,7 @@ void Dragon::tail_attack() {
 	//
 	std::string AttackName{ "DragonTail" };
 	//ê∂ê¨
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
+	generate_attack_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, AttackColliderWidth, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
 	gsPlaySE(Se_DragonAttack1);
 }
 

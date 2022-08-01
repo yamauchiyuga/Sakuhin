@@ -103,8 +103,8 @@ float TweenUnit::apply_ease(float value, EaseType ease_type, float overshoot) {
         float peek = 0.25f / overshoot;
         float a = (value - 1.0f) / (peek - 1.0f);
         a = CLAMP(a, 0.0f, 1.0f);
-        float b = a * a * (3 - 2 * a);
-        return sin(value * 6.28318530f * overshoot) * b;
+        float delta_time_delay = a * a * (3 - 2 * a);
+        return sin(value * 6.28318530f * overshoot) * delta_time_delay;
     }
     default: return value;
     }

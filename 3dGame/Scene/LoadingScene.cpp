@@ -25,6 +25,7 @@ void LoadingScene::start()
 	gsLoadEffect(Effect_Attack, "Assets/Effect/zan.efk");
 	gsLoadEffect(Effect_Attack1, "Assets/Effect/zan1.efk");
 	gsLoadEffect(Effect_Thunder, "Assets/Effect/Thunder.efk");
+	gsLoadEffect(Effect_Spark, "Assets/Effect/Spark.efk");
 	now_loading_ = "Now Loading";
 	timer_ = 0.0f;
 	dot_count_ = 0;

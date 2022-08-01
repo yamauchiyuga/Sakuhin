@@ -124,6 +124,7 @@ public:
 		gsDeleteEffect(Effect_Attack);
 		gsDeleteEffect(Effect_Attack1);
 		gsDeleteEffect(Effect_Thunder);
+		gsDeleteEffect(Effect_Spark);
 
 		//BGMíœ
 		gsDeleteBGM(Sound_Titel);

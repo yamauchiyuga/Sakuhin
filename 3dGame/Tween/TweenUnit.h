@@ -35,7 +35,7 @@ enum class EaseType {
     EaseInOutQuart,
     EaseInOutQuint,
     EaseInOutSine,
-    Punch,
+    Punch
 };
 
 

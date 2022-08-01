@@ -9,7 +9,6 @@
 #include"../../Amplitude.h"
 #include <GSeffect.h>
 
-static Debug d;
 //モーション番号
 enum
 {
@@ -37,11 +36,11 @@ const float FootOffset{ 0.1f };
 //重力
 const float Gravity{ -0.016f };
 //回避距離
-const float DodgeDistance{ 0.7 };
+const float DodgeDistance{ 0.37f };
 //最大体力
 const int MaxHP{ 100 };
 //最大スタミナ
-const int MaxST{ 100};
+const int MaxST{ 1600 };
 //入力
 const float Input{ 0.3f };
 //リスポーンするy軸の高さ
@@ -54,6 +53,8 @@ const int GuradStamin{ 20 };
 const int AttackStamina{ 10 };
 //最大コンボ数
 const int MaxCombo{ 2 };
+
+
 
 //コンストラクタ
 Player::Player(std::shared_ptr<IWorld> world, const GSvector3& position) :
@@ -77,13 +78,14 @@ Player::Player(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	collider_ = BoundingSphere{ PlayerRadius,GSvector3{0.0f,PlayerHeight,0.0f} };
 	// 座標の初期化
 	transform_.position(position);
+	transform_.eulerAngles(0.0f, 180.0f, 0.0f);
 	// メッシュの変換行列を初期化
 	mesh_.transform(transform_.localToWorldMatrix());
 
 	//イベント登録
-	mesh_.add_event(MotionAttack, 15.0f, [=] {generate_attac_collider(); });
-	mesh_.add_event(MotionAttack2, 15.0f, [=] {generate_attac_collider(); });
-	mesh_.add_event(MotionAttack3, 22.0f, [=] {generate_attac_collider(); });
+	mesh_.add_event(MotionAttack, 15.0f, [=] {generate_attack_collider(); });
+	mesh_.add_event(MotionAttack2, 15.0f, [=] {generate_attack_collider(); });
+	mesh_.add_event(MotionAttack3, 22.0f, [=] {generate_attack_collider(); });
 	mesh_.add_event(MotionRun, 8.0f, [] {gsPlaySE(Se_PlayerRun); });
 	mesh_.add_event(MotionRun, 30.0f, [] {gsPlaySE(Se_PlayerRun); });
 	mesh_.add_event(MotionDodge, 5.0f, [] {gsPlaySE(Se_PlayerDrop); });
@@ -97,7 +99,9 @@ void Player::update(float delta_time)
 {
 	hit_stop_.update(delta_time);
 	//
-	update_state(delta_time * hit_stop_.b());
+	update_state(delta_time * hit_stop_.delta_time_delay());
+	//アニメーション更新
+	mesh_.update(delta_time * hit_stop_.delta_time_delay());
 	//重力加算
 	velocity_.y += Gravity * delta_time;
 	transform_.translate(0.0f, velocity_.y, 0.0f);
@@ -105,18 +109,13 @@ void Player::update(float delta_time)
 	collide_field();
 	//状態の変更
 	mesh_.change_motion(motion_, motion_loop_);
-	//アニメーション更新
-	mesh_.update(delta_time * hit_stop_.b());
 	// メッシュの変換行列を更新
 	mesh_.transform(transform_.localToWorldMatrix());
 	//スタミナの更新
 	ST_.update(delta_time);
-	//d.get_pos(transform_.forward());
-	d.get_pos(velocity_);
 	//リスポーン
 	if (end_line())
 	{
-		transform_.position() = GSvector3::zero();
 		transform_.position(RestartPosition);
 	}
 
@@ -137,6 +136,7 @@ void Player::react(Actor& other)
 		collide_actor(other);
 		return;
 	}
+	return;
 	//回避中なら何もしない
 	if (state_ == State::Dodge)return;
 	//ダメージ中なら何もしない
@@ -192,7 +192,7 @@ void Player::update_state(float delta_time) {
 	//
 	switch (state_) {
 	case Player::State::Move: move(delta_time);    break;
-	case Player::State::Attack:attack(delta_time ); break;
+	case Player::State::Attack:attack(delta_time); break;
 	case Player::State::Dodge: dodge(delta_time); break;
 	case Player::State::GuardStart: guard_start(delta_time); break;
 	case Player::State::Guarding: guarding(delta_time); break;
@@ -209,6 +209,7 @@ void Player::change_state(State state, GSuint motion, bool loop) {
 	motion_loop_ = loop;
 	state_ = state;
 	state_timer_ = 0.0f;
+	easing_time_ = 0.0f;
 }
 
 //移動
@@ -258,7 +259,7 @@ void Player::move(float delta_time)
 
 	//回転速度
 	const float Rotate{ 10.0f };
-	if (velocity_.length() != 0.0f)
+	if (velocity.length() > 0.0f)
 	{
 		GSquaternion rotation = GSquaternion::rotateTowards(transform_.rotation(),
 			GSquaternion::lookRotation(velocity), Rotate * delta_time);
@@ -266,10 +267,11 @@ void Player::move(float delta_time)
 		// 移動中のモーションにする
 		motion = MotionRun;
 	}
+
 	change_state(State::Move, motion);
 	velocity_.x = velocity.x;
 	velocity_.z = velocity.z;
-	
+
 
 	transform_.translate(velocity_, GStransform::Space::World);
 
@@ -308,15 +310,20 @@ void Player::attack(float delta_time) {
 		combo_ = 0.0f;
 		change_state(State::Move, MotionIdle, true);
 	}
-
 }
+
 //回避中
 void Player::dodge(float delta_time)
 {
 	transform_.translate(velocity_, GStransform::Space::World);
+	const float MoveTime{ mesh_.motion_end_time() - 20 };
+	easing_time_ += delta_time;
+	const float t = easing_time_ / MoveTime;
+	
+	velocity_ = GSvector3::lerp(GSvector3{ velocity_.x,0.0f,velocity_.z }, GSvector3::zero(), gsEasingInQuad(t));
 	//減速
-	const float decrement_value{ 0.2f };
-	velocity_ -= GSvector3{ velocity_.x,0.0f,velocity_.z }*decrement_value * delta_time;
+	/*const float decrement_value{ 0.2f };
+	velocity_ -= GSvector3{ velocity_.x,0.0f,velocity_.z }*decrement_value * delta_time;*/
 	//モーション終了か？
 	if (state_timer_ >= mesh_.motion_end_time() - 20.0f)
 	{
@@ -445,7 +452,7 @@ void Player::collide_actor(Actor& other) {
 	collide_field();
 }
 //攻撃判定生成
-void Player::generate_attac_collider() {
+void Player::generate_attack_collider() {
 	// 攻撃判定を出現させる場所の距離
 	const float AttackColliderDistance{ 1.8f };
 	// 攻撃判定の半径

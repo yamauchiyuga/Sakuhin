@@ -57,7 +57,7 @@ void World::draw_gui() const
 	// GUIの描画
 	actors_.draw_gui();
 	//ゲームクリアを描画
-	draw_game_cler_texture();
+	draw_game_clear_texture();
 	//ゲームオーバーを描画
 	draw_game_over_texture();
 	//フェイドアウト
@@ -79,7 +79,7 @@ void World::clear()
 	is_game_over_ = false;
 	fade_alpha_ = 0.0f;
 	game_over_alpha_ = 0.0f;
-	clear_alpha_ = 0.0f;
+	game_clear_alpha_ = 0.0f;
 	gsStopAllEffects();
 }
 // カメラの追加
@@ -165,7 +165,7 @@ void World::game_over()
 }
 
 //ゲームクリア
-void World::game_cler()
+void World::game_clear()
 {
 	//画像の大きさをセット
 	clear_scale_ = { 1.5f, 1.5f };
@@ -173,7 +173,7 @@ void World::game_cler()
 	Tween::value(0.0f, 1.0f, 100.0f, [=](GSfloat val) {fade_alpha_ = val; }).delay(540.0f)
 		.on_complete([=] {is_game_over_ = true; });
 	//20フレームかけてクリア画像をフェードイン
-	Tween::value(0.0f, 1.0f, 20.0f, [=](GSfloat val) {clear_alpha_ = val; }).delay(300.0f)
+	Tween::value(0.0f, 1.0f, 20.0f, [=](GSfloat val) {game_clear_alpha_ = val; }).delay(300.0f)
 		.on_complete([=] {gsPlaySE(Se_GameClear); });
 	//20フレームかけてクリア画像を小さくする
 	Tween::vector2(clear_scale_, GSvector2{ 1.0f, 1.0f }, 20.0f,[=](GSvector2 val) {clear_scale_ = val; })
@@ -188,10 +188,10 @@ void World::draw_game_over_texture() const
 }
 
 //ゲームクリアテクスチャ
-void World::draw_game_cler_texture() const
+void World::draw_game_clear_texture() const
 {
 	const GSvector2 position{ 640.0f, 360.0f };
-	const GScolor color{ 1.0f, 1.0f, 1.0f, clear_alpha_ };
+	const GScolor color{ 1.0f, 1.0f, 1.0f, game_clear_alpha_ };
 	gsDrawSprite2D(Texture_GameClear, &position, NULL, &position, &color, &clear_scale_, 0.0f);
 }
 

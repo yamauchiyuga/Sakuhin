@@ -42,13 +42,13 @@ private:
 	//U‚èŒü‚«’†
 	void turn(float delta_time);
 	//
-	void Shield_Block(float delta_time);
-	//€–S
-	void dead(float delta_time);
+	void shield_block(float delta_time);
 	//UŒ‚’†
 	void attack(float delta_time);
-	//
+	//ƒ_ƒ[ƒW
 	void damage(float delta_time);
+	//€–S
+	void dead(float delta_time);
 	//UŒ‚
 	void slash();
 	//‘–‚é‚©H

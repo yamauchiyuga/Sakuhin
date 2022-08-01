@@ -12,6 +12,12 @@ public:
 	Enemy() = default;
 	virtual~Enemy() = default;
 
+	//死亡しているか?
+	bool dead()const;
+	//コピー禁止
+	Enemy(const Enemy& other) = delete;
+	Enemy& operator = (const Enemy& other) = delete;
+
 protected:
 	// ターゲット方向の角度を求める（符号付き）
 	float target_signed_angle() const;
@@ -24,18 +30,9 @@ protected:
 	//フィールドとの衝突リアクション
 	void collide_field();
 	//攻撃判定を生成
-	void generate_attac_collider(const float radius, const float distance, const float height,const float width,const float delay,const float life_span,const std::string& attack_name);
+	void generate_attack_collider(const float radius, const float distance, const float height,const float width,const float delay,const float life_span,const std::string& attack_name);
 	//壁にぶつかったか
 	bool is_hit_wall()const;
-
-public:
-
-	//死亡しているか?
-	bool dead()const;
-
-	//コピー禁止
-	Enemy(const Enemy& other) = delete;
-	Enemy& operator = (const Enemy& other) = delete;
 
 protected:
 	

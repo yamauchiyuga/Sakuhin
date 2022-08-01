@@ -8,12 +8,12 @@ void HitStop::update(float delta_time)
     timer_->update(delta_time);
     if(timer_->is_time_out())
     {
-        ab_ = 1.0f;
+        delay_time_ = 1.0f;
         timer_->reset();
     }
     else
     {
-        ab_=0.05f;
+        delay_time_=0.0f;
     }
 }
 
@@ -22,7 +22,7 @@ void HitStop::set_hit_stop(const float time)
     timer_.reset(new Timer(time));
 }
 
-float HitStop::b()const
+float HitStop::delta_time_delay()const
 {
-    return ab_;
+    return delay_time_;
 }

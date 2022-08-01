@@ -30,7 +30,7 @@ const float RunDistance{ 2.5f };
 //走るスピード
 const float RunSpeed{ 0.07f };
 //回転量
-const float TurnAngle{ 1.5f };
+const float TurnAngle{ 1.8f };
 //回転する角度
 const float TurnAroundAngle{ 20.0f };
 //ダメージ
@@ -107,11 +107,17 @@ void Skeleton::react(Actor& other)
 		if (CanBlock == 0)
 		{
 			gsPlaySE(Se_PlayerBlock);
+			//修正値
+			const GSvector3 Offset{ 0.0f,0.7f,0.5f };
+			//エフェクを出す位置
+			const GSvector3 Pos = transform_.position() + Offset;
+			//エフェク描画
+			gsPlayEffect(Effect_Spark, &Pos);
 			change_state(State::ShieldBlock, MotionShieldBlock, false);
 			return;
 		}
 
-		hit_stop_.set_hit_stop(10.0f);
+		hit_stop_.set_hit_stop(17.0f);
 		gsPlaySE(Se_SkeletonDamage);
 		change_state(State::Damage, MotionDamage, false);
 		//SEを鳴らす
@@ -149,7 +155,7 @@ void Skeleton::update_state(float delta_time)
 	case Skeleton::State::Generation: generation(delta_time); break;
 	case Skeleton::State::Idle:idle(delta_time); break;
 	case Skeleton::State::Run:run(delta_time); break;
-	case Skeleton::State::ShieldBlock:Shield_Block(delta_time); break;
+	case Skeleton::State::ShieldBlock:shield_block(delta_time); break;
 	case Skeleton::State::Damage:damage(delta_time); break;
 	case Skeleton::State::Turn:turn(delta_time); break;
 	case Skeleton::State::Attack:attack(delta_time); break;
@@ -241,7 +247,7 @@ void Skeleton::turn(float delta_time)
 	transform_.rotate(0.0f, angle * delta_time, 0.0f);
 }
 
-void Skeleton::Shield_Block(float  delta_time)
+void Skeleton::shield_block(float  delta_time)
 {
 	if (state_timer_ >= mesh_.motion_end_time()) {
 		change_state(State::Idle, MotionIdle, false);
@@ -294,7 +300,7 @@ void Skeleton::slash()
 	//
 	std::string AttackName{ "SkeketonSlash" };
 	//攻撃用球生成
-	generate_attac_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, 0.0f, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
+	generate_attack_collider(AttackColliderRadius, AttackColliderDistance, AttackColliderHeight, 0.0f, AttackCollideDelay, AttackCollideLifeSpan, AttackName);
 }
 
 //走しるか？

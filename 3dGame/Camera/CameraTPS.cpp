@@ -39,7 +39,7 @@ CameraTPS::CameraTPS(std::shared_ptr<IWorld> world, const GSvector3& position, c
 	//x軸回りの回転角度の初期化
 	pitch_ = 0;
 	//y軸回りの回転角度の初期化
-	yaw_ = 0;
+	yaw_ = 180;
 	//
 	timer_ = 0;
 }
@@ -120,7 +120,7 @@ void CameraTPS::player_lock_on(float delta_time)
 	//カメラの座標を求める
 	position_ = at_ + GSquaternion::euler(pitch_, yaw_, 0.0f) * PlayerOffset;
 
-	static const float SmoothTime{ 30.0f }, MaxSpeed{ 0.5f };
+	static const float SmoothTime{ 15.0f }, MaxSpeed{ 1.0f };
 	GSvector3::smoothDamp(transform_.position(), position_, velocity_, SmoothTime, MaxSpeed, delta_time);
 	linear_interpolation(SmoothTime, MaxSpeed, delta_time);
 }
@@ -140,7 +140,7 @@ bool CameraTPS::enemy_lock_on(float delta_time)
 	//視点位置を求める(プレーヤーの背後の座標)
 	position_ = player_->transform().position() + EnemyToPlayer;
 
-	static const float SmoothTime{ 30.0f }, MaxSpeed{ 0.5f };
+	static const float SmoothTime{ 15.0f }, MaxSpeed{ 1.0f };
 	linear_interpolation(SmoothTime, MaxSpeed, delta_time);
 
 	return true;
@@ -151,7 +151,7 @@ bool CameraTPS::lock_on_enemy_to_player(float delta_time) {
 	//カメラの座標を求める
 	position_ = at_ + GSquaternion::euler(pitch_, yaw_, 0.0f) * PlayerOffset;
 
-	static const float SmoothTime{ 12.0f }, MaxSpeed{ 1.0f };
+	static const float SmoothTime{ 15.0f }, MaxSpeed{ 1.0f };
 	linear_interpolation(SmoothTime, MaxSpeed, delta_time);
 
 	timer_ += delta_time;

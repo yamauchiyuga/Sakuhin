@@ -9,7 +9,7 @@ class TitlePlayer :public Actor
 {
 public:
 	//
-	TitlePlayer(std::shared_ptr<IWorld> world, const GSvector3& position = GSvector3{ 0.0f, 0.0f, 0.0f });
+	TitlePlayer(std::shared_ptr<IWorld> world, const GSvector3& position);
 	//
 	virtual void update(float delta_time)override;
 	//

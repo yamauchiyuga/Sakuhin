@@ -14,7 +14,7 @@
 void GamePlayScene::start() {
 	// 終了フラグを初期化
 	is_end_ = false;
-	gsSetActiveAuxLightMax(4);
+	gsSetActiveAuxLightMax(8);
 	// 視錐台カリングを有効にする
 	gsCreateRenderTarget(0, 1280, 720, GS_TRUE, GS_TRUE, GS_TRUE);
 	//視錐台カリングを有効にする
@@ -39,12 +39,12 @@ void GamePlayScene::start() {
 	gsSetShadowMapDistance(60.0f);
 
 	// プレーヤーの追加
-	world_->add_actor(std::make_shared<Player>(world_, GSvector3{ -5,4.0,10 }));
+	world_->add_actor(std::make_shared<Player>(world_, GSvector3{ -5.0f,1.967f,4.0f }));
 	// フィールドクラスの追加
 	world_->add_field(std::make_shared<Field>(Octree_Stage, Octree_Collider));
 	// カメラクラスの追加
 	world_->add_camera(std::make_shared<CameraTPS>(
-		world_, GSvector3{ 0.0f, 3.2f, -4.8f }, GSvector3{ 0.0f, 1.0, 0.0f }));
+		world_, GSvector3{ 0.0f, 3.2f, 9.0f }, GSvector3{ 0.0f, 1.0, 0.0f }));
 	// ライトクラスの追加
 	world_->add_light(std::make_shared<Light>(world_));
 	//ステージデータ読み込み

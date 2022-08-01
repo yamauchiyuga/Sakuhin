@@ -23,7 +23,7 @@ public:
 	};
 
 	//コンストラクタ
-	Player(std::shared_ptr<IWorld> world, const GSvector3& position = GSvector3{ 0.0f, 0.0f, 0.0f });
+	Player(std::shared_ptr<IWorld> world, const GSvector3& position);
 	//更新
 	virtual void update(float delta_time)override;
 	//描画
@@ -65,7 +65,7 @@ private:
 	//フィールド判定
 	void collide_field();
 	//攻撃判定生成
-	void generate_attac_collider();
+	void generate_attack_collider();
 
 private:
 	//アニメーションメッシュ
@@ -79,6 +79,7 @@ private:
 	State state_;
 	//状態タイマ
 	float state_timer_;
+	float easing_time_{0.0f};
 	//コンボ数
 	int combo_;
 	//モーションのループ設定

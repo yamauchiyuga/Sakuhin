@@ -12,9 +12,9 @@ public :
 		Generation,
 		Idle,
 		Run,
-		Dead,
 		Attack,
-		Damage
+		Damage,
+		Dead
 	};
 
 	//コンストラクタ
@@ -59,8 +59,6 @@ private:
 	GSuint motion_;
 	//状態
 	State state_;
-	//壁にぶつかったか？
-	bool hit_wall;
 };
 
 

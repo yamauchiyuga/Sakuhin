@@ -12,11 +12,11 @@ int Amplitude::amplitude_damage(Actor& other) const
 {
 	const float Rand = gsRandf(0.7f, 1.3f);
 	if (other.name() == "SkeketonSlash") return Rand * SkeketonSlash;
-	if(other.name()=="WitchSpitFire") return Rand * WitchSpitFire;
-	if(other.name()=="WitchThunder")return Rand * WitchThunder;
-	if(other.name()=="DragonBite")return Rand * DragonBite;
-	if(other.name()=="DragonTail")return Rand * DragonTail;
-	if(other.name()=="DragonSpitFire")return Rand * DragonSpitFire;
+	if (other.name() == "WitchSpitFire") return Rand * WitchSpitFire;
+	if (other.name() == "WitchThunder")return Rand * WitchThunder;
+	if (other.name() == "DragonBite")return Rand * DragonBite;
+	if (other.name() == "DragonTail")return Rand * DragonTail;
+	if (other.name() == "DragonSpitFire")return Rand * DragonSpitFire;
 	if (other.name() == "DragonFlySpitFire")return Rand * DragonFlySpitFire;
 	return 0;
 }

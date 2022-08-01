@@ -3,7 +3,7 @@
 #include"../../World/IWorld.h"
 #include"../../Assets.h"
 
-enum MyEnum
+enum
 {
 	MotionIdle=2
 };

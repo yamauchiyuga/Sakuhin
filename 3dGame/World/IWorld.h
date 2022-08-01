@@ -29,7 +29,7 @@ public:
 	//ゲームオーバー
 	virtual void game_over() = 0;
 	//ゲームクリア
-	virtual void game_cler() = 0;
+	virtual void game_clear() = 0;
 
 	// フィールドの取得
 	virtual std::shared_ptr<Field> field() = 0;

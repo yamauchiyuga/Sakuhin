@@ -85,6 +85,7 @@ enum {
     Effect_AppearanceBlood,
     Effect_Thunder,
     Effect_Attack,
-    Effect_Attack1
+    Effect_Attack1,
+    Effect_Spark
 };
 #endif // !ASSETS_H_

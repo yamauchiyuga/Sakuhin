@@ -10,7 +10,6 @@
 
 //モーション番号
 enum {
-	MotionTemp,
 	MotionThunder,
 	MotionSpitFire,
 	MotionDead,
@@ -43,7 +42,7 @@ Witch::Witch(std::shared_ptr<IWorld> world, const GSvector3& position) :
 	//プレイヤー検索よう
 	player_ = nullptr;
 	//壁に衝突下か？
-	hit_wall = false;
+	hit_wall_ = false;
 	//死亡したか？
 	is_dead_ = false;
 	//当たり判定球
@@ -106,7 +105,7 @@ void Witch::react(Actor& other)
 	//プレイヤーと衝突したか
 	if (other.tag() == "PlayerAttackTag")
 	{
-		hit_stop_.set_hit_stop(10.0f);
+		hit_stop_.set_hit_stop(17.0f);
 		if (HP_.cullent_health() <= 10)
 		{
 			gsPlaySE(Se_WitchDamage);
