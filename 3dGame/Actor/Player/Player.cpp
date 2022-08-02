@@ -36,7 +36,7 @@ const float FootOffset{ 0.1f };
 //重力
 const float Gravity{ -0.016f };
 //回避距離
-const float DodgeDistance{ 0.37f };
+const float DodgeDistance{ 0.3f };
 //最大体力
 const int MaxHP{ 100 };
 //最大スタミナ
@@ -125,6 +125,13 @@ void Player::update(float delta_time)
 void Player::draw()const
 {
 	mesh_.draw();
+}
+
+//GUI描画
+void Player::draw_gui()const
+{
+	HP_.draw_player();
+	ST_.draw();
 }
 
 //衝突判定
@@ -216,6 +223,7 @@ void Player::move(float delta_time)
 {
 	//回避ボタンを押したか、スタミナは足りるか
 	if (Input::is_dodge() && ST_.get_stamina() > DodgeStamina) {
+		trun();
 		//前方向に加速
 		velocity_ = transform_.forward() * DodgeDistance;
 		//スタミナ消費
@@ -280,6 +288,7 @@ void Player::move(float delta_time)
 void Player::attack(float delta_time) {
 	//回避ボタンを押しているか、スタミナは足りているか？
 	if (Input::is_dodge() && ST_.get_stamina() > DodgeStamina) {
+		trun();
 		velocity_ = transform_.forward() * DodgeDistance;
 		ST_.consumption_stamina(DodgeStamina);
 		change_state(State::Dodge, MotionDodge, false);
@@ -287,6 +296,7 @@ void Player::attack(float delta_time) {
 	}
 	//攻撃ボタンを押しているか、攻撃可能か？
 	if (Input::is_attack() && can_attackable()) {
+		trun();
 		//スタミナ消費
 		ST_.consumption_stamina(AttackStamina);
 		//モーション番号
@@ -315,14 +325,11 @@ void Player::attack(float delta_time) {
 void Player::dodge(float delta_time)
 {
 	transform_.translate(velocity_, GStransform::Space::World);
-	const float MoveTime{ mesh_.motion_end_time() - 20 };
+	//減速
+	const float MoveTime{ mesh_.motion_end_time() };
 	easing_time_ += delta_time;
 	const float t = easing_time_ / MoveTime;
-
 	velocity_ = GSvector3::lerp(GSvector3{ velocity_.x,0.0f,velocity_.z }, GSvector3::zero(), gsEasingInQuad(t));
-	//減速
-	/*const float decrement_value{ 0.2f };
-	velocity_ -= GSvector3{ velocity_.x,0.0f,velocity_.z }*decrement_value * delta_time;*/
 	//モーション終了か？
 	if (state_timer_ >= mesh_.motion_end_time() - 20.0f)
 	{
@@ -370,6 +377,30 @@ void Player::damage(float delta_time) {
 //死亡
 void Player::end(float delta_time) {
 	//何もしない
+}
+
+void Player::trun()
+{
+	//カメラの前方向ベクトルを取得
+	GSvector3 forward = world_->camera()->transform().forward();
+	forward.y = 0.0f;
+	//カメラの右方向ベクトルを取得
+	GSvector3 right = world_->camera()->transform().right();
+	right.y = 0.0f;
+	//スティックの入力値から移動ベクトルを計算
+	GSvector3 velocity{ 0.0f, 0.0f, 0.0f };
+	if (Input::get_left_vertical() > Input)velocity += forward;
+	if (Input::get_left_vertical() < -Input)velocity += -forward;
+	if (Input::get_left_horizontal() > Input)velocity += right;
+	if (Input::get_left_horizontal() < -Input)velocity += -right;
+	//velocity = velocity.normalized();
+
+	//スティックが入力されているか？
+	if (velocity.length() != 0.0f) {
+		//移動量の方向に向きを変える
+		GSquaternion rotation = GSquaternion::lookRotation(velocity);
+		transform_.rotation(rotation);
+	}
 }
 
 //攻撃可能か？
@@ -475,11 +506,3 @@ void Player::generate_attack_collider() {
 		"PlayerAttackTag", "PlayerAttack", tag_, AttackCollideLifeSpan, AttackCollideDelay));
 }
 
-//GUI描画
-void Player::draw_gui()const
-{
-	HP_.draw_player();
-	ST_.draw();
-	/*d.draw();
-	d.clear();*/
-}

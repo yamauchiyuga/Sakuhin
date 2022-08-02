@@ -54,6 +54,8 @@ private:
 	void end(float delta_time);
 	//ノックバック処理
 	void knock_back(Actor& other, float power);
+	//
+	void trun();
 	//攻撃可能か？
 	bool can_attackable()const;
 	//ガード可能か？
