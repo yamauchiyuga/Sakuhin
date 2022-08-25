@@ -72,17 +72,7 @@ void ActorManager::collide() {
 // 死亡しているアクターの削除
 void ActorManager::remove() 
 {
-	for (auto i = actors_.begin(); i != actors_.end();) 
-	{
-		if ((*i)->is_dead()) 
-		{
-			i = actors_.erase(i);
-		}
-		else 
-		{
-			++i;
-		}
-	}
+	actors_.remove_if([](const auto& actor) {return actor->is_dead(); });
 }
 
 // アクターの検索

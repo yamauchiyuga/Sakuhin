@@ -85,22 +85,19 @@ void World::clear()
 // カメラの追加
 void World::add_camera(std::shared_ptr<Actor> camera) 
 {
-	std::shared_ptr<Actor> Temp{ camera };
-	camera_ =std::move(Temp);
+	camera_ = camera;
 }
 
 // ライトの追加
 void World::add_light(std::shared_ptr<Actor> light) 
 {
-	std::shared_ptr<Actor> Temp{ light };
-	light_ = std::move(Temp);
+	light_ = light;
 }
 
 // フィールドの追加
 void World::add_field(std::shared_ptr<Field> field) 
 {
-	std::shared_ptr<Field> Temp{ field };
-	field_ = std::move(Temp);
+	field_ = field;
 }
 
 // シャドウマップの描画用の関数
@@ -115,7 +112,7 @@ void World::shadow_map_callback(void* param, const GSmatrix4* view, const GSmatr
 // アクターの追加
 void World::add_actor(std::shared_ptr<Actor> actor) 
 {
-	actors_.add(std::move(actor));
+	actors_.add(actor);
 }
 
 // アクターの検索

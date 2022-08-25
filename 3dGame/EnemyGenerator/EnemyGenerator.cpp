@@ -57,12 +57,11 @@ void EnemyGenerator::read_stage_data()
 	{
 		int Fase = csv_generator_data_.geti(i, CsvFase);
 		std::string Name = csv_generator_data_.get(i, CsvName);
-		GSvector3 Pos = GSvector3(
+		GSvector3 Pos(
 			csv_generator_data_.getf(i, CsvPosition),
 			csv_generator_data_.getf(i, CsvPosition + 1),
 			csv_generator_data_.getf(i, CsvPosition + 2));
-
-		stage_data_.push(std::make_pair(Fase, EnemyStruct(Name, Pos)));
+		stage_data_.emplace(Fase, EnemyStruct(Name, Pos));
 	}
 }
 
@@ -70,8 +69,8 @@ void EnemyGenerator::read_fase_point()
 {
 	for (int i = 0; i < csv_generator_pos_.rows(); ++i)
 	{
-		fase_point_.push(
-			std::make_pair(csv_generator_pos_.geti(i, CsvFasePoint), 
-				csv_generator_pos_.geti(i, CsvFasePos)));
+		fase_point_.emplace(
+		csv_generator_pos_.geti(i, CsvFasePoint),
+		csv_generator_pos_.geti(i, CsvFasePos));
 	}
 }

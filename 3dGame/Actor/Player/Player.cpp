@@ -5,7 +5,6 @@
 #include "../../Collision/Line.h"
 #include "../../Assets.h"
 #include"../../Input.h"
-#include"../../Debug.h"
 #include"../../Amplitude.h"
 #include <GSeffect.h>
 
@@ -36,7 +35,7 @@ const float FootOffset{ 0.1f };
 //重力
 const float Gravity{ -0.016f };
 //回避距離
-const float DodgeDistance{ 0.3f };
+const float DodgeDistance{ 0.2f };
 //最大体力
 const int MaxHP{ 100 };
 //最大スタミナ
@@ -278,10 +277,7 @@ void Player::move(float delta_time)
 	change_state(State::Move, motion);
 	velocity_.x = velocity.x;
 	velocity_.z = velocity.z;
-
-
 	transform_.translate(velocity_, GStransform::Space::World);
-
 }
 
 //攻撃中
@@ -326,7 +322,7 @@ void Player::dodge(float delta_time)
 {
 	transform_.translate(velocity_, GStransform::Space::World);
 	//減速
-	const float MoveTime{ mesh_.motion_end_time() };
+	const float MoveTime{ mesh_.motion_end_time()+20.0f };
 	easing_time_ += delta_time;
 	const float t = easing_time_ / MoveTime;
 	velocity_ = GSvector3::lerp(GSvector3{ velocity_.x,0.0f,velocity_.z }, GSvector3::zero(), gsEasingInQuad(t));
@@ -502,7 +498,7 @@ void Player::generate_attack_collider() {
 	// 衝突判定用の球を作成
 	BoundingSphere collider{ AttackColliderRadius, position };
 	// 衝突判定を出現させる
-	world_->add_actor(std::make_unique<AttackCollider>(world_, collider,
+	world_->add_actor(std::make_shared<AttackCollider>(world_, collider,
 		"PlayerAttackTag", "PlayerAttack", tag_, AttackCollideLifeSpan, AttackCollideDelay));
 }
 

@@ -170,7 +170,6 @@
     <ClCompile Include="Actor\Light.cpp" />
     <ClCompile Include="Actor\Enemy\Enemy.cpp" />
     <ClCompile Include="Actor\Enemy\Dragon.cpp" />
-    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="EnemyGenerator\CSVReader.cpp" />
     <ClCompile Include="EnemyGenerator\EnemyGenerator.cpp" />
     <ClCompile Include="Fog\Fog.cpp" />
@@ -205,7 +204,6 @@
     <ClInclude Include="Actor\Enemy\Enemy.h" />
     <ClInclude Include="Actor\Enemy\Dragon.h" />
     <ClInclude Include="Amplitude.h" />
-    <ClInclude Include="Debug.h" />
     <ClInclude Include="EnemyGenerator\CSVReader.h" />
     <ClInclude Include="EnemyGenerator\EnemyGenerator.h" />
     <ClInclude Include="Fog\Fog.h" />

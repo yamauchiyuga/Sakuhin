@@ -8,7 +8,7 @@ const int DragonTail{ 8 };
 const int DragonSpitFire{ 9 };
 const int DragonFlySpitFire{ 10 };
 
-int Amplitude::amplitude_damage(Actor& other) const
+int Amplitude::amplitude_damage(Actor& other) 
 {
 	const float Rand = gsRandf(0.7f, 1.3f);
 	if (other.name() == "SkeketonSlash") return Rand * SkeketonSlash;

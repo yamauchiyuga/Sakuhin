@@ -22,8 +22,6 @@ public:
     float       radius_{ 0.0f };
     // ’†SÀ•W
     GSvector3   center_{ 0.0f, 0.0f, 0.0f };
-    //•âŠ®
-    GSvector3 Offset{ 0.0f,0.0f,0.0f };
 };
 
 #endif

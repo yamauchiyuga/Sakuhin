@@ -6,9 +6,7 @@
 class Amplitude
 {
 public:
-	Amplitude() = default;
-	~Amplitude() = default;
-	int  amplitude_damage(Actor& other)const;
+	int  amplitude_damage(Actor& other);
 };
 
 #endif // !AMPLITUDE_H_

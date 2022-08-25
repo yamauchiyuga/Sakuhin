@@ -20,11 +20,11 @@ private:
 	//状態の更新
 	void state_update(float delta_time);
 	//プレイヤー
-	void player_update();
+	void get_player();
 	//プレイヤーをロックオン
-	void player_lock_on(float delta_time);
+	void lock_on_to_player(float delta_time);
 	//敵をロックオン
-	bool enemy_lock_on(float delta_time);
+	bool lock_on_to_enemy(float delta_time);
 	//敵からプレイヤーへ視点を戻す
 	bool lock_on_enemy_to_player(float delta_taime);
 	//ターゲットが死んでるか

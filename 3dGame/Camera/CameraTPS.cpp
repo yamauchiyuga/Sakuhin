@@ -46,7 +46,7 @@ CameraTPS::CameraTPS(std::shared_ptr<IWorld> world, const GSvector3& position, c
 
 void CameraTPS::update(float delta_time)
 {
-	player_update();
+	get_player();
 
 	if (is_player_dead()) return;
 	input_update();
@@ -87,9 +87,9 @@ void CameraTPS::draw()const
 	if (state_ == State::EnemyLockOn)
 	{
 		const GSrect billboard_size{ -1.0f, 1.0f, 1.0f, -1.0f };  // ビルボードの大きさ
-		const GSvector3 LockPos = target_->transform().position() + GSvector3(0.0f,1.0f, 0.0f);
+		const GSvector3 LockPos = target_->transform().position() + GSvector3(0.0f, 1.0f, 0.0f);
 		const GScolor color(255.0f, 0.0f, 0.0f, 1.0f);
-		gsDrawSprite3D(Texture_Lock, &LockPos, &billboard_size, NULL,&color, NULL, 0.0f);
+		gsDrawSprite3D(Texture_Lock, &LockPos, &billboard_size, NULL, &color, NULL, 0.0f);
 	}
 }
 void CameraTPS::input_update()
@@ -106,21 +106,22 @@ void CameraTPS::state_update(float delta_time)
 {
 	switch (state_)
 	{
-	case State::PlayerLockOn:player_lock_on(delta_time); break;
+	case State::PlayerLockOn:lock_on_to_player(delta_time); break;
 	case State::EnemyLockOn:
-		if (!enemy_lock_on(delta_time)) state_ = State::PlayerLockOn; break;
+		if (!lock_on_to_enemy(delta_time)) state_ = State::PlayerLockOn; break;
 	case State::LookAtPlayerFromEnemy:
 		if (lock_on_enemy_to_player(delta_time)) state_ = State::PlayerLockOn;
 		break;
 	default:break;
 	}
 }
-void CameraTPS::player_update()
+void CameraTPS::get_player()
 {
-	std::shared_ptr<Actor> temp{ world_->find_actor("Player") };
-	player_ = std::move(temp);
+	//std::shared_ptr<Actor> temp{ world_->find_actor("Player") };
+	//player_ = std::move(temp);
+	player_ = world_->find_actor("Player");
 }
-void CameraTPS::player_lock_on(float delta_time)
+void CameraTPS::lock_on_to_player(float delta_time)
 {
 	operation_processor(delta_time);
 	//注視点の座標を求める
@@ -132,7 +133,7 @@ void CameraTPS::player_lock_on(float delta_time)
 	GSvector3::smoothDamp(transform_.position(), position_, velocity_, SmoothTime, MaxSpeed, delta_time);
 	linear_interpolation(SmoothTime, MaxSpeed, delta_time);
 }
-bool CameraTPS::enemy_lock_on(float delta_time)
+bool CameraTPS::lock_on_to_enemy(float delta_time)
 {
 	if (target_->is_dead()) return false;
 
@@ -213,8 +214,7 @@ void CameraTPS::set_parameter()
 }
 void CameraTPS::set_target(const std::shared_ptr<Actor>& target)
 {
-	std::shared_ptr<Actor> temp{ target };
-	target_ = std::move(temp);
+	target_ = target;
 }
 void CameraTPS::set_reference_point(const GSvector3& at)
 {
@@ -241,5 +241,5 @@ void CameraTPS::linear_interpolation(const float time, const float max_speed, fl
 }
 bool CameraTPS::is_player_dead() const
 {
-	return !(bool)player_;
+	return player_ == nullptr;
 }
