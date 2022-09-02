@@ -1,15 +1,16 @@
 #include "HitStop.h"
 #include<algorithm>
-std::unique_ptr<Timer>HitStop::timer_;
+//std::unique_ptr<Timer>HitStop::timer_;
+Timer HitStop::timer_(0.0f);
 
 void HitStop::update(float delta_time)
 {
-    if (!timer_)return;
-    timer_->update(delta_time);
-    if(timer_->is_time_out())
+   // if (!timer_)return;
+    timer_.update(delta_time);
+    if(timer_.is_time_out())
     {
         delay_time_ = 1.0f;
-        timer_->reset();
+        timer_.reset();
     }
     else
     {
@@ -17,9 +18,9 @@ void HitStop::update(float delta_time)
     }
 }
 
-void HitStop::set_hit_stop(const float time)
+void HitStop::set_hit_stop(const float& time)
 {
-    timer_.reset(new Timer(time));
+    timer_.set_limit_time(time);
 }
 
 float HitStop::delta_time_delay()const

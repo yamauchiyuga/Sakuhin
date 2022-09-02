@@ -15,6 +15,11 @@ public:
 		time_ = std::min(time_ + delta_time, limitTime_);
 	}
 
+	void set_limit_time(const float& time)
+	{
+		limitTime_ = time;
+	}
+
 	void reset()
 	{
 		time_ = 0;

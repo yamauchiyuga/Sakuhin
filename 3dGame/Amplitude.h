@@ -6,7 +6,7 @@
 class Amplitude
 {
 public:
-	int  amplitude_damage(Actor& other);
+	static int  amplitude_damage(Actor& other);
 };
 
 #endif // !AMPLITUDE_H_
