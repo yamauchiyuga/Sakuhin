@@ -29,7 +29,7 @@ private:
 	// 敵の生成
 	void load_csv(const std::string& data_name, const std::string& pos_name);
 	void read_stage_data();
-	void read_fase_point();
+	void read_phase_point();
 
 	template<typename T>
 	inline void generate(std::shared_ptr<IWorld> world, const GSvector3& pos)
@@ -46,7 +46,7 @@ private:
 	// ステージデータ
 	std::queue<std::pair<int, EnemyStruct>> stage_data_;
 	// フェーズデータ
-	std::queue<std::pair<int, int>> fase_point_;
+	std::queue<std::pair<int, int>> phase_point_;
 };
 
 #endif

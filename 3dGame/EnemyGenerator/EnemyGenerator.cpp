@@ -19,19 +19,19 @@ EnemyGenerator::EnemyGenerator(std::shared_ptr<IWorld> world, const std::string&
 
 	load_csv(data_name, pos_name);
 	read_stage_data();
-	read_fase_point();
+	read_phase_point();
 }
 
 // XV
 void EnemyGenerator::update(float delta_time)
 {
-	if (stage_data_.empty() || fase_point_.empty()) return;
+	if (stage_data_.empty() || phase_point_.empty()) return;
 
 	float PlayerPositionZ = world_->find_actor("Player")->transform().position().z;
-	if (fase_point_.front().second < PlayerPositionZ) return;
+	if (phase_point_.front().second < PlayerPositionZ) return;
 
 	while (!stage_data_.empty() && 
-		stage_data_.front().first == fase_point_.front().first)
+		stage_data_.front().first == phase_point_.front().first)
 	{
 		auto RowData = stage_data_.front().second;
 		std::string EnemyName = RowData.name_;
@@ -42,7 +42,7 @@ void EnemyGenerator::update(float delta_time)
 
 		stage_data_.pop();
 	}
-	fase_point_.pop();
+	phase_point_.pop();
 }
 
 void EnemyGenerator::load_csv(const std::string& data_name, const std::string& pos_name)
@@ -65,11 +65,11 @@ void EnemyGenerator::read_stage_data()
 	}
 }
 
-void EnemyGenerator::read_fase_point()
+void EnemyGenerator::read_phase_point()
 {
 	for (int i = 0; i < csv_generator_pos_.rows(); ++i)
 	{
-		fase_point_.emplace(
+		phase_point_.emplace(
 		csv_generator_pos_.geti(i, CsvFasePoint),
 		csv_generator_pos_.geti(i, CsvFasePos));
 	}
